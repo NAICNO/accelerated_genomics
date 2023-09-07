@@ -1,7 +1,7 @@
-NVDIA_Clara_Parabricks
+NVIDIA Clara Parabricks
 ==============================
 
-Implementing and testing NVDIA's Clara Parabricks is the software suite developed to analyze NGS data GPUs
+Implementing and testing Clara Parabricks - NVIDIA software suite developed to analyze NGS data using GPUs
 
 Project Organization
 ------------
