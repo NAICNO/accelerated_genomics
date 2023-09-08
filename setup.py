@@ -4,7 +4,7 @@ setup(
     name='src',
     packages=find_packages(),
     version='0.1.0',
-    description='Implementing and testing NVDIA's Clara Parabricks is the software suite developed to analyze NGS data GPUs',
+    description='Implementing and testing Clara Parabricks - NVIDIA software suite developed to analyze NGS data using GPUs',
     author='Your name (or your organization/company/team)',
     license='MIT',
 )
