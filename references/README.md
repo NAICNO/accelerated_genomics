@@ -26,44 +26,16 @@ singularity build clara-parabricks_v4.1.2-1.sif docker://nvcr.io/nvidia/clara/cl
 
 ## Run parabricks using singularity
 
-* Access test dataset - `https://s3.amazonaws.com/parabricks.sample/parabricks_sample.tar.gz`
-
-```bash
-
-wget -O parabricks_sample.tar.gz "https://s3.amazonaws.com/parabricks.sample/parabricks_sample.tar.gz"
-
-# Structure of the testdata directory
-## parabricks_sample
-## |-- Data
-## |   |-- sample_1.fq.gz
-## |   `-- sample_2.fq.gz
-## `-- Ref
-##     |-- Homo_sapiens_assembly38.dict
-##     |-- Homo_sapiens_assembly38.fasta
-##     |-- Homo_sapiens_assembly38.fasta.amb
-##     |-- Homo_sapiens_assembly38.fasta.ann
-##     |-- Homo_sapiens_assembly38.fasta.bwt
-##     |-- Homo_sapiens_assembly38.fasta.fai
-##     |-- Homo_sapiens_assembly38.fasta.pac
-##     |-- Homo_sapiens_assembly38.fasta.sa
-##     |-- Homo_sapiens_assembly38.known_indels.vcf.gz
-##     `-- Homo_sapiens_assembly38.known_indels.vcf.gz.tbi
-
-## Basic stats of the raw fastq files in `Data` direcory
-### file               format  type    num_seqs        sum_len  min_len  avg_len  max_len
-### sample_1.fq.gz     FASTQ   DNA   26,658,919  3,065,775,685      115      115      115
-### sample_2.fq.gz     FASTQ   DNA   26,658,919  3,065,775,685      115      115      115
-```
-
-* Run Parabricks singularity image
+* Access test dataset - follow instructions in [data/external_testdata folder](external_testdata/README.md)
+* Run Parabricks singularity image created in the previous step
 
 ```bash
 singularity exec \
-    --nv \  # Use this option if you want to use GPUs, equivalent to --gpus all in Docker
-    --cleanenv \  # Optionally clean the environment (similar to --rm in Docker)
-    --bind /host/data/parabricks_sample:/mnt \  # Map the host directory to the container
-    --bind /host/results:/outputdir \  # Map the host directory to the container
-    --pwd /outputdir \  # Set the working directory inside the container
+    --nv \
+    --cleanenv \
+    --bind /host/data/parabricks_sample:/mnt \
+    --bind /host/results:/outputdir \
+    --pwd /outputdir \
     clra-aparabricks_v4.1.2-1.sif \
     pbrun fq2bam \
     --ref /mnt/Ref/Homo_sapiens_assembly38.fasta \
