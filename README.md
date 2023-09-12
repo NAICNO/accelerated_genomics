@@ -8,33 +8,30 @@ Project Organization
 
     ├── LICENSE
     ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
+    ├── data               <- NOTE:  NOT YET IMPLEMENTED
+    │   ├── external          <- Data from third-party sources.
+    │   ├── interim           <- Intermediate data that has been transformed.
+    │   ├── processed         <- The final, canonical data sets for modeling.
+    │   └── raw               <- The original, immutable data dump.
     │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+    ├── docs               <- *NOTE:  NOT YET IMPLEMENTED (A default Sphinx project; see sphinx-doc.org)*
     │
-    ├── tools              <- Bioinformativs tools used in NVIDIA Parabricks
+    ├── tools              <- Bioinformatics tools used in NVIDIA Parabricks
     │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
+    ├── notebooks          <- *NOTE:  NOT YET IMPLEMENTED (e.g., Jupyter notebooks)*
     │
-    ├── references         <- User guide, manuals, and all other explanatory materials.
+    ├── references         <- *User guide, manuals, and all other explanatory materials*
     │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
+    ├── reports            <- *NOTE:  NOT YET IMPLEMENTED (Generated analysis as HTML, PDF, LaTeX, etc.)*
+    │   └── figures           <- *Generated graphics and figures to be used in reporting*
     │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
     │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project. NOTE:  NOT YET IMPLEMENTED
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
-
+    |                      *NOTE:  NOT YET IMPLEMENTED*
+    ├── requirements.txt   <- *The requirements file for reproducing the analysis environment, e.g.
+    │                         generated with `pip freeze > requirements.txt`*
+    ├── setup.py           <- *makes project pip installable (pip install -e .) so src can be imported*
+    ├── src                <- *Source code for use in this project.*
+    └── tox.ini            <- *tox file with settings for running tox; see tox.readthedocs.io*
 
 --------
 
@@ -44,7 +41,7 @@ User guide
 Follow [references folder](references/README.md) to read more on followings
 
 * Software & hardware requirements
-* Implementation instructins
+* Implementation instructions
 * Access test-datasets
 * Run a preliminary analysis using NVIDIA Parabricks
 
