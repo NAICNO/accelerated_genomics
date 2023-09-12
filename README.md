@@ -38,4 +38,14 @@ Project Organization
 
 --------
 
+User guide
+-----------
+
+Follow [references folder](references/README.md) to read more on followings
+
+* Software & hardware requirements
+* Implementation instructins
+* Access test-datasets
+* Run a preliminary analysis using NVIDIA Parabricks
+
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>

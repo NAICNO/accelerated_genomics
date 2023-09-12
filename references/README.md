@@ -1,16 +1,22 @@
 # User guide
 
-## [Requirements](https://docs.nvidia.com/clara/parabricks/4.0.0/gettingstarted.html#installation-requirements)
+## Requirements
+
+[*Software and hardware requirements were extracted from parabricks.v4.0.0 installation & requirements guide*](https://docs.nvidia.com/clara/parabricks/4.0.0/gettingstarted.html#installation-requirements)
 
 * Hardware Requirements
   * NVIDIA GPU supporting CUDA architecture 60, 70, 75, or 80
   * Minimum RAM requirement = 16GB
 * System Requirements
-  * Follow the [source documentation](https://docs.nvidia.com/clara/parabricks/4.0.0/gettingstarted.html#installation-requirements) for detailed description of system Requirements
+  * 2 GPU server should have at least 100GB CPU RAM and at least 24 CPU threads
+  * A 4 GPU server should have at least 196GB CPU RAM and at least 32 CPU threads.
+  * A 8 GPU server should have at least 392GB CPU RAM and at least 48 CPU threads.
 * Software Requirements
-  * NVIDIA driver version > 465.32.*
+  * NVIDIA driver version > 465.32
 
-## Implementing Parabricks on [UiO ML-Nodes](https://www.uio.no/tjenester/it/forskning/kompetansehuber/uio-ai-hub-node-project/it-resources/ml-nodes/)
+## Implementing Parabricks on UiO ML-Nodes
+
+*Follow the [link](https://www.uio.no/tjenester/it/forskning/kompetansehuber/uio-ai-hub-node-project/it-resources/ml-nodes/) to learn more information on UiO ML-Nodes*
 
 * NVIDIA provides a number of docker images to implement parabricks. In order to implement parabricks on UiO ML-nodes, docker images needs to be converted to singularity images.
 
@@ -42,6 +48,11 @@ wget -O parabricks_sample.tar.gz "https://s3.amazonaws.com/parabricks.sample/par
 ##     |-- Homo_sapiens_assembly38.fasta.sa
 ##     |-- Homo_sapiens_assembly38.known_indels.vcf.gz
 ##     `-- Homo_sapiens_assembly38.known_indels.vcf.gz.tbi
+
+## Basic stats of the raw fastq files in `Data` direcory
+### file               format  type    num_seqs        sum_len  min_len  avg_len  max_len
+### sample_1.fq.gz     FASTQ   DNA   26,658,919  3,065,775,685      115      115      115
+### sample_2.fq.gz     FASTQ   DNA   26,658,919  3,065,775,685      115      115      115
 ```
 
 * Run Parabricks singularity image
