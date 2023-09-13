@@ -12,20 +12,20 @@ Parabricks test dataset
 
 ```bash
  parabricks_sample
- |-- Data
- |   |-- sample_1.fq.gz
- |   |-- sample_2.fq.gz
- |-- Ref
-     |-- Homo_sapiens_assembly38.dict
-     |-- Homo_sapiens_assembly38.fasta
-     |-- Homo_sapiens_assembly38.fasta.amb
-     |-- Homo_sapiens_assembly38.fasta.ann
-     |-- Homo_sapiens_assembly38.fasta.bwt
-     |-- Homo_sapiens_assembly38.fasta.fai
-     |-- Homo_sapiens_assembly38.fasta.pac
-     |-- Homo_sapiens_assembly38.fasta.sa
-     |-- Homo_sapiens_assembly38.known_indels.vcf.gz
-     `-- Homo_sapiens_assembly38.known_indels.vcf.gz.tbi
+ |-- [ 5.5G]  Data
+ |   |-- [ 2.4G]  sample_1.fq.gz
+ |   `-- [ 2.6G]  sample_2.fq.gz
+ |-- [ 8.3G]  Ref
+     |-- [ 407K]  Homo_sapiens_assembly38.dict
+     |-- [ 3.0G]  Homo_sapiens_assembly38.fasta
+     |-- [  20K]  Homo_sapiens_assembly38.fasta.amb
+     |-- [ 445K]  Homo_sapiens_assembly38.fasta.ann
+     |-- [ 3.0G]  Homo_sapiens_assembly38.fasta.bwt
+     |-- [ 157K]  Homo_sapiens_assembly38.fasta.fai
+     |-- [ 767M]  Homo_sapiens_assembly38.fasta.pac
+     |-- [ 1.5G]  Homo_sapiens_assembly38.fasta.sa
+     |-- [  59M]  Homo_sapiens_assembly38.known_indels.vcf.gz
+     `-- [ 1.5M]  Homo_sapiens_assembly38.known_indels.vcf.gz.tbi
 
 ```
 
