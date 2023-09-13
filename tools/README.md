@@ -30,3 +30,13 @@
 | GENOTYPEGVCF | GATK GenotypeGVCFs | Perform joint genotyping on one or more samples pre-called with HaplotypeCaller |
 | RNA FQ2BAM | STAR, gatk SortSam, gatk MarkDuplicates | Align, sort by co-ordinates & mark duplicates, optional bqsr on RNA-seq |
 | STAR-FUSION | STAR-Fusion | Detect candidate fusion transcripts. |
+
+## Parabricks pipeline
+
+| Pipeline  | Tools combined in the pipeline  |
+| --------- | ------------------------------- |
+| GERMLINE PIPELINE | BWA MEM; GATK SortSam, MarkDuplicates, BaseRecalibrator, ApplyBQSR and HaplotypeCaller |
+| DEEPVARIANT GERMLINE PIPELINE | BWA MEM; GATK SortSam and MarkDuplicates, and deepvariant |
+| HUMAN_PAR PIPELINE | Implement GATK4 germline variant calling best practices pipeline |
+| SOMATIC PIPELINE | Implement GATK4 somatic variant calling best practices pipeline |
+| RNA PIPELINE | Implement GATK RNAseq variant calling best practices |

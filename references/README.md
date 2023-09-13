@@ -26,7 +26,7 @@ singularity build clara-parabricks_v4.1.2-1.sif docker://nvcr.io/nvidia/clara/cl
 
 ## Run parabricks using singularity
 
-* Access test dataset - follow instructions in [data/external_testdata folder](external_testdata/README.md)
+* Access test dataset - follow instructions in [data/external_testdata folder](/data/external_testdata/README.md)
 * Run Parabricks singularity image created in the previous step
 
 ```bash

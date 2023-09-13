@@ -14,7 +14,7 @@ Parabricks test dataset
  parabricks_sample
  |-- [ 5.5G]  Data
  |   |-- [ 2.4G]  sample_1.fq.gz
- |   `-- [ 2.6G]  sample_2.fq.gz
+ |   |-- [ 2.6G]  sample_2.fq.gz
  |-- [ 8.3G]  Ref
      |-- [ 407K]  Homo_sapiens_assembly38.dict
      |-- [ 3.0G]  Homo_sapiens_assembly38.fasta
@@ -25,8 +25,7 @@ Parabricks test dataset
      |-- [ 767M]  Homo_sapiens_assembly38.fasta.pac
      |-- [ 1.5G]  Homo_sapiens_assembly38.fasta.sa
      |-- [  59M]  Homo_sapiens_assembly38.known_indels.vcf.gz
-     `-- [ 1.5M]  Homo_sapiens_assembly38.known_indels.vcf.gz.tbi
-
+     |-- [ 1.5M]  Homo_sapiens_assembly38.known_indels.vcf.gz.tbi
 ```
 
 * Basic stats of the raw sequence files in `Data` direcory
