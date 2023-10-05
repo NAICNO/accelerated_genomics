@@ -16,6 +16,7 @@ Project Organization
     ├── tools                   <- Bioinformatics tools used in NVIDIA Parabricks
     │
     ├── references              <- User guide, manuals, and all other explanatory materials
+    ├── workflows               <- Collection of scalable and reproducible workflows/pipelines that automate complex NGS rawdata processing tasks 
     │
     |     *NOTE:  NOT YET IMPLEMENTED*
     ├── docs                    <- *A default Sphinx project; see sphinx-doc.org*
