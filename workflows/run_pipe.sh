@@ -4,9 +4,10 @@
 bash nextflow-23.04.4-all \
     run \
     germline_cpu.nf \
-    -profile singularity \
-    --fastq_folder /home/pubuduss/data/parabricks_sample/Data/dw_data \
-    --genome_folder /home/pubuduss/data/parabricks_sample/Ref \
+    -profile standard \
+    --fastq_folder /Users/pubuduss/Developer/com/ngs-pipe-cpu/test_data/fq \
+    --genome_folder /Users/pubuduss/Developer/com/ngs-pipe-cpu/test_data/ref \
+    --genome_json reference_data.json \
     -with-report \
     -with-trace \
     -resume

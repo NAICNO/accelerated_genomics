@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+# Sort SAM file
 gatk --java-options -Xmx${task.memory.giga}g \
     SortSam \
     --VALIDATION_STRINGENCY SILENT \

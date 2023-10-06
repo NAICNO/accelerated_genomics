@@ -2,9 +2,9 @@
 
 set -euo pipefail
 
-FASTA=${REF}"/Homo_sapiens_assembly38.fasta"
+FASTA=${REF}"/"${REF_MAP["reference_fasta"]["fna"]}
 
-### Run ApplyBQSR Step
+## Run ApplyBQSR Step
 gatk --java-options -Xmx${task.memory.giga}g \
     ApplyBQSR \
     -R \${FASTA} \

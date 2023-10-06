@@ -2,10 +2,10 @@
 
 set -euo pipefail
 
-FASTA=${REF}"/Homo_sapiens_assembly38.fasta"
-KNOWN_SITES=${REF}"/Homo_sapiens_assembly38.known_indels.vcf.gz"
+FASTA=${REF}"/"${REF_MAP["reference_fasta"]["fna"]}
+KNOWN_SITES=${REF}"/"${REF_MAP["known_sites_gold_standard"]["vcf"]}
 
-### Generate BQSR Report
+## Generate BQSR Report
 gatk --java-options -Xmx${task.memory.giga}g \
     BaseRecalibrator \
     --input ${BAM} \
