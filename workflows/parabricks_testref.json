@@ -1,0 +1,16 @@
+{
+    "known_sites_gold_standard": {
+      "vcf": "Homo_sapiens_assembly38.known_indels.vcf.gz",
+      "tbi": "Homo_sapiens_assembly38.known_indels.vcf.gz.tbi"
+    },
+    "reference_fasta": {
+      "fai": "Homo_sapiens_assembly38.fasta.fai",
+      "amb": "Homo_sapiens_assembly38.fasta.amb",
+      "pac": "Homo_sapiens_assembly38.fasta.pac",
+      "ann": "Homo_sapiens_assembly38.fasta.ann",
+      "bwt": "Homo_sapiens_assembly38.fasta.bwt",
+      "sa": "Homo_sapiens_assembly38.fasta.sa",
+      "fna": "Homo_sapiens_assembly38.fasta",
+      "dict": "Homo_sapiens_assembly38.dict"
+    }
+}
