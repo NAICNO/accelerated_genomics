@@ -9,7 +9,8 @@ process bwa {
     
     input:
     tuple val(S_NAME), path(R1), path(R2)
-    path REF
+    path(REF)
+    val(REF_MAP)
     val(PROCESSOR)
 
     output:
@@ -53,7 +54,8 @@ process gatk_bqsr {
     
     input:
     tuple val(S_NAME), path(BAM)
-    path REF
+    path(REF)
+    val(REF_MAP)
     val(PROCESSOR)
 
     output:
@@ -70,7 +72,8 @@ process gatk_apply_bqsr {
     input:
     tuple val(S_NAME), path(RECAL)
     tuple val(S_NAME), path(BAM)
-    path REF
+    path(REF)
+    val(REF_MAP)
 
     output:
     tuple val(S_NAME), path("${BAM}_BQSR.bam"), emit: apply_bqsr
@@ -85,7 +88,8 @@ process gatk_haplotypeCaller {
     
     input:
     tuple val(S_NAME), path(BAM)
-    path REF
+    path(REF)
+    val(REF_MAP)
 
     output:
     tuple val(S_NAME), path("${BAM}.vcf"), emit: haplotypeCaller
@@ -100,13 +104,14 @@ workflow germline{
     take:
     input_fqs
     genome_folder
+    reference_map
 
     main:
 
 
     // BWA mapping
     bwa(
-        input_fqs, genome_folder, PROCESSOR
+        input_fqs, genome_folder, reference_map, PROCESSOR
     )
 
     // GATK sort by coordinate
@@ -116,12 +121,12 @@ workflow germline{
     gatk_mark_dup(gatk_sort.out.sort_bam)
 
     // GATK BaseRecalibrator
-    gatk_bqsr(gatk_mark_dup.out.markdup_bam, genome_folder, PROCESSOR)
+    gatk_bqsr(gatk_mark_dup.out.markdup_bam, genome_folder, reference_map, PROCESSOR)
 
     // GATK ApplyBQSR
-    gatk_apply_bqsr(gatk_bqsr.out.bqsr, gatk_mark_dup.out.markdup_bam, genome_folder)
+    gatk_apply_bqsr(gatk_bqsr.out.bqsr, gatk_mark_dup.out.markdup_bam, genome_folder, reference_map)
 
     // GATK HaplotypeCaller
-    gatk_haplotypeCaller(gatk_apply_bqsr.out.apply_bqsr, genome_folder)
+    gatk_haplotypeCaller(gatk_apply_bqsr.out.apply_bqsr, genome_folder, reference_map,)
 
 }

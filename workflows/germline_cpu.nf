@@ -2,6 +2,8 @@
 
 // Using DSL-2
 nextflow.enable.dsl=2
+import groovy.json.JsonSlurper
+import groovy.transform.Field
 
 // All of the default parameters are being set in `nextflow.config`
 
@@ -19,7 +21,9 @@ Usage:
                         containing either "_R1" or "_R2" in the filename.
 
   Reference Data:
-  --genome_folder        Folder containing reference genome and other reference files
+  --genome_folder       Folder containing reference genome and other reference files
+  --genome_json         JSON file listing reference files available in --genome_folder
+                        (Use reference_data.josn provided in this pipeline or follow the same format)
 
     """.stripIndent()
 }
@@ -28,7 +32,7 @@ Usage:
 workflow {
 
     // Print help message if input is invalid or input is "help" 
-    if ( params.help || params.fastq_folder == false || params.genome_folder == false ){
+    if ( params.help || params.fastq_folder == false || params.genome_folder == false  || params.genome_json == false){
         helpMessage()
         exit 1
     }
@@ -37,6 +41,15 @@ workflow {
     if ( ! params.fastq_folder || ! params.genome_folder ){
         log.info"""
         Specify --fastq_folder with R1 and R2 fastq files
+        Run with --help for more details.
+        """.stripIndent()
+        // Exit out and do not run anything else
+        exit 1
+    }
+
+    if ( ! params.genome_json ){
+        log.info"""
+        Specify --genome_json listing reference files required for the NGS run
         Run with --help for more details.
         """.stripIndent()
         // Exit out and do not run anything else
@@ -54,9 +67,10 @@ workflow {
         }
 
     genome_folder = Channel.fromPath( params.genome_folder )
+    def reference_map = JsonProcessor.processInputJson(params.genome_json)
 
     germline(
-        input_fqs, genome_folder
+        input_fqs, genome_folder, reference_map
     )
 
 }

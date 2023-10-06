@@ -2,8 +2,9 @@
 
 set -euo pipefail
 
-FASTA=${REF}"/Homo_sapiens_assembly38.fasta"
+FASTA=${REF}"/"${REF_MAP["reference_fasta"]["fna"]}
 
+## Variant calling with HaplotypeCaller
 gatk --java-options -Xmx${task.memory.giga}g \
     HaplotypeCaller \
     --input ${BAM} \
