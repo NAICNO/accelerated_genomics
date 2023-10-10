@@ -8,4 +8,4 @@ KNOWN_SITES=${REF}"/"${REF_MAP["known_sites_gold_standard"]["vcf"]}
 pbrun haplotypecaller --ref \${FASTA} \
 --in-bam ${BAM} \
 --in-recal-file ${RECAL} \
---out-variants ${S_NAME}_pbrun_haplotypecaller_${PROCESSOR}.vcf
+--out-variants  "${BAM}.vcf"

@@ -3,7 +3,7 @@
 // Using DSL-2
 nextflow.enable.dsl=2
 
-process haplotypecaller {
+process pbrun_haplotypecaller {
     publishDir "Results/${PROCESSOR}/${S_NAME}/variants/haplotypeCaller", mode: 'copy', overwrite: true
     
     input:
