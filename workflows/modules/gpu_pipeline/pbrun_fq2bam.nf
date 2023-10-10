@@ -3,7 +3,7 @@
 // Using DSL-2
 nextflow.enable.dsl=2
 
-process fq2bam {
+process pbrun_fq2bam {
     publishDir "Results/${PROCESSOR}/${S_NAME}/alignments/", mode: 'copy', overwrite: true
     
     input:

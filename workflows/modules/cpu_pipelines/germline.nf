@@ -2,7 +2,6 @@
 
 // Using DSL-2
 nextflow.enable.dsl=2
-def PROCESSOR = "CPU"
 
 include { bwa                   } from './bwa_mapping'
 include { gatk_sort             } from './gatk_sort_coordinate'
@@ -11,8 +10,9 @@ include { gatk_bqsr             } from './gatk_bqsr'
 include { gatk_apply_bqsr       } from './gatk_apply_bqsr'
 include { gatk_haplotypeCaller  } from './gatk_haplotype'
 
+def PROCESSOR = "CPU"
 
-workflow germline {
+workflow germline_cpu {
 
     take:
     input_fqs
