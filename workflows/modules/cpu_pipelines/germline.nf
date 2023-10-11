@@ -18,6 +18,7 @@ workflow germline_cpu {
     input_fqs
     genome_folder
     reference_map
+    target_regions
 
     main:
 
@@ -39,6 +40,6 @@ workflow germline_cpu {
     gatk_apply_bqsr(gatk_bqsr.out.bqsr, gatk_mark_dup.out.markdup_bam, genome_folder, reference_map, PROCESSOR)
 
     // GATK HaplotypeCaller
-    gatk_haplotypeCaller(gatk_apply_bqsr.out.apply_bqsr, genome_folder, reference_map, PROCESSOR)
+    gatk_haplotypeCaller(gatk_apply_bqsr.out.apply_bqsr, genome_folder, reference_map, target_regions, PROCESSOR)
 
 }

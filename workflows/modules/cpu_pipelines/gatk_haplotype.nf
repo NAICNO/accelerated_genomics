@@ -10,6 +10,7 @@ process gatk_haplotypeCaller {
     tuple val(S_NAME), path(BAM)
     path(REF)
     val(REF_MAP)
+    val(TARGET_REGIONS)
     val(PROCESSOR)
 
     output:

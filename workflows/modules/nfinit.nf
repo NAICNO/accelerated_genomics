@@ -25,9 +25,12 @@ Usage:
   --genome_json         JSON file listing reference files available in --genome_folder
                         (Use reference_data.josn provided in this pipeline or follow the same format)
 
-  Pipeline info:
+  Processing unit specification:
   --processor           Option to specify the pipeline to run
                         e.g., GPU enabled accelerated NGS pipeline (GPU) or Traditional NGS pipeline (CPU)
+
+  Optional parameters:
+  --target_regions      Genomic regions targeted by the assay/exome capture kit
 
     """.stripIndent()
 }
