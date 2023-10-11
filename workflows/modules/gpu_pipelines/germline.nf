@@ -23,7 +23,7 @@ workflow germline {
 
     // pbrun haplotypecaller:GATK ApplyBQSR
     pbrun_haplotypecaller(
-        fq2bam.out.fq2bam, genome_folder, reference_map, PROCESSOR
+        pbrun_fq2bam.out.fq2bam, genome_folder, reference_map, PROCESSOR
     )
 
 }
