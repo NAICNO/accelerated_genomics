@@ -8,7 +8,7 @@ include { pbrun_haplotypecaller } from './pbrun_haplotypecaller'
 
 def PROCESSOR = "GPU"
 
-workflow germline {
+workflow germline_gpu {
     take:
     input_fqs
     genome_folder
