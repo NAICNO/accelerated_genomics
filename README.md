@@ -17,23 +17,14 @@ Project Organization
     │
     ├── references              <- User guide, manuals, and all other explanatory materials
     ├── workflows               <- Collection of scalable and reproducible workflows/pipelines that automate complex NGS rawdata processing tasks 
-    │
+    |
+    ├── notebooks               <- Jupyter notebooks with detailed analysis
+    |
     |     *NOTE:  NOT YET IMPLEMENTED*
     ├── docs                    <- *A default Sphinx project; see sphinx-doc.org*
     |
-    ├── notebooks               <- *NOTE:  NOT YET IMPLEMENTED (e.g., Jupyter notebooks)*
-    |
     ├── reports                 <- *NOTE:  NOT YET IMPLEMENTED (Generated analysis as HTML, PDF, LaTeX, etc.)*
     │   └── figures             <- *Generated graphics and figures to be used in reporting*
-    |
-    ├── requirements.txt        <- *The requirements file for reproducing the analysis environment, e.g.
-    │                               generated with `pip freeze > requirements.txt`*
-    |
-    ├── setup.py                <- *makes project pip installable (pip install -e .) so src can be imported*
-    |
-    ├── src                     <- *Source code for use in this project.*
-    |
-    └── tox.ini                 <- *tox file with settings for running tox; see tox.readthedocs.io*
 
 --------
 
