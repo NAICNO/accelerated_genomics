@@ -1,0 +1,20 @@
+{
+    "known_sites_gold_standard": {
+      "vcf": "Mills_and_1000G_gold_standard.indels.hg38.vcf.gz",
+      "tbi": "Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi"
+    },
+    "known_sites_high_confidence": {
+      "vcf": "1000G_phase1.snps.high_confidence.hg38.vcf.gz",
+      "tbi": "1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi"
+    },
+    "reference_fasta": {
+      "fai": "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai",
+      "amb": "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.amb",
+      "pac": "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.pac",
+      "ann": "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.ann",
+      "bwt": "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.bwt",
+      "sa": "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.sa",
+      "fna": "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna",
+      "dict": "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.dict"
+    }
+}

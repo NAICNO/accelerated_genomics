@@ -14,7 +14,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -84,3 +83,10 @@ target/
 
 # Mypy cache
 .mypy_cache/
+
+# Nextflow files
+.nextflow*
+work/
+Results
+trace*
+report-*
