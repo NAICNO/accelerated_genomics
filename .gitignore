@@ -21,6 +21,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+venv
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -90,3 +91,6 @@ work/
 Results
 trace*
 report-*
+
+# Intermediate files generated during the analysis
+Sample*

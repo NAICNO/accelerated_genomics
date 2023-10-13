@@ -1,0 +1,5 @@
+Platform	Sample	BWA-mem mapping	Samtools sort	Duplicate marking and BQSR calculation	ApplyBQSR and HaplotypeCalling
+CPU	Sample1	7m 10s	20m 2s	28m 44s	116m 25s
+GPU	Sample1	2m 20s	1m 0s	0m 40s	1m 44s
+CPU	Sample2	19m 46s	35m 29s	76m 28s	183m 33s
+GPU	Sample2	6m 2s	2m 0s	0m 50s	2m 54s
