@@ -27,11 +27,8 @@ workflow germline_cpu {
         input_fqs, genome_folder, reference_map, PROCESSOR
     )
 
-    // GATK sort by coordinate
-    gatk_sort(bwa.out.sam, PROCESSOR)
-
     // GATK MarkDuplicates
-    gatk_mark_dup(gatk_sort.out.sort_bam, PROCESSOR)
+    gatk_mark_dup(bwa.out.bwa_bam, PROCESSOR)
 
     // GATK BaseRecalibrator
     gatk_bqsr(gatk_mark_dup.out.markdup_bam, genome_folder, reference_map, PROCESSOR)
