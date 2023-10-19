@@ -13,7 +13,7 @@ process bwa {
     val(PROCESSOR)
 
     output:
-    tuple val(S_NAME), path("${S_NAME}_bwa-mem_${PROCESSOR}.sam"), emit: sam
+    tuple val(S_NAME), path("${S_NAME}_bwa-mem_${PROCESSOR}.bam"), path("${S_NAME}_bwa-mem_${PROCESSOR}.bam.bai"), emit: bwa_bam
 
     script:
     template 'bwa_mapping.sh'

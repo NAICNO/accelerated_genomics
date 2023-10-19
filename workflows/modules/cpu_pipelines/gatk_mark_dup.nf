@@ -7,7 +7,7 @@ process gatk_mark_dup {
     publishDir "Results/${PROCESSOR}/${S_NAME}/alignments/", mode: 'copy', overwrite: true
     
     input:
-    tuple val(S_NAME), path(BAM)
+    tuple val(S_NAME), path(BAM), path(BAI)
     val(PROCESSOR)
 
     output:
