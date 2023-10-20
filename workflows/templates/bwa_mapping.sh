@@ -4,6 +4,9 @@ set -euo pipefail
 
 FASTA=${REF}"/"${REF_MAP["reference_fasta"]["fna"]}
 
+# Divide task memory by the number of CPUs
+SAM_MEM=\$((${task.memory.giga} / ${task.cpus}))
+
 ## Run BWA MEM
 bwa mem \
     -t ${task.cpus} \
@@ -15,7 +18,7 @@ bwa mem \
     | samtools \
     sort \
     -@${task.cpus} \
-    -m${task.memory.giga}g \
+    -m\${SAM_MEM}g \
     -o ${S_NAME}_bwa-mem_${PROCESSOR}.bam -
 
-samtools index -@4 -m4g -b ${S_NAME}_bwa-mem_${PROCESSOR}.bam
+samtools index -@${task.cpus} -m\${SAM_MEM}g -b ${S_NAME}_bwa-mem_${PROCESSOR}.bam
