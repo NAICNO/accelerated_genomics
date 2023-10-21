@@ -8,13 +8,13 @@ process gatk_apply_bqsr {
     
     input:
     tuple val(S_NAME), path(RECAL)
-    tuple val(S_NAME), path(BAM)
+    tuple val(S_NAME), path(BAM), path(BAI)
     path(REF)
     val(REF_MAP)
     val(PROCESSOR)
 
     output:
-    tuple val(S_NAME), path("${BAM}_BQSR.bam"), emit: apply_bqsr
+    tuple val(S_NAME), path("${BAM}_BQSR.bam"), path("${BAM}_BQSR*bai"), emit: apply_bqsr
 
     script:
     template 'gatk_apply_bqsr.sh'

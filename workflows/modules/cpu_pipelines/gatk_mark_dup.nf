@@ -11,7 +11,7 @@ process gatk_mark_dup {
     val(PROCESSOR)
 
     output:
-    tuple val(S_NAME), path("${BAM}_markdup.bam"), emit: markdup_bam
+    tuple val(S_NAME), path("${BAM}_markdup.bam"), path("${BAM}_markdup*bai"), emit: markdup_bam
 
     script:
     template 'gatk_mark_dup.sh'

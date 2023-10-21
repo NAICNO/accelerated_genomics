@@ -7,7 +7,7 @@ process gatk_haplotypeCaller {
     publishDir "Results/${PROCESSOR}/${S_NAME}/variants/haplotypeCaller", mode: 'copy', overwrite: true
     
     input:
-    tuple val(S_NAME), path(BAM)
+    tuple val(S_NAME), path(BAM), path(BAI)
     path(REF)
     val(REF_MAP)
     val(TARGET_REGIONS)
