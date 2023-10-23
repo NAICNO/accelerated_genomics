@@ -10,3 +10,5 @@ gatk --java-options -Xmx${task.memory.giga}g \
     -O ${BAM}_markdup.bam \
     -M metrics.txt \
     --TMP_DIR=temp_dir
+
+samtools index ${BAM}_markdup.bam

@@ -15,5 +15,6 @@ gatk --java-options -Xmx${task.memory.giga}g \
     HaplotypeCaller \
     --input ${BAM} \
     --output ${BAM}.vcf \
+    \${INTERVALS} \
     --reference \${FASTA} \
     --native-pair-hmm-threads ${task.cpus}
