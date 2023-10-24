@@ -8,6 +8,7 @@ FASTA=${REF}"/"${REF_MAP["reference_fasta"]["fna"]}
 SAM_MEM=\$((${task.memory.giga} / ${task.cpus}))
 
 ## Run BWA MEM
+### Source: https://github.com/nf-core/sarek/blob/f034b737630972e90aeae851e236f9d4292b9a4f/modules/nf-core/bwa/mem/main.nf#L30
 bwa mem \
     -t ${task.cpus} \
     -K 10000000 \
@@ -18,7 +19,6 @@ bwa mem \
     | samtools \
     sort \
     -@${task.cpus} \
-    -m\${SAM_MEM}g \
     -o ${S_NAME}_bwa-mem_${PROCESSOR}.bam -
 
-samtools index -@${task.cpus} -m\${SAM_MEM}g -b ${S_NAME}_bwa-mem_${PROCESSOR}.bam
+samtools index -@${task.cpus} -b ${S_NAME}_bwa-mem_${PROCESSOR}.bam
