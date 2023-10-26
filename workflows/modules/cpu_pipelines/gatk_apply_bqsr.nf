@@ -4,7 +4,7 @@
 nextflow.enable.dsl=2
 
 process gatk_apply_bqsr {
-    publishDir "Results/${PROCESSOR}/${S_NAME}/alignments/", mode: 'copy', overwrite: true
+    publishDir "Results/${PROCESSOR}/${S_NAME}/alignments/", mode: 'symlink', overwrite: true
     
     input:
     tuple val(S_NAME), path(RECAL)
