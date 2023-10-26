@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Sort SAM file
-gatk --java-options -Xmx${task.memory.giga}g \
+gatk --java-options  "-Xmx${task.memory.giga}g -XX:-UsePerfData -Xms${task.memory.giga}g -Xss3m -XX:-UsePerfData" \
     SortSam \
     --VALIDATION_STRINGENCY SILENT \
     --MAX_RECORDS_IN_RAM 5000000 \
