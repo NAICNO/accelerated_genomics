@@ -4,7 +4,7 @@
 nextflow.enable.dsl=2
 
 process pbrun_haplotypecaller {
-    publishDir "Results/${PROCESSOR}/${S_NAME}/variants/haplotypeCaller", mode: 'copy', overwrite: true
+    publishDir "Results/${PROCESSOR}/${S_NAME}/variants/haplotypeCaller", mode: 'symlink', overwrite: true
     
     input:
     tuple val(S_NAME), path(BAM), path(RECAL)
