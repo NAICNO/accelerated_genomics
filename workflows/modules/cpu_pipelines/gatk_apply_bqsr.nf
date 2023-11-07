@@ -11,6 +11,7 @@ process gatk_apply_bqsr {
     tuple val(S_NAME), path(BAM), path(BAI)
     path(REF)
     val(REF_MAP)
+    val(TARGET_REGIONS)
     val(PROCESSOR)
 
     output:

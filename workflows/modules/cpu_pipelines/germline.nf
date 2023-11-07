@@ -31,10 +31,10 @@ workflow germline_cpu {
     gatk_mark_dup(bwa.out.bwa_bam, PROCESSOR)
 
     // GATK BaseRecalibrator
-    gatk_bqsr(gatk_mark_dup.out.markdup_bam, genome_folder, reference_map, PROCESSOR)
+    gatk_bqsr(gatk_mark_dup.out.markdup_bam, genome_folder, reference_map, target_regions, PROCESSOR)
 
     // GATK ApplyBQSR
-    gatk_apply_bqsr(gatk_bqsr.out.bqsr, gatk_mark_dup.out.markdup_bam, genome_folder, reference_map, PROCESSOR)
+    gatk_apply_bqsr(gatk_bqsr.out.bqsr, gatk_mark_dup.out.markdup_bam, genome_folder, reference_map, target_regions, PROCESSOR)
 
     // GATK HaplotypeCaller
     gatk_haplotypeCaller(gatk_apply_bqsr.out.apply_bqsr, genome_folder, reference_map, target_regions, PROCESSOR)
