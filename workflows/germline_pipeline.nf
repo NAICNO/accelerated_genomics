@@ -31,7 +31,7 @@ workflow {
     def reference_map = JsonProcessor.processInputJson(params.genome_json)
 
     def dummyFile = file("EMPTY_FILE")
-    target_regions = file(params.target_regions).exists() ? Channel.fromPath(params.target_regions) : Channel.fromPath(dummyFile)
+    target_regions = params.target_regions ? Channel.fromPath(params.target_regions, checkIfExists:true) : Channel.fromPath(dummyFile)
 
 
     if (params.processor == "GPU"){
