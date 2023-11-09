@@ -11,9 +11,10 @@ else
 fi
 
 ## Variant calling with HaplotypeCaller
-gatk --java-options -Xmx${task.memory.giga}g \
+gatk --java-options  "-Xmx${task.memory.giga}g -Xms${task.memory.giga}g -XX:-UsePerfData" \
     HaplotypeCaller \
     --input ${BAM} \
     --output ${BAM}.vcf \
+    \${INTERVALS} \
     --reference \${FASTA} \
     --native-pair-hmm-threads ${task.cpus}

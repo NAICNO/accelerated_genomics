@@ -4,12 +4,13 @@
 nextflow.enable.dsl=2
 
 process gatk_bqsr {
-    publishDir "Results/${PROCESSOR}/${S_NAME}/metadata/gatk/", mode: 'copy', overwrite: true
+    publishDir "Results/${PROCESSOR}/${S_NAME}/metadata/gatk/", mode: 'symlink', overwrite: true
     
     input:
-    tuple val(S_NAME), path(BAM)
+    tuple val(S_NAME), path(BAM), path(BAI)
     path(REF)
     val(REF_MAP)
+    val(TARGET_REGIONS)
     val(PROCESSOR)
 
     output:

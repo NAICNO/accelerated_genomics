@@ -4,7 +4,7 @@
 nextflow.enable.dsl=2
 
 process pbrun_fq2bam {
-    publishDir "Results/${PROCESSOR}/${S_NAME}/alignments/", mode: 'copy', overwrite: true
+    publishDir "Results/${PROCESSOR}/${S_NAME}/alignments/", mode: 'symlink', overwrite: true
     
     input:
     tuple val(S_NAME), path(R1), path(R2)

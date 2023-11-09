@@ -31,9 +31,8 @@ workflow {
     def reference_map = JsonProcessor.processInputJson(params.genome_json)
 
     def dummyFile = file("EMPTY_FILE")
-    target_regions = params.target_regions
-    ? Channel.fromPath(params.target_regions, checkIfExists:true)
-    : Channel.fromPath(dummyFile)
+    target_regions = params.target_regions ? Channel.fromPath(params.target_regions, checkIfExists:true) : Channel.fromPath(dummyFile)
+
 
     if (params.processor == "GPU"){
         germline_gpu(
@@ -41,7 +40,7 @@ workflow {
         )
     }else{
         germline_cpu(
-            input_fqs, genome_folder, reference_map, target_regions
+            input_fqs, fastq_folder, genome_folder, reference_map, target_regions
         )        
     }
 
