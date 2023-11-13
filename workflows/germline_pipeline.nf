@@ -40,7 +40,7 @@ workflow {
         )
     }else{
         germline_cpu(
-            input_fqs, fastq_folder, genome_folder, reference_map, target_regions
+            input_fqs, genome_folder, reference_map, target_regions
         )        
     }
 
