@@ -1,0 +1,7 @@
+Platform;Sample;BWA-mem mapping and Samtools sort;Duplicate marking and BQSR calculation;ApplyBQSR and HaplotypeCalling
+CPU;Sample1;27m 12s;28m 44s;116m 25s
+GPU;Sample1;3m 20s;0m 40s;1m 44s
+CPU;Sample2;55m 15s;76m 28s;183m 33s
+GPU;Sample2;8m 2s;0m 50s;2m 54s
+CPU;Large-sample;462m 29s;1756m 5s;3151m 20s
+GPU;Large-sample;188m 6s;13m 27s;46m 29s
