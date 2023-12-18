@@ -18,5 +18,10 @@ process gatk_collectAlignmentSummaryMetrics {
     script:
     template 'gatk_collectAlignmentSummaryMetrics.sh'
 
+    stub:
+    """
+    touch ${BAM}.alignment_summary_metrics.txt
+    """
+
 }
 

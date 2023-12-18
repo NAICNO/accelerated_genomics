@@ -16,5 +16,10 @@ process gatk_collectInsertSizeMetrics {
     script:
     template 'gatk_collectInsertSizeMetrics.sh'
 
+    stub:
+    """
+    touch ${BAM}.insert_size_metrics.txt
+    """
+
 }
 

@@ -18,5 +18,10 @@ process mosdepth {
     script:
     template 'mosdepth.sh'
 
+    stub:
+    """
+    touch mosdepth_${BAM}.txt
+    """
+
 }
 
