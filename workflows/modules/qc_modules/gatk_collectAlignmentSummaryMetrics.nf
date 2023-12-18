@@ -7,13 +7,15 @@ process gatk_collectAlignmentSummaryMetrics {
     publishDir "Results/${PROCESSOR}/${S_NAME}/QC/AlignmentSummaryMetrics", mode: 'symlink', overwrite: true
     
     input:
-    tuple val(S_NAME), path(BAM), path(BAI)
+    val(S_NAME)
+    path(BAM)
+    path(BAI)
     path(REF)
     val(REF_MAP)
     val(PROCESSOR)
 
     output:
-    tuple val(S_NAME), path("${BAM}.alignment_summary_metrics.txt"), emit: alignmentsummarymetrics
+    path("${BAM}.alignment_summary_metrics.txt"), emit: alignmentsummarymetrics
 
     script:
     template 'gatk_collectAlignmentSummaryMetrics.sh'

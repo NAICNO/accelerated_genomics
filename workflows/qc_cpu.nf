@@ -23,6 +23,7 @@ Usage:
                         containing either "_R1" or "_R2" in the filename.
   --bam_path            Path to BAM file
   --bai_path            Path to BAI file
+  --sample_name         Sample name to be used in the output file names
 
   Reference Data:
   --genome_folder       Folder containing reference genome and other reference files
@@ -34,8 +35,6 @@ Usage:
 
 workflow {
 
-    // Define the pattern which will be used to find the FASTQ files
-
     main:
 
     // Check if the required parameters are provided
@@ -43,7 +42,6 @@ workflow {
     //     helpMessage()
     //     exit 1
     // }
-
     def reference_map = JsonProcessor.processInputJson(params.genome_json)
 
     fastq_pattern = "${params.fastq_folder}/*_R{1,2}*fastq.gz"
@@ -54,35 +52,28 @@ workflow {
             [it[0], it[1][0], it[1][1]]
         }
     
-
-    // Set sample_name to the first FASTQ file name
-    // input_fqs
-    //     .map { it[0] }
-    //     .first()
-    //     .set { sample_name }
-
-    // Create a tuple with sample_name, bam_path, and bai_path
-    // bam_bai = tuple(sample_name.get(), params.bam_path, params.bai_path)
-
-    def sample_name = "test"
-    bam_bai = tuple(sample_name, params.bam_path, params.bai_path)
+    BAM_FILE = Channel.fromPath(params.bam_path)
+    BAI_FILE = Channel.fromPath(params.bai_path)
+    genome_folder = Channel.fromPath(params.genome_folder)
+    S_NAME = Channel.from(params.sample_name)
+    //bam_bai = tuple(BAM_FILE, BAI_FILE)
 
     samtools_flagstat (
-        sample_name,
-        bam_bai,
+        BAM_FILE, 
+        BAI_FILE,
         PROCESSOR
     )
 
     mosdepth(
-        bam_bai, genome_folder, reference_map, PROCESSOR
+        S_NAME, BAM_FILE, BAI_FILE, genome_folder, reference_map, PROCESSOR
     )
 
     gatk_collectInsertSizeMetrics(
-        bam_bai, PROCESSOR
+        S_NAME, BAM_FILE, BAI_FILE, PROCESSOR
     )
 
     gatk_collectAlignmentSummaryMetrics(
-        bam_bai, genome_folder, reference_map, PROCESSOR
+        S_NAME, BAM_FILE, BAI_FILE, genome_folder, reference_map, PROCESSOR
     )
 
 }
