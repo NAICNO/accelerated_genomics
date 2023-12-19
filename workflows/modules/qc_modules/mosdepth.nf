@@ -15,7 +15,7 @@ process mosdepth {
     val(PROCESSOR)
 
     output:
-    path("mosdepth*"), emit: mosdepth
+    path("mosdepth*")
 
     script:
     template 'mosdepth.sh'
@@ -23,6 +23,7 @@ process mosdepth {
     stub:
     """
     touch mosdepth.txt
+    sleep 5
     """
 
 }

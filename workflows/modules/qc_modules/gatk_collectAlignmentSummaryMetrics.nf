@@ -15,7 +15,7 @@ process gatk_collectAlignmentSummaryMetrics {
     val(PROCESSOR)
 
     output:
-    path("${BAM}.alignment_summary_metrics.txt"), emit: alignmentsummarymetrics
+    path("${BAM}.alignment_summary_metrics.txt")
 
     script:
     template 'gatk_collectAlignmentSummaryMetrics.sh'
@@ -23,6 +23,7 @@ process gatk_collectAlignmentSummaryMetrics {
     stub:
     """
     touch ${BAM}.alignment_summary_metrics.txt
+    sleep 5
     """
 
 }

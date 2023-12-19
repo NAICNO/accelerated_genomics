@@ -4,15 +4,16 @@
 nextflow.enable.dsl=2
 
 process samtools_flagstat {
-    publishDir "Results/${PROCESSOR}/${S_NAME}/alignments/", mode: 'symlink', overwrite: true
+    publishDir "Results/${PROCESSOR}/${S_NAME}/QC/flagstat/", mode: 'symlink', overwrite: true
     
     input:
     path(BAM)
     path(BAI)
     val(PROCESSOR)
+    val(S_NAME)
 
     output:
-    path("${BAM}_samtools_flagstat_${PROCESSOR}.txt"), emit: flagstat
+    path("${BAM}_samtools_flagstat_${PROCESSOR}.txt")
 
     script:
     template 'samtools_flagstat.sh'
@@ -20,5 +21,6 @@ process samtools_flagstat {
     stub:
     """
     touch ${BAM}_samtools_flagstat_${PROCESSOR}.txt
+    sleep 5
     """
 }

@@ -5,11 +5,12 @@ nextflow.enable.dsl=2
 import groovy.json.JsonSlurper
 import groovy.transform.Field
 
-
+include { fastqc                               } from './modules/qc_modules/fastqc'
 include { samtools_flagstat                    } from './modules/qc_modules/samtools_flagstat'
 include { mosdepth                             } from './modules/qc_modules/mosdepth'
 include { gatk_collectInsertSizeMetrics        } from './modules/qc_modules/gatk_collectInsertSizeMetrics'
 include { gatk_collectAlignmentSummaryMetrics  } from './modules/qc_modules/gatk_collectAlignmentSummaryMetrics'
+include { multiqc                              } from './modules/qc_modules/multiqc'
 
 def PROCESSOR = "CPU"
 
@@ -58,10 +59,13 @@ workflow {
     S_NAME = Channel.from(params.sample_name)
     //bam_bai = tuple(BAM_FILE, BAI_FILE)
 
+    fastqc(input_fqs, PROCESSOR)
+
     samtools_flagstat (
         BAM_FILE, 
         BAI_FILE,
-        PROCESSOR
+        PROCESSOR,
+        S_NAME
     )
 
     mosdepth(
@@ -75,5 +79,16 @@ workflow {
     gatk_collectAlignmentSummaryMetrics(
         S_NAME, BAM_FILE, BAI_FILE, genome_folder, reference_map, PROCESSOR
     )
+
+    multiqc(
+        S_NAME,
+        PROCESSOR,
+        fastqc.out.collect(), 
+        samtools_flagstat.out.collect(), 
+        mosdepth.out.collect(), 
+        gatk_collectInsertSizeMetrics.out.collect(), 
+        gatk_collectAlignmentSummaryMetrics.out.collect()
+    )
+
 
 }

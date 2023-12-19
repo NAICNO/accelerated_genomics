@@ -13,14 +13,14 @@ process gatk_collectInsertSizeMetrics {
     val(PROCESSOR)
 
     output:
-    path("${BAM}.insert_size_metrics.txt"), emit: insertsizemetrics
-
+    path("${BAM}.insert_size_metrics.txt")
     script:
     template 'gatk_collectInsertSizeMetrics.sh'
 
     stub:
     """
     touch ${BAM}.insert_size_metrics.txt
+    sleep 5
     """
 
 }
