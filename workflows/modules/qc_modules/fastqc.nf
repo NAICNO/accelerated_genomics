@@ -15,14 +15,7 @@ process fastqc {
     
     script:
     """
-    fastqc -q ${R1} ${R2}
-    """
-
-    stub:
-    """
-    touch fastqc.zip
-    touch fastqc.html
-    sleep 5
+    fastqc -t ${task.cpus} -o . ${R1} ${R2}
     """
 
 }

@@ -39,10 +39,10 @@ workflow {
     main:
 
     // Check if the required parameters are provided
-    // if ( params.help || params.fastq_folder == false || params.genome_folder == false  || params.genome_json == false){
-    //     helpMessage()
-    //     exit 1
-    // }
+    if ( params.help || params.fastq_folder == false || params.genome_folder == false  || params.genome_json == false){
+        helpMessage()
+        exit 1
+    }
     def reference_map = JsonProcessor.processInputJson(params.genome_json)
 
     fastq_pattern = "${params.fastq_folder}/*_R{1,2}*fastq.gz"
@@ -57,7 +57,6 @@ workflow {
     BAI_FILE = Channel.fromPath(params.bai_path)
     genome_folder = Channel.fromPath(params.genome_folder)
     S_NAME = Channel.from(params.sample_name)
-    //bam_bai = tuple(BAM_FILE, BAI_FILE)
 
     fastqc(input_fqs, PROCESSOR)
 
@@ -73,7 +72,7 @@ workflow {
     )
 
     gatk_collectInsertSizeMetrics(
-        S_NAME, BAM_FILE, BAI_FILE, PROCESSOR
+        S_NAME, BAM_FILE, BAI_FILE, genome_folder, reference_map, PROCESSOR
     )
 
     gatk_collectAlignmentSummaryMetrics(

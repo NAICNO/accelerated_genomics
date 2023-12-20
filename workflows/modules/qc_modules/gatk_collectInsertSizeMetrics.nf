@@ -10,18 +10,14 @@ process gatk_collectInsertSizeMetrics {
     val(S_NAME)
     path(BAM)
     path(BAI)
+    path(REF)
+    val(REF_MAP)
     val(PROCESSOR)
 
     output:
-    path("${BAM}.insert_size_metrics.txt")
+    path("${BAM}.insert_size_metrics*")
+    
     script:
     template 'gatk_collectInsertSizeMetrics.sh'
-
-    stub:
-    """
-    touch ${BAM}.insert_size_metrics.txt
-    sleep 5
-    """
-
 }
 

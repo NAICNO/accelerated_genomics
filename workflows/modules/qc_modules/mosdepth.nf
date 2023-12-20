@@ -19,12 +19,5 @@ process mosdepth {
 
     script:
     template 'mosdepth.sh'
-
-    stub:
-    """
-    touch mosdepth.txt
-    sleep 5
-    """
-
 }
 

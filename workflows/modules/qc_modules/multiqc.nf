@@ -23,10 +23,4 @@ process multiqc {
     """
     multiqc .
     """
-
-    stub:
-    """
-    ls -l > multiqc_report.html
-    """
-
 }

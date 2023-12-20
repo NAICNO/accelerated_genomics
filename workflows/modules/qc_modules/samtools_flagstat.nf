@@ -17,10 +17,4 @@ process samtools_flagstat {
 
     script:
     template 'samtools_flagstat.sh'
-
-    stub:
-    """
-    touch ${BAM}_samtools_flagstat_${PROCESSOR}.txt
-    sleep 5
-    """
 }
