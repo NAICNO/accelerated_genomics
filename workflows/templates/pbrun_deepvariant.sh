@@ -11,7 +11,8 @@ else
     INTERVALS=""
 fi
 
-pbrun haplotypecaller --ref \${FASTA} \
+pbrun deepvariant --ref \${FASTA} \
 --in-bam ${BAM} \
+--workdir . \
 \${INTERVALS} \
---out-variants  "${BAM}.vcf"
+--out-variants  "${BAM}.deepvariant.vcf"

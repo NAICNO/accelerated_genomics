@@ -13,17 +13,28 @@ workflow germline_gpu {
     input_fqs
     genome_folder
     reference_map
+    target_regions
 
     main:
 
     // pbrun fq2bam: mapping, GATK sort by coordinate, GATK MarkDuplicates, GATK BaseRecalibrator and 
     pbrun_fq2bam(
-        input_fqs, genome_folder, reference_map, PROCESSOR
+        input_fqs, genome_folder, reference_map, PROCESSOR, target_regions
     )
 
-    // pbrun haplotypecaller:GATK ApplyBQSR
+    // pbrun ApplyBQSR
+    pbrun_applybqsr(
+        pbrun_fq2bam.out.fq2bam, genome_folder, reference_map, PROCESSOR, target_regions
+    )
+
+    // pbrun haplotypecaller
     pbrun_haplotypecaller(
-        pbrun_fq2bam.out.fq2bam, genome_folder, reference_map, PROCESSOR
+        pbrun_applybqsr.out.applybqsr, genome_folder, reference_map, PROCESSOR, target_regions
+    )
+
+    // pbrun deepvariant
+    pbrun_deepvariant(
+        pbrun_applybqsr.out.applybqsr, genome_folder, reference_map, PROCESSOR, target_regions
     )
 
 }

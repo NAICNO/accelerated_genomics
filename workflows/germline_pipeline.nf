@@ -36,7 +36,7 @@ workflow {
 
     if (params.processor == "GPU"){
         germline_gpu(
-            input_fqs, genome_folder, reference_map
+            input_fqs, genome_folder, reference_map, target_regions
         )
     }else{
         germline_cpu(

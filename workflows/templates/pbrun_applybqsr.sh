@@ -11,7 +11,9 @@ else
     INTERVALS=""
 fi
 
-pbrun haplotypecaller --ref \${FASTA} \
+pbrun applybqsr --ref \${FASTA} \
 --in-bam ${BAM} \
+--workdir . \
 \${INTERVALS} \
---out-variants  "${BAM}.vcf"
+--in-recal-file ${RECAL} \
+--out-bam  "${BAM}.applybqsr.bam"
