@@ -7,6 +7,7 @@ import groovy.transform.Field
 
 include { fastqc                               } from './modules/qc_modules/fastqc'
 include { samtools_flagstat                    } from './modules/qc_modules/samtools_flagstat'
+include { samtools_stat                        } from './modules/qc_modules/samtools_stat'
 include { mosdepth                             } from './modules/qc_modules/mosdepth'
 include { gatk_collectInsertSizeMetrics        } from './modules/qc_modules/gatk_collectInsertSizeMetrics'
 include { gatk_collectAlignmentSummaryMetrics  } from './modules/qc_modules/gatk_collectAlignmentSummaryMetrics'
@@ -61,6 +62,13 @@ workflow {
     fastqc(input_fqs, PROCESSOR)
 
     samtools_flagstat (
+        BAM_FILE, 
+        BAI_FILE,
+        PROCESSOR,
+        S_NAME
+    )
+
+    samtools_stat (
         BAM_FILE, 
         BAI_FILE,
         PROCESSOR,
