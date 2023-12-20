@@ -62,7 +62,7 @@ workflow {
     BAI_FILE = Channel.fromPath(params.bai_path)
     genome_folder = Channel.fromPath(params.genome_folder)
     S_NAME = Channel.from(params.sample_name)
-    TARGET_REGIONS = Channel.from(params.target_regions)
+    TARGET_REGIONS = Channel.fromPath(params.target_regions)
 
     fastqc(input_fqs, PROCESSOR)
 
@@ -81,7 +81,7 @@ workflow {
     )
 
     mosdepth(
-        S_NAME, BAM_FILE, BAI_FILE, genome_folder, reference_map, PROCESSOR
+        S_NAME, BAM_FILE, BAI_FILE, genome_folder, reference_map, TARGET_REGIONS, PROCESSOR
     )
 
     gatk_collectInsertSizeMetrics(
@@ -89,7 +89,7 @@ workflow {
     )
 
     gatk_collectAlignmentSummaryMetrics(
-        S_NAME, BAM_FILE, BAI_FILE, genome_folder, reference_map, TARGET_REGIONS, PROCESSOR
+        S_NAME, BAM_FILE, BAI_FILE, genome_folder, reference_map, PROCESSOR
     )
 
     multiqc(
