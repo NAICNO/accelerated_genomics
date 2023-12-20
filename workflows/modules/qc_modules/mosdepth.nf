@@ -12,6 +12,7 @@ process mosdepth {
     path(BAI)
     path(REF)
     val(REF_MAP)
+    path(TARGET_REGIONS)
     val(PROCESSOR)
 
     output:

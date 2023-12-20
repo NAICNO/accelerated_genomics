@@ -19,6 +19,7 @@ def PROCESSOR = "CPU"
 def helpMessage() {
     log.info"""
 Usage:
+  --help                Print this help message
 
   Input Data:
   --fastq_folder        Folder containing paired-end FASTQ files ending with .fastq.gz,
@@ -31,6 +32,9 @@ Usage:
   --genome_folder       Folder containing reference genome and other reference files
   --genome_json         JSON file listing reference files available in --genome_folder
                         (Use reference_data.josn provided in this pipeline or follow the same format)
+
+  Optional parameters:
+  --target_regions      Genomic regions targeted by the assay/exome capture kit
 
     """.stripIndent()
 }
@@ -58,6 +62,7 @@ workflow {
     BAI_FILE = Channel.fromPath(params.bai_path)
     genome_folder = Channel.fromPath(params.genome_folder)
     S_NAME = Channel.from(params.sample_name)
+    TARGET_REGIONS = Channel.from(params.target_regions)
 
     fastqc(input_fqs, PROCESSOR)
 
@@ -84,7 +89,7 @@ workflow {
     )
 
     gatk_collectAlignmentSummaryMetrics(
-        S_NAME, BAM_FILE, BAI_FILE, genome_folder, reference_map, PROCESSOR
+        S_NAME, BAM_FILE, BAI_FILE, genome_folder, reference_map, TARGET_REGIONS, PROCESSOR
     )
 
     multiqc(
