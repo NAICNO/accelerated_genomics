@@ -92,6 +92,7 @@ workflow {
         PROCESSOR,
         fastqc.out.collect(), 
         samtools_flagstat.out.collect(), 
+        samtools_stat.out.collect(), 
         mosdepth.out.collect(), 
         gatk_collectInsertSizeMetrics.out.collect(), 
         gatk_collectAlignmentSummaryMetrics.out.collect()

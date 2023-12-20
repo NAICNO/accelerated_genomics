@@ -11,6 +11,7 @@ process multiqc {
     val(PROCESSOR)
     path(fastqc)
     path(samtools_flagstat)
+    path(samtools_stat)
     path(mosdepth)
     path(gatk_collectInsertSizeMetrics)
     path(gatk_collectAlignmentSummaryMetrics)
