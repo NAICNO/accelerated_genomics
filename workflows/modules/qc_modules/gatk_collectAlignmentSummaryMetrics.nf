@@ -15,7 +15,7 @@ process gatk_collectAlignmentSummaryMetrics {
     val(PROCESSOR)
 
     output:
-    path("${BAM}.insert_size_metrics*")
+    path("${BAM}.alignment_summary_metrics.txt")
 
     script:
     template 'gatk_collectAlignmentSummaryMetrics.sh'
