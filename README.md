@@ -63,14 +63,14 @@ NGS analysis pipelines require various reference datasets for different processe
 
 `NAIC Clara Parabricks` currently provides a germline sequencing data analysis pipeline. In order to submit the pipeline, users need to update the following configuration files accordingly.
 
-##### Configure `singularity config file`
+#### Configure `singularity config file`
 
 Update `singularityDir` with the path to the directory containg singularity images
 
     # conf/singularity.conf
     def singularityDir = '<path to directory containg singularity images>'
 
-##### Run GPU germline-pipeline:
+#### Run GPU germline-pipeline:
 
 Users can submit germline sequence analysis pipeline using the following command.
 
@@ -88,7 +88,7 @@ Users can submit germline sequence analysis pipeline using the following command
         -with-trace \
         -resume
 
-##### Processes in GPU germline-pipeline
+#### Processes in GPU germline-pipeline
 
 * NVIDIA Parabricks -
   * `fq2bam`
@@ -98,7 +98,7 @@ Users can submit germline sequence analysis pipeline using the following command
 
 Please refer documentation linked in [tools page](tools) for more details.
 
-##### Run QC-pipeline
+#### Run QC-pipeline
 
     bash
         bash nextflow-23.04.4-all run qc_cpu.nf \
@@ -114,7 +114,7 @@ Please refer documentation linked in [tools page](tools) for more details.
             -with-trace \
             -resume
 
-##### Processes in QC-pipeline
+#### Processes in QC-pipeline
 
 * `FASTQC` - https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
 * `SAMtools flagstat` - https://www.htslib.org/doc/samtools-flagstat.html
