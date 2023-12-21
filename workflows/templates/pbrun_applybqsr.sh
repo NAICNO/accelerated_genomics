@@ -13,7 +13,7 @@ fi
 
 pbrun applybqsr --ref \${FASTA} \
 --in-bam ${BAM} \
---workdir . \
+--num-gpus 1 \
 \${INTERVALS} \
 --in-recal-file ${RECAL} \
---out-bam  "${BAM}.applybqsr.bam"
+--out-bam  "${BAM}._applybqsr.bam.bam"

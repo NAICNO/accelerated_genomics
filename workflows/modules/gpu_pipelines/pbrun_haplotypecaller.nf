@@ -7,7 +7,7 @@ process pbrun_haplotypecaller {
     publishDir "Results/${PROCESSOR}/${S_NAME}/variants/haplotypeCaller", mode: 'symlink', overwrite: true
     
     input:
-    tuple val(S_NAME), path(BAM)
+    tuple val(S_NAME), path(BAM), path(BAI)
     path(REF)
     val(REF_MAP)
     val(PROCESSOR)

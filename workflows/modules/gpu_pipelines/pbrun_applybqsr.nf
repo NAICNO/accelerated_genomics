@@ -14,7 +14,7 @@ process pbrun_applybqsr {
     path(TARGET_REGIONS)
 
     output:
-    tuple val(S_NAME), path("${BAM}_applybqsr.bam"), emit: applybqsr
+    tuple val(S_NAME),  path("${BAM}_applybqsr.bam"), path("${BAM}_applybqsr.bam.bai"), emit: applybqsr
 
 
     script:

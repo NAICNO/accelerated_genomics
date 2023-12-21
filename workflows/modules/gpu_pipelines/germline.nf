@@ -4,7 +4,9 @@
 nextflow.enable.dsl=2
 
 include { pbrun_fq2bam          } from './pbrun_fq2bam'
+include { pbrun_applybqsr       } from './pbrun_applybqsr'
 include { pbrun_haplotypecaller } from './pbrun_haplotypecaller'
+include { pbrun_deepvariant     } from './pbrun_deepvariant'
 
 def PROCESSOR = "GPU"
 

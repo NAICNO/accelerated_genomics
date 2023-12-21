@@ -12,6 +12,7 @@ else
 fi
 
 pbrun haplotypecaller --ref \${FASTA} \
+--num-gpus ${task.gpu} \
 --in-bam ${BAM} \
 \${INTERVALS} \
 --out-variants  "${BAM}.vcf"

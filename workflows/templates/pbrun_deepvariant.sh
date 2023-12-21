@@ -13,6 +13,6 @@ fi
 
 pbrun deepvariant --ref \${FASTA} \
 --in-bam ${BAM} \
---workdir . \
+--num-gpus ${task.gpu} \
 \${INTERVALS} \
 --out-variants  "${BAM}.deepvariant.vcf"
