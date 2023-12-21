@@ -11,8 +11,9 @@ else
     INTERVALS=""
 fi
 
-pbrun haplotypecaller --ref \${FASTA} \
---num-gpus ${task.gpu} \
+pbrun applybqsr --ref \${FASTA} \
 --in-bam ${BAM} \
+--num-gpus ${task.gpu} \
 \${INTERVALS} \
---out-variants  "${BAM}.vcf"
+--in-recal-file ${RECAL} \
+--out-bam  "${BAM}_applybqsr.bam"

@@ -11,8 +11,8 @@ else
     INTERVALS=""
 fi
 
-pbrun haplotypecaller --ref \${FASTA} \
---num-gpus ${task.gpu} \
+pbrun deepvariant --ref \${FASTA} \
 --in-bam ${BAM} \
+--num-gpus ${task.gpu} \
 \${INTERVALS} \
---out-variants  "${BAM}.vcf"
+--out-variants  "${BAM}.deepvariant.vcf"
