@@ -63,26 +63,65 @@ NGS analysis pipelines require various reference datasets for different processe
 
 `NAIC Clara Parabricks` currently provides a germline sequencing data analysis pipeline. In order to submit the pipeline, users need to update the following configuration files accordingly.
 
-**Configure `singularity config file`:**
+##### Configure `singularity config file`
 
 Update `singularityDir` with the path to the directory containg singularity images
 
     # conf/singularity.conf
     def singularityDir = '<path to directory containg singularity images>'
 
-**Run germline-pipeline:**
+##### Run GPU germline-pipeline:
 
 Users can submit germline sequence analysis pipeline using the following command.
 
-    bash nextflow-23.04.4-all \
-    run \
-    germline_pipeline.nf \
-    -profile singularity \
-    --fastq_folder <"path to the directory with raw sequence data"> \
-    --genome_folder <"path to the directory with reference data"> \
-    --genome_json parabricks_testref.json \
-    --processor GPU \
-    --target_regions <"path to the target region file"> \
-    -with-report \
-    -with-trace \
-    -resume
+    bash
+        bash nextflow-23.04.4-all \
+        run \
+        germline_pipeline.nf \
+        -profile singularity \
+        --fastq_folder <"path to the directory with raw sequence data"> \
+        --genome_folder <"path to the directory with reference data"> \
+        --genome_json <JSON listing reference files> \
+        --processor GPU \
+        --target_regions <"path to the target region file"> \
+        -with-report \
+        -with-trace \
+        -resume
+
+##### Processes in GPU germline-pipeline
+
+* NVIDIA Parabricks -
+  * `fq2bam`
+  * `applybqsr`
+  * `haplotypecaller`
+  * `deepvariant`
+
+Please refer documentation linked in [tools page](tools) for more details.
+
+##### Run QC-pipeline
+
+    bash
+        bash nextflow-23.04.4-all run qc_cpu.nf \
+            -profile singularity \
+            --fastq_folder <"path to the directory with raw sequence data"> \
+            --sample_name <name of the sample> \
+            --target_regions <"path to the target region file"> \
+            --bam_path <"path to the alignment file - BAM file"> \
+            --bai_path <"path to the alignment-index file - BAI file"> \
+            --genome_folder <"path to the directory with reference data"> \
+            --genome_json <JSON listing reference files> \
+            -with-report \
+            -with-trace \
+            -resume
+
+##### Processes in QC-pipeline
+
+* `FASTQC` - https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
+* `SAMtools flagstat` - https://www.htslib.org/doc/samtools-flagstat.html
+* `SAMtools stat` - https://www.htslib.org/doc/samtools-stats.html
+* `Mosdepth` - https://github.com/brentp/mosdepth
+* `GATK CollectInsertSizeMetrics` - https://gatk.broadinstitute.org/hc/en-us
+* `GATK collectAlignmentSummaryMetrics` - https://gatk.broadinstitute.org/hc/en-us
+* `MultiQC` - https://multiqc.info/
+
+*Note: QC steps use CPUs for processing, not GPUs.*
