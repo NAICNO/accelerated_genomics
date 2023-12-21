@@ -22,11 +22,12 @@ Usage:
   --help                Print this help message
 
   Input Data:
-  --fastq_folder        Folder containing paired-end FASTQ files ending with .fastq.gz,
-                        containing either "_R1" or "_R2" in the filename.
+  --sample_name         Sample name to be used in the output file names
+  --fastq_R1            Read 1 of .fastq.gz file
+  --fastq_R2            Read 2 of .fastq.gz file
   --bam_path            Path to BAM file
   --bai_path            Path to BAI file
-  --sample_name         Sample name to be used in the output file names
+  
 
   Reference Data:
   --genome_folder       Folder containing reference genome and other reference files
@@ -50,21 +51,15 @@ workflow {
     }
     def reference_map = JsonProcessor.processInputJson(params.genome_json)
 
-    fastq_pattern = "${params.fastq_folder}/*_R{1,2}*fastq.gz"
-    input_fqs = Channel
-        .fromFilePairs(fastq_pattern)
-        .ifEmpty { error "No files found matching the pattern ${fastq_pattern}" }
-        .map{
-            [it[0], it[1][0], it[1][1]]
-        }
-    
+    R1 = Channel.fromPath(params.fastq_R1)
+    R2 = Channel.fromPath(params.fastq_R2)
     BAM_FILE = Channel.fromPath(params.bam_path)
     BAI_FILE = Channel.fromPath(params.bai_path)
     genome_folder = Channel.fromPath(params.genome_folder)
     S_NAME = Channel.from(params.sample_name)
     TARGET_REGIONS = Channel.fromPath(params.target_regions)
 
-    fastqc(input_fqs, PROCESSOR)
+    fastqc(R1, R2, S_NAME, PROCESSOR)
 
     samtools_flagstat (
         BAM_FILE, 
