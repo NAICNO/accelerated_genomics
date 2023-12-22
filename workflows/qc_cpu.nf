@@ -44,11 +44,6 @@ workflow {
 
     main:
 
-    // Check if the required parameters are provided
-    if ( params.help || params.fastq_folder == false || params.genome_folder == false  || params.genome_json == false){
-        helpMessage()
-        exit 1
-    }
     def reference_map = JsonProcessor.processInputJson(params.genome_json)
 
     R1 = Channel.fromPath(params.fastq_R1)
