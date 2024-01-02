@@ -46,3 +46,19 @@
 | HUMAN_PAR PIPELINE | Implement GATK4 germline variant calling best practices pipeline |
 | SOMATIC PIPELINE | Implement GATK4 somatic variant calling best practices pipeline |
 | RNA PIPELINE | Implement GATK RNAseq variant calling best practices |
+
+## Parabricks Docker repository
+
+* https://catalog.ngc.nvidia.com/orgs/nvidia/teams/clara/containers/clara-parabricks/tags
+
+## Parabricks compatible CPU software versions
+
+[NVIDIA Parabricks v4.2.1](https://docs.nvidia.com/clara/parabricks/4.2.1/documentation/tooldocs/compatiblecpusoftwareversions.html)
+
+| CPU Tool    | Version |
+| ----------- | ------- |
+| BWA         | 0.7.15  |
+| Deepvariant | 1.5     |
+| GATK        | 4.3.0.0 |
+| STAR        | 2.7.2a  |
+| STAR-Fusion | 1.7.0   |
