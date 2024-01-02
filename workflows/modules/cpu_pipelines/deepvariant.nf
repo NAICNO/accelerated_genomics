@@ -3,7 +3,7 @@
 // Using DSL-2
 nextflow.enable.dsl=2
 
-process gatk_deepvariant {
+process deepvariant {
     publishDir "Results/${PROCESSOR}/${S_NAME}/variants/deepvariant", mode: 'symlink', overwrite: true
     
     input:
