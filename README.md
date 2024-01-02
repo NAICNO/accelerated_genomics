@@ -70,7 +70,7 @@ Update `singularityDir` with the path to the directory containg singularity imag
     # conf/singularity.conf
     def singularityDir = '<path to directory containg singularity images>'
 
-#### Run GPU germline-pipeline:
+#### Run GPU germline-pipeline
 
 Users can submit germline sequence analysis pipeline using the following command.
 

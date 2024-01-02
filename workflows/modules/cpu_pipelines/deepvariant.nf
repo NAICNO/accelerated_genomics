@@ -17,6 +17,6 @@ process gatk_deepvariant {
     tuple val(S_NAME), path("${BAM}.vcf"), emit: haplotypeCaller
 
     script:
-    template 'gatk_deepvariant.sh'
+    template 'deepvariant.sh'
 
 }
