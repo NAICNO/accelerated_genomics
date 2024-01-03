@@ -1,6 +1,6 @@
-# NAIC Clara Parabricks
+# NAIC Accelerated Genomics
 
-`Clara Parabricks` is the NVIDIA software suite developed to analyze Next Generation Sequence (NGS) data using GPUs. `NAIC Clara Parabricks` is the Norwegian AI cloud implementation of the scalable and reproducible GPU-enabled NGS analysis workflows/pipelines using `Clara Parabricks` software suite.
+`NAIC Accelerated Genomics` is a scalable and reproducible GPU-enabled NGS analysis workflows/pipelines implemented using `Clara Parabricks` software suite. This pipeline is developed and maintained by the Norwegian AI cloud (NAIC). `Clara Parabricks` is the NVIDIA software suite developed to analyze Next Generation Sequence (NGS) data using GPUs.
 
 ## Project Organization
 
@@ -28,24 +28,24 @@
 
 ## User guide
 
-`NAIC Clara Parabricks` implements NGS analysis pipelines using the NextFlow scientific workflow manager. It enables users to submit a single NextFlow job that schedules, submits and tracks the various processes involved in a complex NGS analysis pipeline.
+`NAIC Accelerated Genomics` implements NGS analysis pipelines using the NextFlow scientific workflow manager. It enables users to submit a single NextFlow job that schedules, submits and tracks the various processes involved in a complex NGS analysis pipeline.
 
 ### Installation
 
-    # Clone NAIC Clara Parabricks GitHub ripository
-    git clone git@github.com:NAICNO/clara_parabricks.git
+    # Clone NAIC Accelerated Genomics GitHub ripository
+    git clone git@github.com:NAICNO/accelerated_genomics.git
 
-    # NGS analysis workflows are available in `clara_parabricks/workflows`
-    cd clara_parabricks/workflows
+    # NGS analysis workflows are available in `accelerated_genomics/workflows`
+    cd accelerated_genomics/workflows
 
 ### Implementation
 
 #### Dependancies
 
-`NAIC Clara Parabricks` requires the following dependencies to properly function:
+`NAIC Accelerated Genomics` requires the following dependencies to properly function:
 
 * Docker or Singularity: Ensures reproducibility through self-contained process execution and strict software version control
-* Java vxxx: Required by NextFlow to execute and manage tasks. Users should note that the NGS analysis processes use the Java version available in the corresponding container.
+* Java version 11 up to 20 are recommended by NextFlow to execute and manage tasks. Users should note that the NGS analysis processes use the Java version available in corresponding containers.
 
 #### Reference data
 
@@ -61,7 +61,7 @@ NGS analysis pipelines require various reference datasets for different processe
 
 #### NextFlow job submission process
 
-`NAIC Clara Parabricks` currently provides a germline sequencing data analysis pipeline. In order to submit the pipeline, users need to update the following configuration files accordingly.
+`NAIC Accelerated Genomics` currently provides a germline sequencing data analysis pipeline. In order to submit the pipeline, users need to update the following configuration files accordingly.
 
 #### Configure `singularity config file`
 
@@ -70,23 +70,22 @@ Update `singularityDir` with the path to the directory containg singularity imag
     # conf/singularity.conf
     def singularityDir = '<path to directory containg singularity images>'
 
-#### Run GPU germline-pipeline:
+#### Run GPU germline-pipeline
 
 Users can submit germline sequence analysis pipeline using the following command.
 
-    bash
-        bash nextflow-23.04.4-all \
-        run \
-        germline_pipeline.nf \
-        -profile singularity \
-        --fastq_folder <"path to the directory with raw sequence data"> \
-        --genome_folder <"path to the directory with reference data"> \
-        --genome_json <JSON listing reference files> \
-        --processor GPU \
-        --target_regions <"path to the target region file"> \
-        -with-report \
-        -with-trace \
-        -resume
+    bash nextflow-23.04.4-all \
+    run \
+    germline_pipeline.nf \
+    -profile singularity \
+    --fastq_folder <"path to the directory with raw sequence data"> \
+    --genome_folder <"path to the directory with reference data"> \
+    --genome_json <JSON listing reference files> \
+    --processor GPU \
+    --target_regions <"path to the target region file"> \
+    -with-report \
+    -with-trace \
+    -resume
 
 #### Processes in GPU germline-pipeline
 
@@ -100,19 +99,18 @@ Please refer documentation linked in [tools page](tools) for more details.
 
 #### Run QC-pipeline
 
-    bash
-        bash nextflow-23.04.4-all run qc_cpu.nf \
-            -profile singularity \
-            --fastq_folder <"path to the directory with raw sequence data"> \
-            --sample_name <name of the sample> \
-            --target_regions <"path to the target region file"> \
-            --bam_path <"path to the alignment file - BAM file"> \
-            --bai_path <"path to the alignment-index file - BAI file"> \
-            --genome_folder <"path to the directory with reference data"> \
-            --genome_json <JSON listing reference files> \
-            -with-report \
-            -with-trace \
-            -resume
+    bash nextflow-23.04.4-all run qc_cpu.nf \
+    -profile singularity \
+    --fastq_folder <"path to the directory with raw sequence data"> \
+    --sample_name <name of the sample> \
+    --target_regions <"path to the target region file"> \
+    --bam_path <"path to the alignment file - BAM file"> \
+    --bai_path <"path to the alignment-index file - BAI file"> \
+    --genome_folder <"path to the directory with reference data"> \
+    --genome_json <JSON listing reference files> \
+    -with-report \
+    -with-trace \
+    -resume
 
 #### Processes in QC-pipeline
 

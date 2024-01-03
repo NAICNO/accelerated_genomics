@@ -7,7 +7,9 @@ process fastqc {
     publishDir "Results/${PROCESSOR}/${S_NAME}/QC/fastqc", mode: 'symlink', overwrite: true
 
     input:
-    tuple val(S_NAME), path(R1), path(R2)
+    path(R1)
+    path(R2)
+    val(S_NAME)
     val(PROCESSOR)
 
     output:

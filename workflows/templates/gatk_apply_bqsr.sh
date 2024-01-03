@@ -11,7 +11,7 @@ else
 fi
 
 ## Run ApplyBQSR Step
-gatk --java-options  "-Xmx${task.memory.giga}g -Xms${task.memory.giga}g -XX:-UsePerfData" \
+gatk --java-options  "-XX:-UsePerfData" \
     ApplyBQSR \
     -R \${FASTA} \
     -I ${BAM} \
