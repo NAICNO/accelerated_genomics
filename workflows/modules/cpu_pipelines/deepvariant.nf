@@ -14,7 +14,7 @@ process deepvariant {
     val(PROCESSOR)
 
     output:
-    tuple val(S_NAME), path("${BAM}.vcf"), emit: haplotypeCaller
+    tuple val(S_NAME), path("${BAM}.deepvariant.vcf.gz"), emit: haplotypeCaller
 
     script:
     template 'deepvariant.sh'

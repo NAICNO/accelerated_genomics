@@ -45,7 +45,7 @@
 `NAIC Accelerated Genomics` requires the following dependencies to properly function:
 
 * Docker or Singularity: Ensures reproducibility through self-contained process execution and strict software version control
-* Java vxxx: Required by NextFlow to execute and manage tasks. Users should note that the NGS analysis processes use the Java version available in the corresponding container.
+* Java version 11 up to 20 are recommended by NextFlow to execute and manage tasks. Users should note that the NGS analysis processes use the Java version available in corresponding containers.
 
 #### Reference data
 

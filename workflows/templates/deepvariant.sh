@@ -13,12 +13,11 @@ else
 fi
 
 /opt/deepvariant/bin/run_deepvariant \
-    --ref ${FASTA} \
+    --ref \${FASTA} \
     --reads ${BAM} \
     --output_vcf ${BAM}.deepvariant.vcf.gz \
-    --output_gvcf=${prefix}.g.vcf.gz \
     \${INTERVALS} \
-    \${MODEL} \ \
+    \${MODEL} \
     --intermediate_results_dir intermediate_results \
     --logging_dir logs_dir \
     --num_shards=${task.cpus}
