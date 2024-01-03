@@ -12,7 +12,7 @@ else
 fi
 
 ## Generate BQSR Report
-gatk --java-options  "-Xmx${task.memory.giga}g -XX:-UsePerfData -Xms${task.memory.giga}g -XX:-UsePerfData" \
+gatk --java-options  "-XX:-UsePerfData" \
     BaseRecalibrator \
     --input ${BAM} \
     --output ${S_NAME}_${PROCESSOR}_recal.txt \

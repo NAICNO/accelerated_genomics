@@ -11,7 +11,7 @@ else
 fi
 
 ## Variant calling with HaplotypeCaller
-gatk --java-options  "-Xmx${task.memory.giga}g -Xms${task.memory.giga}g -XX:-UsePerfData" \
+gatk --java-options  "-XX:-UsePerfData" \
     HaplotypeCaller \
     --input ${BAM} \
     --output ${BAM}.vcf \
