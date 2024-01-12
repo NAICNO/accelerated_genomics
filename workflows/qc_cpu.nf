@@ -14,6 +14,8 @@ include { gatk_collectAlignmentSummaryMetrics  } from './modules/qc_modules/gatk
 include { multiqc                              } from './modules/qc_modules/multiqc'
 
 def PROCESSOR = "CPU"
+params.skip_fastqc = false // Default is not to skip
+
 
 // Function which prints help message
 def helpMessage() {
@@ -46,13 +48,13 @@ workflow {
 
     def reference_map = JsonProcessor.processInputJson(params.genome_json)
 
-    R1 = Channel.fromPath(params.fastq_R1)
-    R2 = Channel.fromPath(params.fastq_R2)
+    R1 = params.fastq_R1 ? Channel.fromPath(params.fastq_R1, checkIfExists: true) : Channel.empty()
+    R2 = params.fastq_R2 ? Channel.fromPath(params.fastq_R2, checkIfExists: true) : Channel.empty()
     BAM_FILE = Channel.fromPath(params.bam_path)
     BAI_FILE = Channel.fromPath(params.bai_path)
     genome_folder = Channel.fromPath(params.genome_folder)
     S_NAME = Channel.from(params.sample_name)
-    TARGET_REGIONS = Channel.fromPath(params.target_regions)
+    TARGET_REGIONS = params.target_regions ? Channel.fromPath(params.target_regions, checkIfExists: true) : Channel.empty()
 
     fastqc(R1, R2, S_NAME, PROCESSOR)
 
@@ -85,7 +87,7 @@ workflow {
     multiqc(
         S_NAME,
         PROCESSOR,
-        fastqc.out.collect(), 
+        fastqc.out.collect().ifEmpty([]), 
         samtools_flagstat.out.collect(), 
         samtools_stat.out.collect(), 
         mosdepth.out.collect(), 
