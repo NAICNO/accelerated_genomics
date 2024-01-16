@@ -11,5 +11,5 @@ IFS="_" read -ra elements <<< ${TARGET_REGIONS}
 gatk --java-options "-XX:-UsePerfData" GenotypeConcordance \
     --CALL_VCF ${VCF} \
     \${INTERVALS} \
-    --OUTPUT "VC_"\${elements[0]} \
+    --OUTPUT "GenotypeConcordance_"${VCF} \
     --TRUTH_VCF ${QUERY_VCF}

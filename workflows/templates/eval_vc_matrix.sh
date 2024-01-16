@@ -9,12 +9,10 @@ else
     INTERVALS=""
 fi
 
-IFS="_" read -ra elements <<< ${TARGET_REGIONS}
-
 gatk --java-options "-XX:-UsePerfData"  CollectVariantCallingMetrics \
     -I ${VCF} \
     --DBSNP ${DBSNP} \
     --THREAD_COUNT ${task.cpus} \
     \$INTERVALS \
     -SD \${DICT} \
-    -O "VC_metrics_"\${elements[0]} 
+    -O "VariantCallingMetrics_"${VCF}

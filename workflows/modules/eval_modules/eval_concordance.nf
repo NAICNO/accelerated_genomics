@@ -4,19 +4,14 @@
 nextflow.enable.dsl=2
 
 process eval_concordance {
-    publishDir "Results/${PROCESSOR}/${S_NAME}/variants/evaluation/GenotypeConcordance", mode: 'symlink', overwrite: true
+    publishDir "Results/CPUvsGPU/${S_NAME}/variants/GenotypeConcordance", mode: 'symlink', overwrite: true
     
     input:
-    val(S_NAME)
-    path(VCF)
-    path(QUERY_VCF)
-    path(TARGET_REGIONS)
-    val(PROCESSOR)
+    tuple val(S_NAME), path(VCF), path(QUERY_VCF), path(TARGET_REGIONS)
 
     output:
-    path("VC_*")
+    path("GenotypeConcordance_*")
 
     script:
     template 'eval_concordance.sh'
 }
-

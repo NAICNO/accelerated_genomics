@@ -13,7 +13,10 @@ process eval_hc_filt {
 
     output:
     path("${HC_VCF}*.vcf")
-    path("${HC_VCF}.filtered.PASS.vcf"), emit: eval_hc
+    path("${HC_VCF}.filtered.PASS.vcf"), emit: hc_filt_pass
+
+    when:
+    !params.skip_HCfilt
 
     script:
     template 'eval_hc_filt.sh'

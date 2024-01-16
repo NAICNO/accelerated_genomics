@@ -29,24 +29,24 @@ gatk  --java-options  "-XX:-UsePerfData" VariantFiltration \
     -O snps_filtered.vcf.gz
 
 ## Hard-filter InDels on multiple expressions using VariantFiltration
-gatk  --java-options  "-XX:-UsePerfData" VariantFiltration \ 
-    -V indels.vcf.gz \ 
+gatk  --java-options  "-XX:-UsePerfData" VariantFiltration \
+    -V indels.vcf.gz \
     -filter "QD < 2.0" --filter-name "QD2" \
     -filter "QUAL < 30.0" --filter-name "QUAL30" \
     -filter "FS > 200.0" --filter-name "FS200" \
-    -filter "ReadPosRankSum < -20.0" --filter-name "ReadPosRankSum-20" \ 
+    -filter "ReadPosRankSum < -20.0" --filter-name "ReadPosRankSum-20" \
     -O indels_filtered.vcf.gz
 
 ## Merge filtered SNP and INDEL vcfs back together
 
 gatk  --java-options  "-XX:-UsePerfData" MergeVcfs \
--I snps_filtered.vcf.gz \
--I indels_filtered.vcf.gz \
--O ${HC_VCF}.filtered.vcf
+    -I snps_filtered.vcf.gz \
+    -I indels_filtered.vcf.gz \
+    -O ${HC_VCF}.filtered.vcf
 
 ## Extract PASS variants only
 
 gatk --java-options "-XX:-UsePerfData"  SelectVariants \
---exclude-filtered \
--V ${HC_VCF}.filtered.vcf \
--O ${HC_VCF}.filtered.PASS.vcf
+    --exclude-filtered \
+    -V ${HC_VCF}.filtered.vcf \
+    -O ${HC_VCF}.filtered.PASS.vcf
