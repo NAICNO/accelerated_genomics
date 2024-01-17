@@ -3,25 +3,15 @@
 FASTA=${REF}"/"${REF_MAP["reference_fasta"]["fna"]}
 DICT=${REF}"/"${REF_MAP["reference_fasta"]["dict"]}
 FAI=${REF}"/"${REF_MAP["reference_fasta"]["fai"]}
+DBSNP=${REF}"/"${REF_MAP["DBSNP"]["vcf"]}
+DBSNPIDX=${REF}"/"${REF_MAP["DBSNP"]["idx"]}
 
-if [ -f ${TARGET_REGIONS} ]; then
-    INTERVALS="--TARGET_INTERVALS ${TARGET_REGIONS}" 
-else 
-    INTERVALS=""
-fi
-
-# gatk --java-options "-XX:-UsePerfData"  CollectVariantCallingMetrics \
-#     -I ${VCF} \
-#     --DBSNP ${DBSNP} \
-#     --THREAD_COUNT ${task.cpus} \
-#     \$INTERVALS \
-#     -SD \${DICT} \
-#     -O "VariantCallingMetrics_"${VCF}
+bgzip ${VCF} && tabix -p vcf ${VCF}.gz
 
 gatk --java-options "-XX:-UsePerfData"  VariantEval     \
-    -R ${FASTA} \
-    -eval ${VCF} \
-    -D ${DBSNP} \
+    -R \${FASTA} \
+    -eval ${VCF}.gz \
+    -D \${DBSNP} \
     -L ${TARGET_REGIONS} \
     -EV CompOverlap \
     -EV IndelSummary \

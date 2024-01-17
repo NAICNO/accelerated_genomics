@@ -9,7 +9,6 @@ process eval_vc_matrix {
     input:
     val(S_NAME)
     path(VCF)
-    path(DBSNP)
     path(TARGET_REGIONS)
     path(REF)
     val(REF_MAP)

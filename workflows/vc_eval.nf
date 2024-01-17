@@ -34,7 +34,6 @@ Usage:
   --genome_folder       Folder containing reference genome and other reference files
   --genome_json         JSON file listing reference files available in --genome_folder
                         (Use reference_data.josn provided in this pipeline or follow the same format)
-  --vc_db               VCF file containing dbSNP variants
 
   Region files:
   --target_regions      Genomic regions targeted by the assay/exome capture kit
@@ -59,7 +58,6 @@ workflow {
 
     VC_CPU = Channel.fromPath(params.VC_CPU)
     VC_GPU = Channel.fromPath(params.VC_GPU)
-    VC_DB = Channel.fromPath(params.vc_db)
     genome_folder = file(params.genome_folder)
     S_NAME = Channel.from(params.sample_name)
     TARGET_REGIONS = file(params.target_regions)
@@ -111,6 +109,6 @@ workflow {
 
 
     // tuple val(S_NAME), path(VCF), path(DBSNP), path(TARGET_REGIONS), path(REF), val(REF_MAP)
-    vc_matrix_cpu(S_NAME, vc_cpu_pass, VC_DB, TARGET_REGIONS, genome_folder, reference_map)
-    vc_matrix_gpu(S_NAME, vc_gpu_pass, VC_DB, TARGET_REGIONS, genome_folder, reference_map)
+    vc_matrix_cpu(S_NAME, vc_cpu_pass, TARGET_REGIONS, genome_folder, reference_map)
+    vc_matrix_gpu(S_NAME, vc_gpu_pass, TARGET_REGIONS, genome_folder, reference_map)
 }
