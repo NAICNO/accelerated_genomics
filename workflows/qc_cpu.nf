@@ -46,6 +46,11 @@ workflow {
 
     main:
 
+    if ( params.help ){
+        helpMessage()
+        exit 1
+    }
+
     def reference_map = JsonProcessor.processInputJson(params.genome_json)
 
     R1 = params.fastq_R1 ? Channel.fromPath(params.fastq_R1, checkIfExists: true) : Channel.empty()

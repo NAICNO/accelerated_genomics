@@ -4,7 +4,7 @@
 nextflow.enable.dsl=2
 
 process eval_vc_filt {
-    publishDir "Results/${PROCESSOR}/${S_NAME}/variants/evaluation/hc_filt", mode: 'symlink', overwrite: true
+    publishDir "Results/CPUvsGPU/${S_NAME}/variants/vc_filt", mode: 'symlink', overwrite: true
     
     input:
     val(S_NAME)

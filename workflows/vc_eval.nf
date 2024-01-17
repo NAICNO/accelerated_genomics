@@ -51,24 +51,37 @@ workflow {
 
     main:
 
+    if ( params.help ){
+        helpMessage()
+        exit 1
+    }
+
     def reference_map = JsonProcessor.processInputJson(params.genome_json)
 
     VC_CPU = Channel.fromPath(params.VC_CPU)
     VC_GPU = Channel.fromPath(params.VC_GPU)
-    VC_DB = Channel.fromPath(param.vc_db)
+    VC_DB = Channel.fromPath(params.vc_db)
     genome_folder = Channel.fromPath(params.genome_folder)
     S_NAME = Channel.from(params.sample_name)
     TARGET_REGIONS = file(params.target_regions)
     DIFFMAP_REGIONS = file(params.diff_map_regions)
     FUNC_REGIONS = file(params.functional_regions)
     
-    vc_cpu_pass = params.skip_HCfilt 
-        ? vc_filter_cpu(S_NAME, VC_CPU, PROCESSOR).out.vc_pass 
-        : hc_filter_cpu(S_NAME, VC_CPU, PROCESSOR).out.hc_filt_pass
+    params.skip_HCfilt 
+        ? vc_filter_cpu(S_NAME, VC_CPU, PROCESSOR)
+        : hc_filter_cpu(S_NAME, VC_CPU, PROCESSOR)
     
+    vc_cpu_pass = params.skip_HCfilt 
+        ? vc_filter_cpu.out.vc_pass 
+        : hc_filter_cpu.out.hc_filt_pass
+    
+    params.skip_HCfilt 
+        ? vc_filter_gpu(S_NAME, VC_GPU, PROCESSOR) 
+        : hc_filter_gpu(S_NAME, VC_GPU, PROCESSOR)
+
     vc_gpu_pass = params.skip_HCfilt 
-        ? vc_filter_gpu(S_NAME, VC_GPU, PROCESSOR).out.vc_pass 
-        : hc_filter_gpu(S_NAME, VC_GPU, PROCESSOR).out.hc_filt_pass
+        ? vc_filter_gpu.out.vc_pass 
+        : hc_filter_gpu.out.hc_filt_pass
 
     // Creating tuples for each comparison
     def dummyFile = file("EMPTY_FILE")
@@ -89,8 +102,9 @@ workflow {
 
     Channel
         .from(params.sample_name)
-        .combine([vc_cpu_pass, vc_gpu_pass])
-        .combine(all_files)
+        .combine(vc_cpu_pass)
+        .combine(vc_gpu_pass)
+        .combine(bed_files)
         .set{genotype_concordance_params}
 
     eval_concordance(genotype_concordance_params)

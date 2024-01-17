@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # (How to) Filter variants either with VQSR or by hard-filtering - GATK - Broad Institute Knowledge Base
-## https://gatk.broadinstitute.org/hc/en-us/articles/360035531112--How-to-Filter-variants-either-with-VQSR-or-by-hard-filtering#:~:text=By%20default%2C%20GATK%20HaplotypeCaller%20and,with%20QUAL%20less%20than%2030.
+## https://gatk.broadinstitute.org/hc/en-us/articles/360035531112--How-to-Filter-variants-either-with-VQSR-or-by-hard-filtering
 
 ## Subset to SNPs-only callset
 gatk  --java-options  "-XX:-UsePerfData" SelectVariants \
