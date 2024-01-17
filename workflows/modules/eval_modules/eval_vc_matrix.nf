@@ -15,7 +15,7 @@ process eval_vc_matrix {
     val(REF_MAP)
 
     output:
-    path("VariantCallingMetrics_*")
+    path("VCMetrics_*")
 
     script:
     template 'eval_vc_matrix.sh'
