@@ -23,9 +23,9 @@ gatk --java-options "-XX:-UsePerfData"  VariantEval     \
     -eval ${VCF} \
     -D ${DBSNP} \
     -L ${TARGET_REGIONS} \
-    -EV VCMetrics_CompOverlap_${VCF} \
-    -EV VCMetrics_IndelSummary_${VCF} \
-    -EV VCMetrics_TiTvVariantEvaluator_${VCF} \
-    -EV VCMetrics_CountVariants_${VCF} \
-    -EV VCMetrics_MultiallelicSummary_${VCF} \
-    -O VCMetrics_cohortEval${VCF}
+    -EV CompOverlap \
+    -EV IndelSummary \
+    -EV TiTvVariantEvaluator \
+    -EV CountVariants \
+    -EV MultiallelicSummary \
+    -O VCMetrics_${VCF}
