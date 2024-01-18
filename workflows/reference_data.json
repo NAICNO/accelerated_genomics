@@ -7,6 +7,10 @@
       "vcf": "1000G_phase1.snps.high_confidence.hg38.vcf.gz",
       "tbi": "1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi"
     },
+    "DBSNP": {
+      "vcf": "Homo_sapiens_assembly38.dbsnp138_CHROMS.vcf",
+      "idx": "Homo_sapiens_assembly38.dbsnp138_CHROMS.vcf.idx"
+    },
     "reference_fasta": {
       "fai": "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai",
       "amb": "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.amb",
