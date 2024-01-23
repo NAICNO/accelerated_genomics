@@ -28,7 +28,13 @@
 
 ## User guide
 
-`NAIC Accelerated Genomics` implements NGS analysis pipelines using the NextFlow scientific workflow manager. It enables users to submit a single NextFlow job that schedules, submits and tracks the various processes involved in a complex NGS analysis pipeline.
+`NAIC Accelerated Genomics` is a suite of complex NGS analysis pipelines. The main purpose of this suite is to accelerate NGS analysis using GPU platforms. Additionally, the suite provide set of CPU-based NGS pipelines that can be used to run benchmark and quality control (QC) tests on GPU-based workflows. The list of pipelines made available by the suite are
+
+1. Accelerated NGS pipeline (GPU-based NGS pipeline)
+2. CPU-based NGS pipeline
+3. Raw data quality control pipeline (QC pipeline)
+4. Pipeline to evaluate results from GPU- and CPU-based NGS pipelines
+
 
 ### Installation
 
@@ -38,37 +44,31 @@
     # NGS analysis workflows are available in `accelerated_genomics/workflows`
     cd accelerated_genomics/workflows
 
-### Implementation
+### Dependancies
 
-#### Dependancies
+* NextFlow
+  * [NextFlow](https://www.nextflow.io/) is used to manage `NAIC Accelerated Genomics` pipelines/workflows. Therefore uses NextFlow needs to be installed before running the pipelines.
 
-`NAIC Accelerated Genomics` requires the following dependencies to properly function:
+> ```
+> wget -qO- https://get.nextflow.io | bash
+> ```
 
-* Docker or Singularity: Ensures reproducibility through self-contained process execution and strict software version control
-* Java version 11 up to 20 are recommended by NextFlow to execute and manage tasks. Users should note that the NGS analysis processes use the Java version available in corresponding containers.
+* Java
+  * Java version 11 up to 20 are recommended by NextFlow to execute and manage tasks. Users should note that the NGS analysis processes use the Java version available in corresponding containers.
 
-#### Reference data
+* Docker or Singularity
+  * Ensures reproducibility through self-contained process execution and strict software version control
+  * [tools page](tools/README_Parabricks.md) provides information on docker and singularity images used in `NAIC Accelerated Genomics` pipelines
+  * Note: Update the correct path to directory containing singularity images when pipelines are run via singularity
+    * `def singularityDir = '<path to directory containg singularity images>' // conf/singularity.conf & conf/slurm.conf`
+
+### Reference data
 
 NGS analysis pipelines require various reference datasets for different processes. Users should access the [references](references) section for more information.
 
-#### Docker or singularity containers
-
-* Docker images released by NVIDIA
-    `nvcr.io/nvidia/clara/clara-parabricks:<TAG>`
-* Convert docker images to singularity
-    `singularity build clara-parabricks_<tag>.sif
-    docker://nvcr.io/nvidia/clara/clara-parabricks:<tag>`
-
-#### NextFlow job submission process
+### Implementation details
 
 `NAIC Accelerated Genomics` currently provides a germline sequencing data analysis pipeline. In order to submit the pipeline, users need to update the following configuration files accordingly.
-
-#### Configure `singularity config file`
-
-Update `singularityDir` with the path to the directory containg singularity images
-
-    # conf/singularity.conf
-    def singularityDir = '<path to directory containg singularity images>'
 
 #### Run GPU germline-pipeline
 
@@ -95,7 +95,7 @@ Users can submit germline sequence analysis pipeline using the following command
   * `haplotypecaller`
   * `deepvariant`
 
-Please refer documentation linked in [tools page](tools) for more details.
+Please refer documentation linked in [tools page](tools/README_Parabricks.md) for more details.
 
 #### Run QC-pipeline
 
