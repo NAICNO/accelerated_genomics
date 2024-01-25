@@ -1,11 +1,5 @@
 # Parabricks tools
 
-## Parabricks versions
-
-* https://catalog.ngc.nvidia.com/orgs/nvidia/teams/clara/containers/clara-parabricks/tags
-
-## Parabricks tools
-
 **Follow the [link](https://docs.nvidia.com/clara/parabricks/v3.5/text/software_overview.html#software-tools-overview) to acceess the original source materials used to create table**
 
 | Parabricks tool | Conventional tool | Details                |

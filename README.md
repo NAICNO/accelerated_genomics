@@ -35,7 +35,6 @@
 3. Raw data quality control pipeline (QC pipeline)
 4. Pipeline to evaluate results from GPU- and CPU-based NGS pipelines
 
-
 ### Installation
 
     # Clone NAIC Accelerated Genomics GitHub ripository
