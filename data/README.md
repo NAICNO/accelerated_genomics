@@ -2,8 +2,8 @@
 
 ## Small test dataset (Parabricks dataset)
 
-* Soure dataset - `https://s3.amazonaws.com/parabricks.sample/parabricks_sample.tar.gz`
-* Structure of the testdata directory
+* Source dataset - `https://s3.amazonaws.com/parabricks.sample/parabricks_sample.tar.gz`
+* Structure of the test data directory
 
 ```bash
  parabricks_sample
@@ -41,7 +41,7 @@
 
 ## Illumina Platinum Genomes: Whole Genome Sequence (WGS) datasets
 
-Benchmark study was performed using WGS data of two trios used to generate ["Platinum variant catalog"](https://www.illumina.com/platinumgenomes.html).
+Benchmark study was performed using WGS data of two trios used to generate ["Platinum variant catalogue"](https://www.illumina.com/platinumgenomes.html).
 
 * Population: Utah residents (CEPH) with Northern and Western European ancestry
 * NA12878: Child
