@@ -29,7 +29,7 @@ graph TD;
 * All available versions: https://catalog.ngc.nvidia.com/orgs/nvidia/teams/clara/containers/clara-parabricks/tags
 * Version used in the pipeline (current Parabricks version used): `nvcr.io/nvidia/clara/clara-parabricks:4.1.2-1`
 
-***More information: [README_Parabricks.md](README_Parabricks.md)***
+***More information: [Parabricks page](Parabricks.md)***
 
 ## CPU-based Germline variant calling pipeline
 
