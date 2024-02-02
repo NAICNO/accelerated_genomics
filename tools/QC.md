@@ -1,4 +1,4 @@
-# Qualituy control (QC) steps
+# Quality control (QC) steps
 
 `NAIC Accelerated Genomics` implements QC steps on raw reads (FASTQ) used as input and alignment files generated in intermediate steps of the [Germline pipeline](Germline_pipeline.md). These QC processes are run on CPU platforms.
 
