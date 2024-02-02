@@ -2,7 +2,7 @@
 
 ## Overview
 
-NAIC Accelerated Genomics is a scalable and reproducible suite of GPU-enabled Next Generation Sequencing (NGS) analysis workflows/pipelines. It is implemented using the `Clara Parabricks` software, which is developed by NVIDIA. The main purpose of this suite is to accelerate NGS analysis using GPU platforms. This documentation provides a user guide for installing and using NAIC Accelerated Genomics suite.
+NAIC Accelerated Genomics is a scalable and reproducible suite of GPU-enabled Next Generation Sequencing (NGS) analysis workflows/pipelines. It is implemented using the `Clara Parabricks` software, which is developed by NVIDIA. The main purpose of this suite is to accelerate NGS analysis using GPU platforms. Additionally, pipeline suite provides CPU-based pipelines for benchmarking and quality control (QC) purposes. This documentation provides a user guide for installing and using NAIC Accelerated Genomics suite.
 
 ## Project Organization
 
