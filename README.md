@@ -9,14 +9,14 @@ NAIC Accelerated Genomics is a scalable and reproducible suite of GPU-enabled Ne
     ├── LICENSE
     ├── README.md               <- The top-level README for developers using this project
     ├── data                    <- Data directory
-    │   ├── external_testdata   <- Testdata from third-party sources
-    │   ├── internal_testdata   <- Intermediate Testdata 
+    │   ├── external_testdata   <- Test-data from third-party sources
+    │   ├── internal_testdata   <- Intermediate Test-data 
     │   ├── processed           <- The final, canonical data sets for modeling
     │
     ├── tools                   <- Bioinformatics tools used in NVIDIA Parabricks
     │
     ├── references              <- User guide, manuals, and all other explanatory materials
-    ├── workflows               <- Collection of scalable and reproducible workflows/pipelines that automate complex NGS rawdata processing tasks 
+    ├── workflows               <- Collection of scalable and reproducible workflows/pipelines that automate complex NGS raw-data processing tasks 
     |
     ├── notebooks               <- Jupyter notebooks with detailed analysis
     |
@@ -45,7 +45,7 @@ NAIC Accelerated Genomics is a scalable and reproducible suite of GPU-enabled Ne
 
 * For detailed instructions on how to use the different pipelines in the NAIC Accelerated Genomics suite, please refer to the respective pipeline documentation provided in `Implementation details` section.
 
-### Dependancies
+### Dependencies
 
 NAIC Accelerated Genomics has the following dependencies that need to be installed before running the pipelines:
 
