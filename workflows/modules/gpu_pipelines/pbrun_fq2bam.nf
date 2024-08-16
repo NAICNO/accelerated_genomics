@@ -17,6 +17,6 @@ process pbrun_fq2bam {
     tuple val(S_NAME), path("${S_NAME}_pbrun_fq2bam_${PROCESSOR}.bam"), path("${S_NAME}_${PROCESSOR}_recal_gpu.txt"), emit: fq2bam
 
     script:
-    template 'pbrun_fq2bam.sh'
+    template 'pbrun_fq2bamfast.sh'
 
 }
