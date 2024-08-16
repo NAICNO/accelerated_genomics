@@ -42,7 +42,7 @@ NAIC Accelerated Genomics is a scalable and reproducible suite of GPU-enabled Ne
     `git clone git@github.com:NAICNO/accelerated_genomics.git`
 
 * NGS analysis workflows are available in `accelerated_genomics/workflows`
- 
+
 * For detailed instructions on how to use the different pipelines in the NAIC Accelerated Genomics suite, please refer to the respective pipeline documentation provided in `Implementation details` section.
 
 ### Dependancies
@@ -51,9 +51,9 @@ NAIC Accelerated Genomics has the following dependencies that need to be install
 
 * [NextFlow](https://www.nextflow.io/) is used to manage the NAIC Accelerated Genomics pipelines/workflows. It needs to be installed before running the pipelines. To install NextFlow, run the following command:
 
-  > ```
-  > wget -qO- https://get.nextflow.io | bash
-  > ```
+```bash
+  wget -qO- https://get.nextflow.io | bash
+```
 
 * Java: NextFlow recommends Java version 11 up to 20 for executing and managing tasks. Please ensure that you have one of these Java versions installed. Note that the NGS analysis processes use the Java version available in the corresponding containers.
 
@@ -108,18 +108,23 @@ These pipelines can be run employing different execution platforms, which are se
 
 To conduct germline sequence analysis using GPUs, execute the following command:
 
-    bash nextflow-23.04.4-all \
-    run \
-    germline_pipeline.nf \
-    -profile <PROFILE> \
-    --fastq_folder <"path to the directory with raw sequence data"> \
-    --genome_folder <"path to the directory with reference data"> \
-    --genome_json <JSON listing reference files> \
-    --processor GPU \
-    --target_regions <"path to the target region file"> \
-    -with-report \
-    -with-trace \
-    -resume
+```bash
+  ./nextflow run \
+  germline_pipeline.nf \
+  -profile <PROFILE> \
+  --fastq_folder <"path to the directory with raw sequence data"> \
+  --genome_folder <"path to the directory with reference data"> \
+  --genome_json <JSON listing reference files> \
+  --processor GPU \
+  --target_regions <"path to the target region file"> \
+  -with-report \
+  -with-trace \
+  -resume
+```
+
+* Accelerated germline pipeline is tested on following Parabricks versions:
+  * Parabricks v.4.2.1
+  * Parabricks v.4.3.0
 
 #### Additional Resources: Accelerated germline pipeline (GPU pipeline)
 
@@ -128,22 +133,23 @@ For details on NVIDIA's Clara Parabricks, consult the [Parabricks readme page](t
 
 ### CPU germline-pipeline
 
-To initiate the CPU-based germline sequence analysis, use the command below with the` --processor CPU` parameter:
+To initiate the CPU-based germline sequence analysis, use the command below with the `--processor CPU` parameter:
 
-    bash nextflow-23.04.4-all \
-    run \
-    germline_pipeline.nf \
-    -profile <PROFILE> \
-    --fastq_folder <"path to the directory with raw sequence data"> \
-    --genome_folder <"path to the directory with reference data"> \
-    --genome_json <JSON listing reference files> \
-    --processor CPU \
-    --target_regions <"path to the target region file"> \
-    -with-report \
-    -with-trace \
-    -resume
-  
-####  Additional Resources: CPU germline-pipeline
+```bash
+  ./nextflow run \
+  germline_pipeline.nf \
+  -profile <PROFILE> \
+  --fastq_folder <"path to the directory with raw sequence data"> \
+  --genome_folder <"path to the directory with reference data"> \
+  --genome_json <JSON listing reference files> \
+  --processor CPU \
+  --target_regions <"path to the target region file"> \
+  -with-report \
+  -with-trace \
+  -resume
+```
+
+#### Additional Resources: CPU germline-pipeline
 
 * Detailed documentation, including a workflow chart, is available on the [Germline pipeline page](tools/Germline_pipeline)
 
@@ -151,20 +157,22 @@ To initiate the CPU-based germline sequence analysis, use the command below with
 
 Perform quality control assessments on NGS data using the following command:
 
-    bash nextflow-23.04.4-all run qc_cpu.nf \
-    -profile <PROFILE> \
-    --fastq_folder <"path to the directory with raw sequence data"> \
-    --sample_name <name of the sample> \
-    --target_regions <"path to the target region file"> \
-    --bam_path <"path to the alignment file - BAM file"> \
-    --bai_path <"path to the alignment-index file - BAI file"> \
-    --genome_folder <"path to the directory with reference data"> \
-    --genome_json <JSON listing reference files> \
-    -with-report \
-    -with-trace \
-    -resume
+```bash
+  ./nextflow run qc_cpu.nf \
+  -profile <PROFILE> \
+  --fastq_folder <"path to the directory with raw sequence data"> \
+  --sample_name <name of the sample> \
+  --target_regions <"path to the target region file"> \
+  --bam_path <"path to the alignment file - BAM file"> \
+  --bai_path <"path to the alignment-index file - BAI file"> \
+  --genome_folder <"path to the directory with reference data"> \
+  --genome_json <JSON listing reference files> \
+  -with-report \
+  -with-trace \
+  -resume
+```
 
-####  Additional Resources: QC-pipeline
+#### Additional Resources: QC-pipeline
 
 * [QC pipeline page](tools/QC.md) provides a detail description of `QC pipeline` with workflow chart and included processes.
 
@@ -172,17 +180,19 @@ Perform quality control assessments on NGS data using the following command:
 
 To evaluate outcomes from both GPU and CPU germline pipelines, execute the following:
 
-    ./nextflow run vc_eval.nf \
-    -profile <PROFILE> \
-    --sample_name NA12878_35x \
-    --VC_GPU <VCF from GPU pipeline> \
-    --VC_CPU <VCF from CPU pipeline> \
-    --genome_folder <REFERENCE> \
-    --genome_json reference_data.json \
-    --target_regions <TARGET REGIONS> \
-    --diff_map_regions <DIFFICULT TO MAP REGIONS provided by precisionFDA> \
-    --functional_regions <FUNCTIONAL REGIONS provided by precisionFDA> \
-    -with-trace
+```bash
+  ./nextflow run vc_eval.nf \
+  -profile <PROFILE> \
+  --sample_name NA12878_35x \
+  --VC_GPU <VCF from GPU pipeline> \
+  --VC_CPU <VCF from CPU pipeline> \
+  --genome_folder <REFERENCE> \
+  --genome_json reference_data.json \
+  --target_regions <TARGET REGIONS> \
+  --diff_map_regions <DIFFICULT TO MAP REGIONS provided by precisionFDA> \
+  --functional_regions <FUNCTIONAL REGIONS provided by precisionFDA> \
+  -with-trace
+```
 
 #### Additional Resources: Results evaluation pipeline
 
