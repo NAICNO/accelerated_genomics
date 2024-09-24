@@ -16,6 +16,7 @@ pbrun fq2bam \
 --in-fq ${R1} ${R2}  \
 \${INTERVALS} \
 --knownSites \${KNOWN_SITES} \
+--num-gpus ${task.gpu} \
 --out-bam ${S_NAME}_pbrun_fq2bam_${PROCESSOR}.bam \
 --out-recal-file ${S_NAME}_${PROCESSOR}_recal_gpu.txt \
 --tmp-dir .
