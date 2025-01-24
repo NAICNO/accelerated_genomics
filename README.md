@@ -11,19 +11,11 @@ NAIC Accelerated Genomics is a scalable and reproducible suite of GPU-enabled Ne
     ├── data                    <- Data directory
     │   ├── external_testdata   <- Test-data from third-party sources
     │   ├── internal_testdata   <- Intermediate Test-data 
-    │   ├── processed           <- The final, canonical data sets for modeling
     │
     ├── tools                   <- Bioinformatics tools used in NVIDIA Parabricks
     │
     ├── references              <- User guide, manuals, and all other explanatory materials
     ├── workflows               <- Collection of scalable and reproducible workflows/pipelines that automate complex NGS raw-data processing tasks 
-    |
-    ├── notebooks               <- Jupyter notebooks with detailed analysis
-    |
-    |     *NOTE:  NOT YET IMPLEMENTED*
-    |
-    ├── reports                 <- *NOTE:  NOT YET IMPLEMENTED (Generated analysis as HTML, PDF, LaTeX, etc.)*
-    │   └── figures             <- *Generated graphics and figures to be used in reporting*
 
 --------
 
@@ -125,6 +117,7 @@ To conduct germline sequence analysis using GPUs, execute the following command:
 * Accelerated germline pipeline is tested on following Parabricks versions:
   * Parabricks v.4.2.1
   * Parabricks v.4.3.0
+  * parabricks v.4.3.0-1
 
 #### Additional Resources: Accelerated germline pipeline (GPU pipeline)
 
@@ -144,6 +137,21 @@ To initiate the CPU-based germline sequence analysis, use the command below with
   --genome_json <JSON listing reference files> \
   --processor CPU \
   --target_regions <"path to the target region file"> \
+  -with-report \
+  -with-trace \
+  -resume
+```
+
+### Optimized Parabricks HaplotypeCaller pipeline
+
+Proof-of-concept workflow that executes Parabricks HaplotypeCaller concurrently across multiple chromosomes.
+
+```bash
+  ./nextflow run \
+  parabricks_optimized_hc.nf \
+  -profile docker \
+  --fasta <"path to the reference sequence"> \
+  --bam <"path to the BAM file to call variants"> \
   -with-report \
   -with-trace \
   -resume
