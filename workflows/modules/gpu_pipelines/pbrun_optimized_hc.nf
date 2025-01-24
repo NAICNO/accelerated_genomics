@@ -20,7 +20,7 @@ process optimized_hc {
     script:
     // Calculate paired GPU devices based on task index
     // With 8 GPUs total, we can run 4 concurrent processes (2 GPUs each)
-    def start_gpu = (task.index % 4) * 2  // Will give us 0,2,4,6 as starting GPUs
+    def start_gpu = (task.index % 4) * 2  // (task.index % 4) * 2 = 0 * 2, 1 * 2, 2 * 2, 3 * 2 = 0, 2, 4, 6
     def gpu_pair = "${start_gpu},${start_gpu + 1}"  // Pairs will be 0,1 or 2,3 or 4,5 or 6,7
 
     """
