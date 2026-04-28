@@ -6,9 +6,7 @@ nextflow.enable.dsl=2
 include { pbrun_fq2bam          } from '../gpu_pipelines/pbrun_fq2bam'
 include { pbrun_applybqsr       } from '../gpu_pipelines/pbrun_applybqsr'
 // New import for Somatic calling
-include { pabr_mutectcaller     } from './parabricks_mutect' 
-
-def PROCESSOR = "GPU" // Parabricks typically requires GPU
+include { parabricks_mutect     } from './parabricks_mutect' 
 
 workflow somatic_mutect {
 
@@ -19,6 +17,7 @@ workflow somatic_mutect {
     target_regions
 
     main:
+    def processor = "GPU" // Parabricks typically requires GPU
     
     // 1. Flatten the pairs to process Normal and Tumor through the same preprocessing steps
     // Resulting channel: [val(pair_id), val(type), path(fq)]
@@ -28,26 +27,28 @@ workflow somatic_mutect {
         }
 
     // 2. Alignment & Preprocessing (Follows your diagram)
-    pbrun_fq2bam(ch_to_process, genome_folder, reference_map, PROCESSOR)
-    
-    pbrun_mark_dup(pbrun_fq2bam.out.bwa_bam, PROCESSOR)
-    
-    pbrun_bqsr(pbrun_mark_dup.out.markdup_bam, genome_folder, reference_map, target_regions, PROCESSOR)
-    
-    pbrun_applybqsr(pbrun_bqsr.out.bqsr, pbrun_mark_dup.out.markdup_bam, genome_folder, reference_map, target_regions, PROCESSOR)
+    pbrun_fq2bam(ch_to_process, genome_folder, reference_map, processor, target_regions)
+
+    pbrun_applybqsr(pbrun_fq2bam.out.fq2bam, genome_folder, reference_map, processor, target_regions)
 
     // 3. Re-grouping Normal and Tumor BAMs for Mutect
-    // We group by the pair_id and branch based on the type ('normal' or 'tumor')
-    mutect_input = pbrun_applybqsr.out.apply_bqsr
+    // Build deterministic [pair_id, normal_bam, normal_bai, tumor_bam, tumor_bai] tuples.
+    mutect_input = pbrun_applybqsr.out.applybqsr
         .map { meta, bam, bai -> [ meta[0], meta[1], bam, bai ] } // pair_id, type, bam, bai
-        .groupTuple(by: 0) 
-        // Logic: meta[0] is pair_id, we now have [pair_id, [normal, tumor], [bam_n, bam_t], [bai_n, bai_t]]
+        .groupTuple(by: 0)
+        .map { pair_id, types, bams, bais ->
+            def normal_idx = types.indexOf('normal')
+            def tumor_idx = types.indexOf('tumor')
+            assert normal_idx != -1 && tumor_idx != -1 : "Missing normal or tumor BAM for pair ${pair_id}"
+            [pair_id, bams[normal_idx], bais[normal_idx], bams[tumor_idx], bais[tumor_idx]]
+        }
 
     // 4. Parabricks MutectCaller
-    pabr_mutectcaller(
+    parabricks_mutect(
         mutect_input, 
         genome_folder, 
         reference_map, 
+        processor,
         target_regions
     )
 }
