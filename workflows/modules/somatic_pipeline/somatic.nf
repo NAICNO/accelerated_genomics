@@ -11,7 +11,7 @@ include { parabricks_mutect     } from './parabricks_mutect'
 workflow somatic_mutect {
 
     take:
-    samples_ch      // Channel: [val(pair_id), path(normal_fq), path(tumor_fq)]
+    samples_ch      // Channel: [val(pair_id), [path(normal_r1), path(normal_r2)], [path(tumor_r1), path(tumor_r2)]]
     genome_folder
     reference_map
     target_regions
@@ -20,10 +20,14 @@ workflow somatic_mutect {
     def processor = "GPU" // Parabricks typically requires GPU
     
     // 1. Flatten the pairs to process Normal and Tumor through the same preprocessing steps
-    // Resulting channel: [val(pair_id), val(type), path(fq)]
+    // Resulting channel: [val(sample_id), path(r1), path(r2)] where sample_id ends with __normal or __tumor.
     ch_to_process = samples_ch
-        .flatMap { id, normal, tumor -> 
-            [[id, 'normal', normal], [id, 'tumor', tumor]] 
+        .flatMap { id, normal_reads, tumor_reads ->
+            assert normal_reads.size() == 2 && tumor_reads.size() == 2 : "Expected paired-end FASTQs for pair ${id}"
+            [
+                ["${id}__normal", normal_reads[0], normal_reads[1]],
+                ["${id}__tumor",  tumor_reads[0],  tumor_reads[1]]
+            ]
         }
 
     // 2. Alignment & Preprocessing (Follows your diagram)
@@ -34,7 +38,11 @@ workflow somatic_mutect {
     // 3. Re-grouping Normal and Tumor BAMs for Mutect
     // Build deterministic [pair_id, normal_bam, normal_bai, tumor_bam, tumor_bai] tuples.
     mutect_input = pbrun_applybqsr.out.applybqsr
-        .map { meta, bam, bai -> [ meta[0], meta[1], bam, bai ] } // pair_id, type, bam, bai
+        .map { sample_id, bam, bai ->
+            def m = (sample_id =~ /(.+)__(normal|tumor)$/)
+            assert m.matches() : "Unexpected sample id format: ${sample_id}"
+            [m[0][1], m[0][2], bam, bai] // pair_id, type, bam, bai
+        }
         .groupTuple(by: 0)
         .map { pair_id, types, bams, bais ->
             def normal_idx = types.indexOf('normal')
