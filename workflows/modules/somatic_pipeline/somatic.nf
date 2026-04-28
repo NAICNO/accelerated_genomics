@@ -5,8 +5,6 @@ nextflow.enable.dsl=2
 // Existing imports
 include { pbrun_fq2bam          } from '../gpu_pipelines/pbrun_fq2bam'
 include { pbrun_applybqsr       } from '../gpu_pipelines/pbrun_applybqsr'
-include { pbrun_haplotypecaller } from '../gpu_pipelines/pbrun_haplotypecaller'
-include { pbrun_deepvariant     } from '../gpu_pipelines/pbrun_deepvariant'
 // New import for Somatic calling
 include { pabr_mutectcaller     } from './parabricks_mutect' 
 
