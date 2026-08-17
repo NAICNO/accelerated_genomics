@@ -14,7 +14,7 @@ process FQ2BAM {
     label 'gpu_process'
     container params.parabricks_container
 
-    publishDir "${params.outdir}/bam/${sample_id}", mode: 'copy', pattern: "*.bam*"
+    publishDir { "${params.outdir}/bam/${sample_id}" }, mode: 'copy', pattern: "*.bam*"
 
     input:
     tuple val(sample_id), val(sample_type), path(fastq_1), path(fastq_2)
