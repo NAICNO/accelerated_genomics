@@ -31,6 +31,7 @@ process FQ2BAM {
         --ref ${ref} \\
         --in-fq ${fastq_1} ${fastq_2} \\
         --out-bam ${sample_id}.bam \\
+        --read-group-sm ${sample_id} \\
         --num-gpus ${task.accelerator?.request ?: 1} \\
         --tmp-dir ./pbrun_tmp
     """
