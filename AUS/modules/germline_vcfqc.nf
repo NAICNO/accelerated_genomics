@@ -11,7 +11,7 @@ process VCFQC {
     label 'leaf_process'
     container params.bcftools_container
 
-    publishDir "${params.outdir}/qc/vcf/${caller}", mode: 'copy'
+    publishDir { "${params.outdir}/qc/vcf/${caller}" }, mode: 'copy'
 
     input:
     tuple val(sample_id), val(caller), path(vcf), path(vcf_index)
