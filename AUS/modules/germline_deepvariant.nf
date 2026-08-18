@@ -20,7 +20,7 @@ process DEEPVARIANT {
     path ref_dict
 
     output:
-    tuple val(sample_id), val('deepvariant'), path("${sample_id}.deepvariant.vcf.gz"), path("${sample_id}.deepvariant.vcf.gz.tbi"), emit: vcf
+    tuple val(sample_id), val('deepvariant'), path("${sample_id}.deepvariant.vcf"),  emit: vcf
 
     script:
     """
@@ -28,7 +28,7 @@ process DEEPVARIANT {
         --ref ${ref} \\
         --in-bam ${bam} \\
         --mode ${params.deepvariant_mode} \\
-        --out-variants ${sample_id}.deepvariant.vcf.gz \\
+        --out-variants ${sample_id}.deepvariant.vcf \\
         --num-gpus ${task.accelerator?.request ?: 1}
     """
 }

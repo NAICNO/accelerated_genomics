@@ -4,6 +4,12 @@
  * germline_workflow.nf (same "one process, tagged channel" pattern as
  * fq2bam handling tumor+normal in the somatic workflow). CPU,
  * lightweight bcftools stats report.
+ *
+ * `vcf`/`vcf_index` are generic path inputs, so this works unchanged
+ * whether the upstream caller emits bgzipped .vcf.gz + .tbi
+ * (deepvariant) or plain .vcf + .vcf.idx (haplotypecaller -- pbrun
+ * haplotypecaller's htvc binary rejects a .vcf.gz output name).
+ * bcftools stats reads both compressed and uncompressed VCFs directly.
  */
 
 process VCFQC {

@@ -13,6 +13,12 @@
  * prefixed "germline_" to mirror the "somatic_" modules used by
  * somatic_main.nf.
  *
+ * NOTE: deepvariant and haplotypecaller emit different VCF flavors --
+ * deepvariant writes bgzipped .vcf.gz + .tbi, haplotypecaller writes a
+ * plain .vcf + .vcf.idx (pbrun haplotypecaller's htvc binary rejects a
+ * .vcf.gz output name; see modules/germline_haplotypecaller.nf). VCFQC
+ * takes generic path inputs so both flow through .mix() unchanged.
+ *
  * No panel-of-normals prep/filtering (prepon/postpon) here -- that's a
  * Mutect2-specific concept from the somatic workflow and doesn't apply
  * to single-sample germline calling.
