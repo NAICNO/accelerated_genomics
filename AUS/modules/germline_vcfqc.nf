@@ -20,7 +20,7 @@ process VCFQC {
     publishDir { "${params.outdir}/qc/vcf/${caller}" }, mode: 'copy'
 
     input:
-    tuple val(sample_id), val(caller), path(vcf), path(vcf_index)
+    tuple val(sample_id), val(caller), path(vcf)
 
     output:
     path "${sample_id}.${caller}.vcf_stats.txt"
