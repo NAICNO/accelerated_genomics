@@ -12,7 +12,7 @@ process VCFQC {
     publishDir "${params.outdir}/qc/vcf", mode: 'copy'
 
     input:
-    tuple val(sample_id), val(caller), path(vcf)
+    tuple val(tumor_id), val(normal_id), path(vcf), path(vcf_index), path(stats)
 
     output:
     path "${tumor_id}_vs_${normal_id}.vcf_stats.txt"
