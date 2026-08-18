@@ -23,18 +23,15 @@ process DEEPSOMATIC {
     path ref_dict
 
     output:
-    tuple val(tumor_id), val(normal_id), path("${tumor_id}_vs_${normal_id}.deepsomatic.vcf.gz"), path("${tumor_id}_vs_${normal_id}.deepsomatic.vcf.gz.tbi"), emit: vcf
+    tuple val(tumor_id), val(normal_id), path("${tumor_id}_vs_${normal_id}.deepsomatic.vcf"),  emit: vcf
 
     script:
     """
     pbrun deepsomatic \\
         --ref ${ref} \\
-        --reads-tumor ${tumor_bam} \\
-        --reads-normal ${normal_bam} \\
-        --tumor-name ${tumor_id} \\
-        --normal-name ${normal_id} \\
-        --model-type ${params.deepsomatic_model_type} \\
-        --out-vcf ${tumor_id}_vs_${normal_id}.deepsomatic.vcf.gz \\
+        --in-tumor-bam ${tumor_bam} \\
+        --in-normal-bam ${normal_bam} \\
+        --out-variants ${tumor_id}_vs_${normal_id}.deepsomatic.vcf \\
         --num-gpus ${task.accelerator?.request ?: 1}
     """
 }

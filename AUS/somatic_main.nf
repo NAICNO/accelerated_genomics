@@ -60,8 +60,8 @@ workflow {
     germline_resource_index = file("${params.germline_resource}.tbi")
 
     // ---- optional Mutect2 panel of normals ----
-    pon       = params.pon ? file(params.pon) : file('NO_FILE')
-    pon_index = params.pon ? file("${params.pon}.tbi") : file('NO_FILE')
+    pon       = params.pon ? file(params.pon) : file('NO_FILE_PON')
+    pon_index = params.pon ? file("${params.pon}.tbi") : file('NO_FILE_PON_TBI')
 
     // ---- tumor + normal FASTQ, tagged so a single FQ2BAM process handles both ----
     ch_reads = Channel.of(

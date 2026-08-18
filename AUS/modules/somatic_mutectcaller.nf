@@ -25,14 +25,14 @@ process MUTECTCALLER {
     tuple val(tumor_id), val(normal_id), path("${tumor_id}_vs_${normal_id}.mutect2.vcf.gz"), path("${tumor_id}_vs_${normal_id}.mutect2.vcf.gz.tbi"), path("${tumor_id}_vs_${normal_id}.mutect2.vcf.gz.stats"), emit: vcf
 
     script:
-    def pon_arg = pon.name != 'NO_FILE' ? "--pon ${pon}" : ''
+    def pon_arg = pon.name.startsWith('NO_FILE') ? '' : "--pon ${pon}"
     """
     pbrun mutectcaller \\
         --ref ${ref} \\
         --in-tumor-bam ${tumor_bam} \\
         --tumor-name ${tumor_id} \\
+	    --normal-name ${normal_id} \\
         --in-normal-bam ${normal_bam} \\
-        --normal-name ${normal_id} \\
         ${pon_arg} \\
         --out-vcf ${tumor_id}_vs_${normal_id}.mutect2.vcf.gz \\
         --num-gpus ${task.accelerator?.request ?: 1}
