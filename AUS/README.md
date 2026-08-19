@@ -74,7 +74,7 @@
 
 ## Requirements
 
-- **Nextflow** >= 24.04.0 on the submit node
+- **Nextflow** >= 24.04.0 on the submit node (Java - _Minimum Required Version: Java 11_; Tested with Java/25.36)
 - **Apptainer/Singularity**
 - **NVIDIA Clara Parabricks** container image
 - **Other container images** for example,
