@@ -10,25 +10,18 @@
 
 ## 1. Document Sources
 
-- [x] Input data source(s) recorded
-- [x] Reference genome / index version recorded
-- [x] Any reference truth sets used for validation (e.g. GIAB) recorded
+- [ ] Input data source(s) recorded
+- [ ] Reference genome / index version recorded
+- [ ] Any reference truth sets used for validation (e.g. GIAB) recorded
 - [ ] Config file(s) used linked (e.g. `configs/PARABRICKS_FOX.conf`)
 - [ ] Parabricks / CUDA / container version recorded
 - [ ] Hardware used recorded (node, GPU type/count)
-
-### Sources used
-
-- Test data:
-  - Tumor and Normal alignment files: [Parabricks mutect_sample](https://s3.amazonaws.com/parabricks.sample/mutect_sample.tar.gz)
-  - Extract reads (FASTQ files) from Tumor and Normal alignment files using `AUS/DOCs/Scripts/pbrun_bam2fq.sbatch`
-- Reference data: [Getting the Sample Data from NVIDIA docs](https://docs.nvidia.com/clara/parabricks/tutorials/step-by-step-tutorials/getting-the-sample-data)
 
 ---
 
 ## 2. Germline Pipeline
 
-### Run
+### Run (Germline Pipeline)
 
 - [ ] Exact run command recorded (copy-pasteable)
 - [ ] `-profile` used noted
@@ -37,7 +30,7 @@
 - [ ] Exit status confirmed (0 / success)
 - [ ] If `-resume` used: confirmed which tasks actually re-executed vs. were cached (see known resume-cache gotcha — cached ≠ correctly skipped)
 
-### Results Examination
+### Results Examination (Germline Pipeline)
 
 - [ ] Output directory structure matches expected layout
 - [ ] HaplotypeCaller output file extensions correct (plain `.vcf` + `.vcf.idx`, **not** `.vcf.gz` — known Parabricks constraint)
@@ -46,14 +39,6 @@
 - [ ] Coverage/QC metrics reviewed
 - [ ] Compared against truth set, if available
 - [ ] Log files captured/attached as evidence
-
-### Gaps — Pipeline
-
-- [ ] _e.g. missing step, config issue, resource scaling problem_
-
-### Gaps — Documentation
-
-- [ ] _e.g. unclear docs, missing example command, outdated config reference_
 
 ---
 
@@ -69,7 +54,8 @@
 - [ ] If `-resume` used: confirmed which tasks actually re-executed vs. were cached
 - [ ] Tumor-only vs tumor-normal mode noted
 
-### Results Examination
+### Results Examination (Somatic Pipeline)
+
 - [ ] Output directory structure matches expected layout
 - [ ] MuTect2/MutectCaller output files present and correctly named (watch for NO_FILE staging collisions — known gotcha, verify unique placeholder names if optional inputs used)
 - [ ] VCF opens/validates
@@ -78,10 +64,16 @@
 - [ ] Compared against truth set, if available
 - [ ] Log files captured/attached as evidence
 
+---
+
+## Gaps
+
 ### Gaps — Pipeline
+
 - [ ] _e.g. missing step, config issue, resource scaling problem_
 
 ### Gaps — Documentation
+
 - [ ] _e.g. unclear docs, missing example command, outdated config reference_
 
 ---
