@@ -1,0 +1,16 @@
+name: Lock Archived Directory
+
+on:
+  pull_request:
+    paths:
+      - 'Bioinformatics_Advances-PMID_40395501/**'
+
+jobs:
+  block-modifications:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail on modifications
+        run: |
+          echo "ERROR: 'Bioinformatics_Advances-PMID_40395501' is an archived, immutable publication record."
+          echo "Modifications to this folder are strictly prohibited."
+          exit 1
