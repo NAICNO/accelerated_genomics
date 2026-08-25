@@ -50,8 +50,14 @@ workflow {
     ref_index = file("${params.ref}.fai")
     ref_dict  = file(params.ref.replaceAll(/\.(fa|fasta)(\.gz)?$/, '') + '.dict')
 
-    // ---- known-sites VCFs for BQSR (comma-separated, each needs a .tbi alongside) ----
-    known_sites_paths = params.known_sites.split(',').collect { it.trim() }
+    // ---- known-sites VCFs for BQSR, each needs a .tbi alongside. Accepts
+    //      either a comma-separated string (--known_sites on the CLI) or a
+    //      YAML list (-params-file params.yaml), since Nextflow maps a YAML
+    //      list value straight to a Groovy List instead of a String. ----
+    known_sites_paths = (params.known_sites instanceof List
+        ? params.known_sites
+        : params.known_sites.split(',') as List
+    ).collect { it.toString().trim() }
     known_sites_vcfs  = known_sites_paths.collect { file(it) }
     known_sites_tbis  = known_sites_paths.collect { file("${it}.tbi") }
 

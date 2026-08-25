@@ -1,0 +1,47 @@
+# Example -params-file for somatic_main.nf.
+#
+# Copy this file (e.g. to params.yaml, or one file per sample), fill in real
+# paths, and run:
+#
+#   nextflow run somatic_main.nf -c somatic.config -profile singularity,tsd \
+#     -params-file params.yaml
+#
+# Anything set here can still be overridden on the command line, e.g.
+# `--pon /other/pon.vcf.gz` -- CLI flags take precedence over this file.
+#
+# containers below are per-cluster infrastructure, not per-sample -- see
+# README/somatic.config before overriding them here; most runs shouldn't
+# need to.
+
+# ---- input: single tumor/normal FASTQ pair (all required) ----
+tumor_id:       TUMOR01
+tumor_fastq_1:  /path/T_R1.fastq.gz
+tumor_fastq_2:  /path/T_R2.fastq.gz
+normal_id:      NORMAL01
+normal_fastq_1: /path/N_R1.fastq.gz
+normal_fastq_2: /path/N_R2.fastq.gz
+
+# ---- reference & resources ----
+ref: /path/reference.fa   # reference FASTA; expects <ref>.fai and a matching .dict alongside
+
+# known-sites VCFs for BQSR (dbSNP, Mills, etc.), each needs a .tbi alongside.
+# A YAML list works here (unlike the CLI, which only accepts a comma-separated
+# string for --known_sites).
+known_sites:
+  - /path/dbsnp.vcf.gz
+  - /path/mills.vcf.gz
+
+germline_resource: /path/gnomad.vcf.gz     # gnomAD-style resource for contamination estimation; needs a .tbi alongside
+pon: /path/panel_of_normals.vcf.gz         # optional Mutect2 panel-of-normals (bgzipped + .tbi); delete this line to skip
+
+# ---- optional ----
+deepsomatic_model_type: WGS   # WGS | WES | PACBIO | ONT -- confirm against `pbrun deepsomatic --help`
+outdir: results
+
+# ---- containers (Apptainer/Singularity .sif paths or image URIs) ----
+# Fixed per-cluster infrastructure -- see the earlier decision in
+# singularity_profile_design notes: these stay explicit params, not baked
+# into configs/singularity.conf, so they can be overridden without a repo edit.
+parabricks_container: file:///cluster/p/pXX/cluster/NGS/images/clara-parabricks_4.4.0-1.sif
+gatk_container:       file:///cluster/p/pXX/cluster/NGS/images/gatk_4.5.0.0.sif
+bcftools_container:   file:///cluster/p/pXX/cluster/NGS/images/bcftools_1.20.sif

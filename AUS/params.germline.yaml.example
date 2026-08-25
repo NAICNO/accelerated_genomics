@@ -1,0 +1,41 @@
+# Example -params-file for germline_workflow.nf.
+#
+# Copy this file (e.g. to params.yaml, or one file per sample), fill in real
+# paths, and run:
+#
+#   nextflow run germline_workflow.nf -c germline.config -profile singularity,tsd \
+#     -params-file params.yaml
+#
+# Anything set here can still be overridden on the command line, e.g.
+# `--emit_gvcf true` -- CLI flags take precedence over this file.
+#
+# containers below are per-cluster infrastructure, not per-sample -- see
+# README/germline.config before overriding them here; most runs shouldn't
+# need to.
+
+# ---- input: single sample FASTQ pair (all required) ----
+sample_id: SAMPLE01
+fastq_1:   /path/S_R1.fastq.gz
+fastq_2:   /path/S_R2.fastq.gz
+
+# ---- reference & resources ----
+ref: /path/reference.fa   # reference FASTA; expects <ref>.fai and a matching .dict alongside
+
+# known-sites VCFs for BQSR (dbSNP, Mills, etc.), each needs a .tbi alongside.
+# A YAML list works here (unlike the CLI, which only accepts a comma-separated
+# string for --known_sites).
+known_sites:
+  - /path/dbsnp.vcf.gz
+  - /path/mills.vcf.gz
+
+# ---- optional ----
+deepvariant_mode: shortread   # shortread | ont | pacbio (pbrun v4.3.1) -- confirm against `pbrun deepvariant --help`
+emit_gvcf: false              # set true to have haplotypecaller emit a GVCF instead of a regular VCF
+outdir: results
+
+# ---- containers (Apptainer/Singularity .sif paths or image URIs) ----
+# Fixed per-cluster infrastructure -- see the earlier decision in
+# singularity_profile_design notes: these stay explicit params, not baked
+# into configs/singularity.conf, so they can be overridden without a repo edit.
+parabricks_container: file:///cluster/p/pXX/cluster/NGS/images/clara-parabricks_4.4.0-1.sif
+bcftools_container:   file:///cluster/p/pXX/cluster/NGS/images/bcftools_1.20.sif
