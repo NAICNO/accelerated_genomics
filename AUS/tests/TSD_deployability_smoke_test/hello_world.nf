@@ -6,17 +6,14 @@
  *
  * Purpose: confirm that a plain Nextflow run can complete end-to-end on
  * TSD/Colossus (Nextflow itself launches, the SLURM executor submits a
- * job, the job runs and reports output back) BEFORE debugging anything
- * about the real GPU/Parabricks pipelines (somatic_main.nf /
- * germline_workflow.nf). No containers, no GPUs, no reference data --
+ * job) BEFORE testing  somatic_main.nf and germline_workflow.nf.
+ * No containers, no GPUs, no reference data --
  * just `echo`. If this doesn't complete, the problem is in the
  * Nextflow/SLURM/account plumbing, not in the pipelines.
  *
- * Run (from this directory, on the TSD submit node):
+ * From submit node, run:
  *   nextflow run hello_world.nf -c hello_world.config -profile tsd
  *
- * See docs/tsd-smoke-test.md (in the repo root) for the full walkthrough,
- * expected output, and troubleshooting.
  */
 
 nextflow.enable.dsl=2
