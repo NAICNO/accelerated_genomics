@@ -88,7 +88,7 @@
 2. Get the container images
 3. Edit `configs/PARABRICKS_<>.conf` and replace every `pXX` placeholder with your actual TSD project number:
    - `params.containerPath`
-   - `clusterOptions` (both the top-level default and the `gpu_process` label block, `--account=pXX_tsd`)
+   - `clusterOptions` (both the top-level default and the `gpu_process` label block, `--account=pXX`)
 4. Verify the GPU-specific settings against current TSD/FOX Slurm documentation before running at scale
    - `--partition=accel --gres=gpu:1` in the `gpu_process` label block
    - the `--nv` flag in `apptainer.runOptions`
