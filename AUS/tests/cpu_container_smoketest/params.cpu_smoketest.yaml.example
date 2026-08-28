@@ -1,0 +1,28 @@
+# Example -params-file for cpu_container_smoketest.nf.
+#
+# Copy this file (e.g. to params.yaml), fill in real paths, and run:
+#
+#   nextflow run cpu_container_smoketest.nf -c cpu_container_smoketest.config \
+#     -profile singularity,tsd -params-file params.yaml
+#
+# Anything set here can still be overridden on the command line, e.g.
+# `--vcfs '/other/path/*.vcf'` -- CLI flags take precedence over this file.
+
+# ---- reference bundle ----
+ref: parabricks_ref/reference.fa   # expects <ref>.fai and a matching .dict alongside
+
+# ---- inputs: point these at real output from a prior germline/somatic
+#      run on this cluster (e.g. results/bam_recal/*/*.recal.bam and
+#      results/vcf/**/*.vcf), -- the point of this
+#      smoke test is exercising the real GATK/bcftools containers ----
+bams: 'results/bam_recal/SAMPLE01/SAMPLE01.recal.bam'   # each BAM needs a same-name .bai alongside (APPLYBQSR publishes both)
+vcfs: 'results/vcf/haplotypecaller/SAMPLE01.haplotypecaller.vcf'
+
+outdir: results
+
+# ---- containers (Apptainer/Singularity .sif paths or image URIs) ----
+# Same fixed per-cluster infrastructure as params.somatic.yaml.example /
+# params.germline.yaml.example -- reuse the same values you already set
+# there, not new ones.
+gatk_container:     file://gatk_4.5.0.0.sif
+bcftools_container: file://bcftools_1.20.sif
