@@ -18,7 +18,7 @@ ref: parabricks_ref/reference.fa   # expects <ref>.fai and a matching .dict alon
 bams: 'results/bam_recal/SAMPLE01/SAMPLE01.recal.bam'   # each BAM needs a same-name .bai alongside (APPLYBQSR publishes both)
 vcfs: 'results/vcf/haplotypecaller/SAMPLE01.haplotypecaller.vcf'
 
-outdir: results
+outdir: cpu_container_smoketest_results
 
 # ---- containers (Apptainer/Singularity .sif paths or image URIs) ----
 # Same fixed per-cluster infrastructure as params.somatic.yaml.example /
