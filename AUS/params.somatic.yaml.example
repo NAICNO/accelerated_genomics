@@ -42,6 +42,6 @@ outdir: results
 # Fixed per-cluster infrastructure -- see the earlier decision in
 # singularity_profile_design notes: these stay explicit params, not baked
 # into configs/singularity.conf, so they can be overridden without a repo edit.
-parabricks_container: file:///cluster/p/pXX/cluster/NGS/images/clara-parabricks_4.4.0-1.sif
+parabricks_container: file:///cluster/p/pXX/cluster/NGS/images/clara-parabricks_<version>.sif
 gatk_container:       file:///cluster/p/pXX/cluster/NGS/images/gatk_4.5.0.0.sif
 bcftools_container:   file:///cluster/p/pXX/cluster/NGS/images/bcftools_1.20.sif
