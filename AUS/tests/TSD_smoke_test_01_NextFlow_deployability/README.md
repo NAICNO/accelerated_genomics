@@ -1,4 +1,6 @@
-# TSD deployability smoke test (`hello_world.nf`)
+# TSD Smoke test - 01
+
+## TSD - NextFlow deployability smoke test (`hello_world.nf`)
 
 This smoke test verifies that a minimal Nextflow DSL2 workflow can run on TSD via SLURM.
 
