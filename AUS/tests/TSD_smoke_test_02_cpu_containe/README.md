@@ -1,4 +1,6 @@
-# CPU container smoke test (`cpu_container_smoketest.nf`)
+# TSD Smoke test - 02
+
+## CPU processes + Apptainer/Singularity containers (no GPU) `cpu_container_smoketest.nf`
 
 This smoke test verifies that CPU processes and Apptainer/Singularity containers run successfully on TSD via SLURM.
 
