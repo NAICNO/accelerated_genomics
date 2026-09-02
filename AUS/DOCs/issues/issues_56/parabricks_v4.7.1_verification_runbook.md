@@ -23,7 +23,7 @@ Tests `clara-parabricks_4.7.1-1.sif` against the germline and somatic pipelines,
 - Working `-profile singularity,fox` (`-profile singularity,tsd`) setup and existing `params.somatic.yaml` / `params.germline.yaml`
 - SLURM/GPU allocation for a full test run of both pipelines
 
-### Singularity/Apptainer image from the NVIDIA NGC registry
+### Singularity/Apptainer image from the [NVIDIA NGC registry](https://catalog.ngc.nvidia.com/orgs/nvidia/clara/containers/clara-parabricks/-)
 
 ```bash
 # Pull and convert the Docker image into a Singularity Image Format (.sif)
