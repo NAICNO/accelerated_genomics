@@ -122,6 +122,8 @@ nextflow run somatic_main.nf -c somatic.config -profile singularity,tsd -params-
 results/
 ├── bam/<sample_id>/                  # fq2bam output
 ├── bam_recal/<sample_id>/            # applybqsr output
+├── pipeline_info
+│   └── trace.txt                     # pipeline execution tracing
 ├── vcf/mutect2/                      # postpon output (final filtered Mutect2 VCF)
 ├── vcf/deepsomatic/                  # deepsomatic output
 └── qc/vcf/                           # vcfqc bcftools stats report
@@ -154,6 +156,8 @@ nextflow run germline_workflow.nf -c germline.config -profile singularity,tsd -p
 results/
 ├── bam/<sample_id>/                  # fq2bam output
 ├── bam_recal/<sample_id>/            # applybqsr output
+├── pipeline_info
+│   └── trace.txt                     # pipeline execution tracing
 ├── vcf/deepvariant/                  # deepvariant output
 ├── vcf/haplotypecaller/              # haplotypecaller output
 └── qc/vcf/<caller>/                  # vcfqc bcftools stats reports
