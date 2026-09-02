@@ -9,30 +9,22 @@
 ## Layout
 
 ```none
-.
-├── somatic_main.nf              # somatic workflow entry point
-├── somatic.config                # somatic params + tsd profile
-├── germline_workflow.nf          # germline workflow entry point
-├── germline.config               # germline params + tsd profile
-├── configs/
-│   ├── PARABRICKS_TSD.conf       # shared Slurm/Apptainer/GPU executor config (both workflows)
-│   └── TSD.config                # legacy CPU-only pipeline config (reference only, not used by these workflows)
-└── modules/
-    ├── fq2bam.nf                 # shared: GPU alignment + sort + dedup
-    ├── bqsr.nf                   # shared: GPU BQSR recal table generation
-    ├── applybqsr.nf               # shared: GPU BQSR application
-    ├── somatic_prepon.nf         # somatic: GetPileupSummaries + CalculateContamination
-    ├── somatic_mutectcaller.nf   # somatic: GPU Mutect2
-    ├── somatic_postpon.nf        # somatic: FilterMutectCalls
-    ├── somatic_deepsomatic.nf    # somatic: GPU DeepSomatic
-    ├── somatic_vcfqc.nf          # somatic: bcftools stats on the Mutect2 VCF
-    ├── germline_deepvariant.nf   # germline: GPU DeepVariant
-    ├── germline_haplotypecaller.nf # germline: GPU HaplotypeCaller
-    └── germline_vcfqc.nf         # germline: bcftools stats on either caller's VCF
+├── configs                                               # config files of the pipeline
+│   ├── PARABRICKS_FOX.conf                               #
+│   ├── PARABRICKS_TSD.conf                               
+│   └── singularity.conf                                  
+├── DOCs
+│   ├── checklists_&_runbooks                             # Template checklists and runbooks
+│   ├── issues                                            # GitHub issue-specific docs
+│   └── Scripts                                           # One-time scripts
+├── germline_workflow.nf                                  # Germline workflow entry point
+├── germline.config                                       # Germline params + profiles
+├── modules                                               # NextFlow modules - Germline, Somatic and shared modules
+├── README.md
+├── somatic_main.nf                                       # Somatic workflow entry point
+├── somatic.config                                        # Somatic params + profiles
+└── tests                                                 # Tests - (smoke tests, regression tests)
 ```
-
-- `fq2bam` / `bqsr` / `applybqsr` are identical, unmodified modules reused by both pipelines.
-- Everything else is prefixed `somatic_` or `germline_` to keep the two pipelines' caller/filtering logic clearly separated.
 
 ## Workflows
 
@@ -103,7 +95,7 @@ Both workflows use plain `--param` flags (no samplesheet) for a single sample or
 ### Somatic
 
 ```bash
-nextflow run somatic_main.nf -c somatic.config -profile tsd \
+nextflow run somatic_main.nf -c somatic.config -profile singularity,tsd \
   --tumor_id  TUMOR01  --tumor_fastq_1  /path/T_R1.fastq.gz  --tumor_fastq_2  /path/T_R2.fastq.gz \
   --normal_id NORMAL01 --normal_fastq_1 /path/N_R1.fastq.gz --normal_fastq_2 /path/N_R2.fastq.gz \
   --ref /path/reference.fa \
@@ -113,6 +105,12 @@ nextflow run somatic_main.nf -c somatic.config -profile tsd \
   --parabricks_container file:///cluster/p/pXX/cluster/NGS/images/clara-parabricks_4.4.0-1.sif \
   --gatk_container       file:///cluster/p/pXX/cluster/NGS/images/gatk_4.5.0.0.sif \
   --bcftools_container   file:///cluster/p/pXX/cluster/NGS/images/bcftools_1.20.sif
+```
+
+**Run with `-params-file`:**
+
+```bash
+nextflow run somatic_main.nf -c somatic.config -profile singularity,tsd -params-file params.yaml
 ```
 
 - `--pon` is optional; omit it to run Mutect2 without a panel of normals.
@@ -139,6 +137,13 @@ nextflow run germline_workflow.nf -c germline.config -profile tsd \
   --parabricks_container file:///cluster/p/pXX/cluster/NGS/images/clara-parabricks_4.4.0-1.sif \
   --bcftools_container   file:///cluster/p/pXX/cluster/NGS/images/bcftools_1.20.sif
 ```
+
+**Run with `-params-file`:**
+
+```bash
+nextflow run germline_workflow.nf -c germline.config -profile singularity,tsd -params-file params.yaml
+```
+
 
 - Optional params: `--deepvariant_mode` (`wgs` | `wes` | `ont`, default `wgs`), `--emit_gvcf` (default `false`, set `true` to have `haplotypecaller` emit a GVCF).
 - Required params: `sample_id`, `fastq_1`, `fastq_2`, `ref`, `known_sites`, `parabricks_container`, `bcftools_container`.
