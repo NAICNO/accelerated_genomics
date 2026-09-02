@@ -10,7 +10,7 @@
 
 - [x] Input data source(s): Same datasets used in [issues-30](https://github.com/NAICNO/accelerated_genomics/issues/30)
 - [x] Reference genome / index version: Same reference used in [issues-30](https://github.com/NAICNO/accelerated_genomics/issues/30)
-- [ ] Any reference truth sets used for validation (e.g. GIAB) recorded
+- [ ] Any reference truth sets used for validation (e.g. GIAB) recorded - NA
 - [x] Config file(s) used linked: `configs/PARABRICKS_TSD.conf`
 - [x] Parabricks / CUDA / container version recorded
 - [x] Hardware used recorded (node, GPU type/count)
@@ -19,12 +19,13 @@
 - Parabricks container version - v4.7.1-1
 - Container path: /tsd/p11/p11-pubuduss/parabricks-aus[clara-parabricks_4.7.1-1.sif|broadinstitute_gatk_4.3.0.0.sif|bcftools-1.23--h3a4d415_0.sif]
 
-**Hardware specification: Process FQ2BAM**
-
-- gpu-1 node in Colossus
 - Currently Loaded Modules:
   1) Java/25.36
   2) NextFlow/25.04.6
+
+**Hardware specification: Process FQ2BAM**
+
+- gpu-1 node in Colossus
 
 ```bash
 JobId=397061 JobName=nf-FQ2BAM_ (SAMPLE01)
@@ -131,3 +132,7 @@ TresPerTask=cpu=16
 ![alt text](Results-somatic.png)
 
 ---
+
+## Archive
+
+- Results and logs archived in `/tsd/p11/data/durable/aus_beyond_dragen/`
