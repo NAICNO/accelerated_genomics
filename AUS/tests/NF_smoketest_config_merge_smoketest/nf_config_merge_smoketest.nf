@@ -62,6 +62,7 @@ process FQ2BAM {
 
     script:
     """
+    echo "RESOLVED task.cpus=${task.cpus} task.ext.mem_gb=${task.ext.mem_gb}"
     echo "FQ2BAM stub on \$(hostname), job \${SLURM_JOB_ID:-<unset>}"
     echo "partition=\${SLURM_JOB_PARTITION:-<unset>} account=\${SLURM_JOB_ACCOUNT:-<unset>}"
     echo "CUDA_VISIBLE_DEVICES=\${CUDA_VISIBLE_DEVICES:-<unset>}"
@@ -74,6 +75,7 @@ process PREPON {
 
     script:
     """
+    echo "RESOLVED task.cpus=${task.cpus} task.ext.mem_gb=${task.ext.mem_gb}"
     echo "PREPON stub on \$(hostname), job \${SLURM_JOB_ID:-<unset>}"
     echo "partition=\${SLURM_JOB_PARTITION:-<unset>} account=\${SLURM_JOB_ACCOUNT:-<unset>}"
     """
