@@ -45,6 +45,20 @@ workflow {
     def missing = required.findAll { params[it] == null }
     if (missing) error "Missing required params: ${missing.join(', ')}"
 
+    // ---- resource-sizing profile check ----
+    // `production` and `test` (configs/resources_production.conf /
+    // configs/resources_test.conf) are mandatory-selection profiles --
+    // exactly one must be combined with `singularity` + (`tsd`/`fox`) on
+    // the command line, e.g. -profile singularity,tsd,production.
+    // Nextflow won't fail on its own just because a withName block is
+    // missing, so this asserts the `_resource_profile` marker each of
+    // those files sets
+    if (!params._resource_profile) {
+        error "No resource-sizing profile selected. Add `production` or `test` " +
+              "to -profile alongside `singularity` and `tsd`/`fox`, e.g. " +
+              "-profile singularity,tsd,test"
+    }
+
     // ---- reference bundle: FASTA + .fai + .dict expected alongside params.ref ----
     ref       = file(params.ref)
     ref_index = file("${params.ref}.fai")
