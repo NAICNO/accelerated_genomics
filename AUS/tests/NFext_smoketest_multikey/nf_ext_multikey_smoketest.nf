@@ -4,9 +4,7 @@
  * -------------------------------------------------
  * nf_ext_multikey_smoketest.nf
  * -------------------------------------------------
- * Test 3 of docs/map-literal_selector_scoping_specs.md -- closes open
- * question #3 from docs/incidents/2026-09-03-ext-dotted-path-vs-map-literal.md:
- * does a map-literal ext assignment with MULTIPLE keys in one selector
+ * Does a map-literal ext assignment with MULTIPLE keys in one selector
  * block (ext = [ mem_gb: N, threads: M ]) resolve all keys correctly
  * per-process, or does a second key reintroduce cross-selector leakage
  * that the single-key case (already tested) happened not to expose?
