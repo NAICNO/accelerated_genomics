@@ -4,9 +4,7 @@
  * -------------------------------------------------
  * nf_ext_layering_smoketest.nf
  * -------------------------------------------------
- * Test 2 of docs/map-literal_selector_scoping_specs.md -- closes open
- * question #2 from docs/incidents/2026-09-03-ext-dotted-path-vs-map-literal.md:
- * when a process matches an ext-setting withLabel block AND a more
+* When a process matches an ext-setting withLabel block AND a more
  * specific ext-setting withName block, does Nextflow's merge take the
  * more-specific block's map WHOLESALE (overwrite), or shallow-merge keys
  * from both levels?
