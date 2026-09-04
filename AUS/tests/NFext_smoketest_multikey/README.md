@@ -95,6 +95,14 @@ For validation, confirm the emitted lines match the configured `ext` values exac
 - `Y -> Y RESOLVED mem_gb=16 threads=4`
 - `Z -> Z RESOLVED mem_gb=8 threads=32`
 
+## Checklist
+
+- [ ] `X` -> `mem_gb=64 threads=8`
+- [ ] `Y` -> `mem_gb=16 threads=4`
+- [ ] `Z` -> `mem_gb=8 threads=32`
+- [ ] No process shows another process's `mem_gb` or `threads` value, and no process shows its own two values swapped.
+- [ ] Confirmed on FOX's and TSD's deployed Nextflow version specifically (e.g., the `26.08.0-edge` standalone distribution on both TSD and Fox).
+
 ### Failure indicators
 
 Any of the following means the selector behavior should not be trusted until explained:
