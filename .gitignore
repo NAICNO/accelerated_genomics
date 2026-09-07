@@ -33,7 +33,7 @@ venv
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
+# Unit test / Verification tests / coverage reports
 htmlcov/
 .tox/
 .coverage
@@ -42,6 +42,8 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
+AUS/tests/NF_verificationtest_resources/golden/
+AUS/tests/NF_verificationtest_resources/results/
 
 # Translations
 *.mo
