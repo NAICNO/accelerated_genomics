@@ -36,9 +36,10 @@ EOF
 )
 
 mismatch=0
+module_glob="$REPO_ROOT"/modules/*.nf
 
 # 1. Every real process name must be in EXPECTED, and vice versa.
-real_names=$(rg --no-filename -o '^process [A-Za-z0-9_]+' "$REPO_ROOT"/modules/*.nf | sed 's/^process //' | sort -u)
+real_names=$(grep -hE '^process [A-Za-z0-9_]+' $module_glob | sed -E 's/^process ([A-Za-z0-9_]+).*/\1/' | sort -u)
 expected_names=$(printf '%s\n' "$EXPECTED" | awk '{ print $1 }' | sort -u)
 
 if [ "$real_names" != "$expected_names" ]; then
@@ -55,7 +56,7 @@ fi
 
 # 2. Each real process's label must match what the stub uses.
 while read -r name expected_label; do
-  module_file=$(rg -l "^process ${name}\b" "$REPO_ROOT"/modules/*.nf 2>/dev/null || true)
+  module_file=$(grep -lE "^process ${name}([[:space:]]|\{)" $module_glob 2>/dev/null || true)
   if [ -z "$module_file" ]; then
     continue  # already reported as a name mismatch above
   fi

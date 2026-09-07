@@ -127,9 +127,7 @@ process VCFQC {
 
 workflow {
 
-    // Mirrors the same fail-fast check nf_config_merge_smoketest.nf uses
-    // and the real workflow entrypoints (germline_workflow.nf /
-    // somatic_main.nf)
+    // Mirrors the same fail-fast check nf_config_merge_smoketest.nf
     if (!params._resource_profile) {
         error "No resource-sizing profile selected. Add `production` or `test` " +
               "to -profile alongside `tsd`/`fox`, e.g. -profile tsd,test"
