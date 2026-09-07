@@ -42,8 +42,6 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
-AUS/tests/NF_verificationtest_resources/golden/
-AUS/tests/NF_verificationtest_resources/results/
 
 # Translations
 *.mo
