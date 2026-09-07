@@ -1,0 +1,11 @@
+cluster_profile	process	cpus	time	mem_gb	label
+fox,production	APPLYBQSR	8	2h	32	gpu_process
+fox,production	BQSR	8	2h	32	gpu_process
+fox,production	DEEPSOMATIC	16	8h	64	gpu_process
+fox,production	DEEPVARIANT	16	6h	64	gpu_process
+fox,production	FQ2BAM	16	6h	64	gpu_process
+fox,production	HAPLOTYPECALLER	16	6h	64	gpu_process
+fox,production	MUTECTCALLER	16	8h	64	gpu_process
+fox,production	POSTPON	4	3h	16	leaf_process
+fox,production	PREPON	4	2h	16	leaf_process
+fox,production	VCFQC	2	1h	8	leaf_process
