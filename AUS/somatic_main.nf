@@ -59,6 +59,23 @@ workflow {
               "-profile singularity,tsd,test"
     }
 
+    // ---- exome / target-region support -- see EXOME_PROCESSING_SPECS_DEV.md ----
+    if (params.sequencing_type !in ['wgs', 'wes']) {
+        error "params.sequencing_type must be 'wgs' or 'wes', got: ${params.sequencing_type}"
+    }
+    if (params.sequencing_type == 'wes' && !params.interval_file) {
+        error "sequencing_type = 'wes' requires --interval_file (BED) restricting " +
+              "analysis to the captured target regions."
+    }
+    if (params.sequencing_type == 'wgs' && params.interval_file) {
+        error "--interval_file was given but sequencing_type is 'wgs' (default) -- " +
+              "set --sequencing_type wes to actually apply it, or drop --interval_file."
+    }
+    interval_file = params.interval_file ? file(params.interval_file) : file('NO_FILE_INTERVAL')
+    // deepsomatic expresses WES-ness via --model-type, not a separate flag (pbrun v4.7.1 docs);
+    // default to WES under sequencing_type=wes unless explicitly overridden
+    deepsomatic_model_type = params.deepsomatic_model_type ?: (params.sequencing_type == 'wes' ? 'WES' : 'WGS')
+
     // ---- reference bundle: FASTA + .fai + .dict expected alongside params.ref ----
     ref       = file(params.ref)
     ref_index = file("${params.ref}.fai")
@@ -90,9 +107,9 @@ workflow {
     )
 
     FQ2BAM(ch_reads, ref, ref_index, ref_dict)
-    BQSR(FQ2BAM.out.bam, ref, ref_index, ref_dict, known_sites_vcfs, known_sites_tbis)
-    APPLYBQSR(BQSR.out.recal, ref, ref_index, ref_dict)
-
+    BQSR(FQ2BAM.out.bam, ref, ref_index, ref_dict, known_sites_vcfs, known_sites_tbis, interval_file)
+    APPLYBQSR(BQSR.out.recal, ref, ref_index, ref_dict, interval_file)
+    
     // split the recalibrated BAMs back into tumor/normal channels
     APPLYBQSR.out.bam
         .branch {
@@ -105,11 +122,11 @@ workflow {
     ch_normal_bam = ch_recal.normal.map { sample_id, sample_type, bam, bai -> tuple(sample_id, bam, bai) }
 
     // ---- Mutect2 branch: mutectcaller -> {postpon -> filtered VCF, vcfqc} ----
-    MUTECTCALLER(ch_tumor_bam, ch_normal_bam, ref, ref_index, ref_dict, pon, pon_index)
+    MUTECTCALLER(ch_tumor_bam, ch_normal_bam, ref, ref_index, ref_dict, pon, pon_index, interval_file)
     PREPON(ch_tumor_bam, ch_normal_bam, ref, ref_index, ref_dict, germline_resource, germline_resource_index)
     POSTPON(MUTECTCALLER.out.vcf, PREPON.out.contamination, ref, ref_index, ref_dict)
     VCFQC(MUTECTCALLER.out.vcf)
 
     // ---- DeepSomatic branch (standalone) ----
-    DEEPSOMATIC(ch_tumor_bam, ch_normal_bam, ref, ref_index, ref_dict)
+    DEEPSOMATIC(ch_tumor_bam, ch_normal_bam, ref, ref_index, ref_dict, interval_file, deepsomatic_model_type)
 }
