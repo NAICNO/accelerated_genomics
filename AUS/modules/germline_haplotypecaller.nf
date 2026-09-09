@@ -12,6 +12,9 @@
  * .vcf.gz. GATK-style tools index a plain .vcf with a .vcf.idx sidecar
  * rather than a bgzip .tbi, so the emitted index follows suit; confirm
  * htvc actually writes that .idx file for this Parabricks version.
+ *
+ * Exome support: restricted to target regions via --interval-file when
+ * sequencing_type == 'wes' (params.interval_file), see EXOME_PROCESSING_SPECS_DEV.md.
  */
 
 process HAPLOTYPECALLER {
@@ -26,17 +29,20 @@ process HAPLOTYPECALLER {
     path ref
     path ref_index
     path ref_dict
+    path interval_file   // NO_FILE_INTERVAL placeholder when sequencing_type == 'wgs'
 
     output:
     tuple val(sample_id), val('haplotypecaller'), path("${sample_id}.haplotypecaller.vcf"),  emit: vcf
 
     script:
-    def gvcf_arg = params.emit_gvcf ? '--gvcf' : ''
+    def gvcf_arg     = params.emit_gvcf ? '--gvcf' : ''
+    def interval_arg = interval_file.name.startsWith('NO_FILE') ? '' : "--interval-file ${interval_file}"
     """
     pbrun haplotypecaller \\
         --ref ${ref} \\
         --in-bam ${bam} \\
         ${gvcf_arg} \\
+        ${interval_arg} \\
         --out-variants ${sample_id}.haplotypecaller.vcf \\
         --num-gpus ${task.accelerator?.request ?: 1}
     """

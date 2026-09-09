@@ -6,6 +6,10 @@
  * output flag) against `pbrun deepsomatic --help` for the Parabricks
  * version pinned in params.parabricks_container -- DeepSomatic support
  * was added relatively recently and flags may differ across versions.
+ *
+ * Exome support: --model-type (resolved in somatic_main.nf from
+ * deepsomatic_model_type/sequencing_type) + --interval-file when
+ * sequencing_type == 'wes', see EXOME_PROCESSING_SPECS_DEV.md.
  */
 
 process DEEPSOMATIC {
@@ -21,17 +25,23 @@ process DEEPSOMATIC {
     path ref
     path ref_index
     path ref_dict
+    path interval_file   // NO_FILE_INTERVAL placeholder when sequencing_type == 'wgs'
+    val  model_type      // WGS | WES | PACBIO | ONT -- resolved in somatic_main.nf from
+                          // params.deepsomatic_model_type / params.sequencing_type
 
     output:
     tuple val(tumor_id), val(normal_id), path("${tumor_id}_vs_${normal_id}.deepsomatic.vcf"),  emit: vcf
 
     script:
+    def interval_arg = interval_file.name.startsWith('NO_FILE') ? '' : "--interval-file ${interval_file}"
     """
     pbrun deepsomatic \\
         --ref ${ref} \\
         --in-tumor-bam ${tumor_bam} \\
         --in-normal-bam ${normal_bam} \\
         --out-variants ${tumor_id}_vs_${normal_id}.deepsomatic.vcf \\
+        ${interval_arg} \\
+        --model-type ${model_type} \\
         --num-gpus ${task.accelerator?.request ?: 1}
     """
 }
