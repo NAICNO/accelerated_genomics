@@ -100,8 +100,8 @@ workflow {
     )
 
     FQ2BAM(ch_reads, ref, ref_index, ref_dict)
-    BQSR(FQ2BAM.out.bam, ref, ref_index, ref_dict, known_sites_vcfs, known_sites_tbis)
-    APPLYBQSR(BQSR.out.recal, ref, ref_index, ref_dict)
+    BQSR(FQ2BAM.out.bam, ref, ref_index, ref_dict, known_sites_vcfs, known_sites_tbis, interval_file)
+    APPLYBQSR(BQSR.out.recal, ref, ref_index, ref_dict, interval_file)
 
     ch_bam = APPLYBQSR.out.bam.map { sample_id, sample_type, bam, bai -> tuple(sample_id, bam, bai) }
 
