@@ -35,6 +35,8 @@ nextflow.enable.dsl = 2
 params.sequencing_type  = 'wgs'
 params.interval_file    = null
 params.deepvariant_mode = 'shortread'
+params.deepsomatic_mode = 'shortread'
+
 
 process FQ2BAM_STUB {
     input:
@@ -44,7 +46,7 @@ process FQ2BAM_STUB {
     stdout
 
     script:
-    // fq2bam deliberately never takes --interval-file (section 4a) -- this stub
+    // fq2bam deliberately never takes --interval-file -- this stub
     // takes the interval_file input only to prove that, unlike every other stub
     // below, it never references it in the command line.
     """
@@ -106,7 +108,7 @@ process DEEPVARIANT_STUB {
     def interval_arg  = interval_file.name.startsWith('NO_FILE') ? '' : "--interval-file ${interval_file}"
     def wes_model_arg = use_wes_model ? '--use-wes-model' : ''
     """
-    echo "DEEPVARIANT_STUB pbrun deepvariant --ref REF --in-bam BAM --mode shortread ${wes_model_arg} ${interval_arg} --out-variants OUT.vcf"
+    echo "DEEPVARIANT_STUB pbrun deepvariant --ref REF --in-bam BAM --mode ${params.deepvariant_mode} ${wes_model_arg} ${interval_arg} --out-variants OUT.vcf"
     """
 }
 
@@ -127,15 +129,17 @@ process MUTECTCALLER_STUB {
 process DEEPSOMATIC_STUB {
     input:
     path interval_file
-    val  model_type
+    val  use_wes_model
 
     output:
     stdout
 
     script:
-    def interval_arg = interval_file.name.startsWith('NO_FILE') ? '' : "--interval-file ${interval_file}"
+    // deepsomatic has --mode (shortread | pacbio | ont, default shortread), symmetric to deepvariant_mode
+    def interval_arg  = interval_file.name.startsWith('NO_FILE') ? '' : "--interval-file ${interval_file}"
+    def wes_model_arg = use_wes_model ? '--use-wes-model' : ''
     """
-    echo "DEEPSOMATIC_STUB pbrun deepsomatic --ref REF --in-tumor-bam TBAM --in-normal-bam NBAM --model-type ${model_type} ${interval_arg} --out-variants OUT.vcf"
+    echo "DEEPSOMATIC_STUB pbrun deepsomatic --ref REF --in-tumor-bam TBAM --in-normal-bam NBAM --mode ${params.deepsomatic_mode} ${wes_model_arg} ${interval_arg} --out-variants OUT.vcf"
     """
 }
 
@@ -152,8 +156,10 @@ workflow {
     }
 
     interval_file  = params.interval_file ? file(params.interval_file) : file('NO_FILE_INTERVAL')
-    use_wes_model  = (params.sequencing_type == 'wes' && params.deepvariant_mode == 'shortread')
-    deepsomatic_model_type = params.sequencing_type == 'wes' ? 'WES' : 'WGS'
+    // deepvariant's --use-wes-model additionally requires shortread mode (deepvariant_mode)
+    use_wes_model             = (params.sequencing_type == 'wes' && params.deepvariant_mode == 'shortread')
+    // pbrun deepsomatic also has --mode -- gated the same way as deepvariant
+    deepsomatic_use_wes_model = (params.sequencing_type == 'wes' && params.deepsomatic_mode == 'shortread')
 
     FQ2BAM_STUB(interval_file).view { it.trim() }
     BQSR_STUB(interval_file).view { it.trim() }
@@ -161,5 +167,5 @@ workflow {
     HAPLOTYPECALLER_STUB(interval_file).view { it.trim() }
     DEEPVARIANT_STUB(interval_file, use_wes_model).view { it.trim() }
     MUTECTCALLER_STUB(interval_file).view { it.trim() }
-    DEEPSOMATIC_STUB(interval_file, deepsomatic_model_type).view { it.trim() }
+    DEEPSOMATIC_STUB(interval_file, deepsomatic_use_wes_model).view { it.trim() }
 }
