@@ -101,6 +101,18 @@ nextflow run nf_exome_interval_smoketest.nf --sequencing_type wes
 nextflow run nf_exome_interval_smoketest.nf --sequencing_type wgs --interval_file targets.bed
 ```
 
+### `deepsomatic_mode=pacbio` negative case
+
+```bash
+nextflow run nf_exome_interval_smoketest.nf --sequencing_type wes --interval_file /any/path/targets.bed --deepsomatic_mode pacbio
+```
+
+### deepvariant's equivalent negative case
+
+```bash
+$ ../../../.././nextflow-26.08.0-edge-dist run nf_exome_interval_smoketest.nf --sequencing_type wes --interval_file /any/path/targets.bed --deepvariant_mode pacbio
+```
+
 ## Expected result
 
 Successful runs print seven echoed lines, one per stub process, with no real compute work performed.
