@@ -36,17 +36,6 @@ params.sequencing_type  = 'wgs'
 params.interval_file    = null
 params.deepvariant_mode = 'shortread'
 
-if (params.sequencing_type !in ['wgs', 'wes']) {
-    error "params.sequencing_type must be 'wgs' or 'wes', got: ${params.sequencing_type}"
-}
-if (params.sequencing_type == 'wes' && !params.interval_file) {
-    error "sequencing_type = 'wes' requires --interval_file"
-}
-
-interval_file  = params.interval_file ? file(params.interval_file) : file('NO_FILE_INTERVAL')
-use_wes_model  = (params.sequencing_type == 'wes' && params.deepvariant_mode == 'shortread')
-deepsomatic_model_type = params.sequencing_type == 'wes' ? 'WES' : 'WGS'
-
 process FQ2BAM_STUB {
     input:
     path interval_file
@@ -151,6 +140,21 @@ process DEEPSOMATIC_STUB {
 }
 
 workflow {
+    if (params.sequencing_type !in ['wgs', 'wes']) {
+        error "params.sequencing_type must be 'wgs' or 'wes', got: ${params.sequencing_type}"
+    }
+    if (params.sequencing_type == 'wes' && !params.interval_file) {
+        error "sequencing_type = 'wes' requires --interval_file"
+    }
+    if (params.sequencing_type == 'wgs' && params.interval_file) {
+        error "--interval_file was given but sequencing_type is 'wgs' (default) -- " +
+              "set --sequencing_type wes to actually apply it, or drop --interval_file."
+    }
+
+    interval_file  = params.interval_file ? file(params.interval_file) : file('NO_FILE_INTERVAL')
+    use_wes_model  = (params.sequencing_type == 'wes' && params.deepvariant_mode == 'shortread')
+    deepsomatic_model_type = params.sequencing_type == 'wes' ? 'WES' : 'WGS'
+
     FQ2BAM_STUB(interval_file).view { it.trim() }
     BQSR_STUB(interval_file).view { it.trim() }
     APPLYBQSR_STUB(interval_file).view { it.trim() }

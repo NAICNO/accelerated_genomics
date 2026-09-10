@@ -80,7 +80,7 @@ nextflow run nf_exome_interval_smoketest.nf --sequencing_type wgs
 ```bash
 nextflow run nf_exome_interval_smoketest.nf \
   --sequencing_type wes \
-  --interval_file /any/path/targets.bed
+  --interval_file targets.bed # any target-file
 ```
 
 ### Invalid sequencing type fail-fast check
@@ -93,17 +93,6 @@ nextflow run nf_exome_interval_smoketest.nf --sequencing_type foo
 
 ```bash
 nextflow run nf_exome_interval_smoketest.nf --sequencing_type wes
-```
-
-### Optional DeepVariant mode check
-
-The default is `shortread`, which is the mode relevant to the WES-specific DeepVariant flag.
-
-```bash
-nextflow run nf_exome_interval_smoketest.nf \
-  --sequencing_type wes \
-  --interval_file /any/path/targets.bed \
-  --deepvariant_mode shortread
 ```
 
 ## Expected result
@@ -155,6 +144,7 @@ Inspect the console output from each run and verify the following:
 - [ ] WES run prints `--model-type WES` and `--interval-file` in `DEEPSOMATIC_STUB`.
 - [ ] Invalid `sequencing_type` fails before any process runs.
 - [ ] `sequencing_type wes` without `--interval_file` fails before any process runs.
+- [ ] `sequencing_type` `wes` with `--interval_file` fails before any process runs.
 
 ### Failure indicators
 
