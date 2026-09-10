@@ -106,9 +106,9 @@ workflow {
     ch_bam = APPLYBQSR.out.bam.map { sample_id, sample_type, bam, bai -> tuple(sample_id, bam, bai) }
 
     // ---- two callers in parallel off the same recalibrated BAM ----
-    DEEPVARIANT(ch_bam, ref, ref_index, ref_dict)
-    HAPLOTYPECALLER(ch_bam, ref, ref_index, ref_dict)
-
+    DEEPVARIANT(ch_bam, ref, ref_index, ref_dict, interval_file, use_wes_model)
+    HAPLOTYPECALLER(ch_bam, ref, ref_index, ref_dict, interval_file)
+    
     // ---- one VCFQC process definition, run once per caller output ----
     VCFQC(DEEPVARIANT.out.vcf.mix(HAPLOTYPECALLER.out.vcf))
 }

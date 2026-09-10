@@ -59,7 +59,7 @@ workflow {
               "-profile singularity,tsd,test"
     }
 
-    // ---- exome / target-region support -- see EXOME_PROCESSING_SPECS_DEV.md ----
+    // ---- exome / target-region support ----
     if (params.sequencing_type !in ['wgs', 'wes']) {
         error "params.sequencing_type must be 'wgs' or 'wes', got: ${params.sequencing_type}"
     }
@@ -72,9 +72,9 @@ workflow {
               "set --sequencing_type wes to actually apply it, or drop --interval_file."
     }
     interval_file = params.interval_file ? file(params.interval_file) : file('NO_FILE_INTERVAL')
-    // deepsomatic expresses WES-ness via --model-type, not a separate flag (pbrun v4.7.1 docs);
-    // default to WES under sequencing_type=wes unless explicitly overridden
-    deepsomatic_model_type = params.deepsomatic_model_type ?: (params.sequencing_type == 'wes' ? 'WES' : 'WGS')
+    // pbrun v4.7.1 deepsomatic takes a plain boolean --use-wes-model, not a separate WES model_type flag;
+    //              --use-wes-model is now gated on deepsomatic_mode == 'shortread'
+    deepsomatic_use_wes_model = (params.sequencing_type == 'wes' && params.deepsomatic_mode == 'shortread')
 
     // ---- reference bundle: FASTA + .fai + .dict expected alongside params.ref ----
     ref       = file(params.ref)
@@ -128,5 +128,5 @@ workflow {
     VCFQC(MUTECTCALLER.out.vcf)
 
     // ---- DeepSomatic branch (standalone) ----
-    DEEPSOMATIC(ch_tumor_bam, ch_normal_bam, ref, ref_index, ref_dict, interval_file, deepsomatic_model_type)
+    DEEPSOMATIC(ch_tumor_bam, ch_normal_bam, ref, ref_index, ref_dict, interval_file, deepsomatic_use_wes_model)
 }

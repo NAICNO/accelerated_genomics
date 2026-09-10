@@ -26,14 +26,13 @@ process DEEPSOMATIC {
     path ref_index
     path ref_dict
     path interval_file   // NO_FILE_INTERVAL placeholder when sequencing_type == 'wgs'
-    val  model_type      // WGS | WES | PACBIO | ONT -- resolved in somatic_main.nf from
-                          // params.deepsomatic_model_type / params.sequencing_type
-
+    val  use_wes_model   // true when sequencing_type == 'wes' and deepsomatic_mode == 'shortread' (see somatic_main.nf)
     output:
     tuple val(tumor_id), val(normal_id), path("${tumor_id}_vs_${normal_id}.deepsomatic.vcf"),  emit: vcf
 
     script:
     def interval_arg = interval_file.name.startsWith('NO_FILE') ? '' : "--interval-file ${interval_file}"
+    def wes_model_arg = use_wes_model ? '--use-wes-model' : ''
     """
     pbrun deepsomatic \\
         --ref ${ref} \\
@@ -41,7 +40,7 @@ process DEEPSOMATIC {
         --in-normal-bam ${normal_bam} \\
         --out-variants ${tumor_id}_vs_${normal_id}.deepsomatic.vcf \\
         ${interval_arg} \\
-        --model-type ${model_type} \\
+        ${wes_model_arg} \\
         --num-gpus ${task.accelerator?.request ?: 1}
     """
 }

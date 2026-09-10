@@ -6,7 +6,7 @@
  * Parabricks version pinned in params.parabricks_container.
  *
  * Exome support: restricted to target regions via --interval-file when
- * sequencing_type == 'wes' (params.interval_file), see EXOME_PROCESSING_SPECS_DEV.md.
+ * sequencing_type == 'wes' (params.interval_file)
  */
 
 process APPLYBQSR {
@@ -35,6 +35,7 @@ process APPLYBQSR {
         --in-bam ${bam} \\
         --in-recal-file ${recal_table} \\
         --out-bam ${sample_id}.recal.bam \\
+        ${interval_arg} \\
         --num-gpus ${task.accelerator?.request ?: 1}
     """
 }
