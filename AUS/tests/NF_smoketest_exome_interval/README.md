@@ -95,6 +95,12 @@ nextflow run nf_exome_interval_smoketest.nf --sequencing_type foo
 nextflow run nf_exome_interval_smoketest.nf --sequencing_type wes
 ```
 
+### WGS run with interval file - Negative test
+
+```bash
+nextflow run nf_exome_interval_smoketest.nf --sequencing_type wgs --interval_file targets.bed
+```
+
 ## Expected result
 
 Successful runs print seven echoed lines, one per stub process, with no real compute work performed.
@@ -133,27 +139,26 @@ Inspect the console output from each run and verify the following:
 - [ ] WGS run completes and prints all seven stub lines.
 - [ ] WGS run prints no `--interval-file` anywhere.
 - [ ] WGS run prints no `--use-wes-model` anywhere.
-- [ ] WGS run prints `DEEPSOMATIC_STUB` with `--model-type WGS`.
+- [ ] WGS run prints `DEEPSOMATIC_STUB` with`--mode shortread` (the default) but **no** `--use-wes-model`.
 - [ ] WES run completes and prints all seven stub lines.
 - [ ] WES run prints no `--interval-file` in `FQ2BAM_STUB`.
 - [ ] WES run prints `--interval-file` in `BQSR_STUB`.
 - [ ] WES run prints `--interval-file` in `APPLYBQSR_STUB`.
 - [ ] WES run prints `--interval-file` in `HAPLOTYPECALLER_STUB`.
 - [ ] WES run prints `--interval-file` in `MUTECTCALLER_STUB`.
-- [ ] WES run prints both `--use-wes-model` and `--interval-file` in `DEEPVARIANT_STUB`.
+- [ ] WES run prints both `--use-wes-model` and `--interval-file <path>` (default `--mode shortread`) in `DEEPVARIANT_STUB`.
+- [ ] WES run prints both `--use-wes-model` and `--interval-file <path>` (default `--mode shortread`) in `DEEPSOMATIC_STUB`.
+- [ ] WES run with `--sequencing_type wes --deepsomatic_mode pacbio` params print `--mode pacbio` and does **NOT** contain `--use-wes-model` in `DEEPSOMATIC_STUB`
 - [ ] WES run prints `--model-type WES` and `--interval-file` in `DEEPSOMATIC_STUB`.
 - [ ] Invalid `sequencing_type` fails before any process runs.
 - [ ] `sequencing_type wes` without `--interval_file` fails before any process runs.
-- [ ] `sequencing_type` `wes` with `--interval_file` fails before any process runs.
+- [ ] `sequencing_type` `wgs` with `--interval_file` fails before any process runs.
 
 ### Failure indicators
 
 - `FQ2BAM_STUB` includes `--interval-file` in any run.
 - Any WGS output includes `--interval-file` or `--use-wes-model`.
-- `DEEPVARIANT_STUB` omits `--use-wes-model` in the WES shortread case.
-- `DEEPSOMATIC_STUB` reports the wrong `--model-type` for the selected sequencing mode.
-- A fail-fast scenario proceeds into stub execution instead of stopping during parameter validation.
-- The output pattern in this smoke test no longer matches the real argument-building logic in the corresponding modules.
+- `DEEPVARIANT_STUB` and `DEEPSOMATIC_STUB`  omit `--use-wes-model` in the WES shortread case.
 
 ## Known gaps
 
