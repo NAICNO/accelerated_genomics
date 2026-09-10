@@ -4,12 +4,10 @@
  * -------------------------------------------------
  * nf_exome_interval_smoketest.nf
  * -------------------------------------------------
- * Regression check for EXOME_PROCESSING_SPECS_DEV.md: verifies the
- * conditional --interval-file / --use-wes-model / --model-type argument
- * logic used in modules/bqsr.nf, modules/applybqsr.nf,
- * modules/germline_haplotypecaller.nf, modules/germline_deepvariant.nf,
- * modules/somatic_mutectcaller.nf, modules/somatic_deepsomatic.nf --
- * without needing a Parabricks container or a real BAM/BED.
+ * Smoke-test to verify if the conditional `--interval-file` /
+ * `--use-wes-model` / `--model-type` argument
+ * logic is correctly implemented without needing a 
+ * Parabricks container or a real BAM/BED.
  *
  * Each stub process reproduces the exact `def interval_arg = ...` /
  * `def wes_model_arg = ...` conditional-string logic from the real module
@@ -17,8 +15,7 @@
  * that logic diverges from what actually ships in modules/*.nf.
  *
  * Run twice (from this directory), once per sequencing_type, and inspect
- * the echoed lines -- see nf-exome-interval-smoke-test.md for the full
- * checklist:
+ * the echoed lines -- see README.md for the full checklist:
  *
  *   nextflow run nf_exome_interval_smoketest.nf \
  *     --sequencing_type wgs
