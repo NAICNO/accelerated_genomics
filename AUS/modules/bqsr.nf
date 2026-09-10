@@ -6,7 +6,7 @@
  * Parabricks version pinned in params.parabricks_container.
  *
  * Exome support: restricted to target regions via --interval-file when
- * sequencing_type == 'wes' (params.interval_file), see EXOME_PROCESSING_SPECS_DEV.md.
+ * sequencing_type == 'wes' (params.interval_file)
  */
 
 process BQSR {

@@ -6,7 +6,7 @@
  * pinned in params.parabricks_container.
  *
  * Exome support: --interval-file + --use-wes-model (shortread mode only) when
- * sequencing_type == 'wes', see EXOME_PROCESSING_SPECS_DEV.md.
+ * sequencing_type == 'wes'
  */
 
 process DEEPVARIANT {

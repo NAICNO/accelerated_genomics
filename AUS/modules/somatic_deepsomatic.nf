@@ -9,7 +9,7 @@
  *
  * Exome support: --model-type (resolved in somatic_main.nf from
  * deepsomatic_model_type/sequencing_type) + --interval-file when
- * sequencing_type == 'wes', see EXOME_PROCESSING_SPECS_DEV.md.
+ * sequencing_type == 'wes'
  */
 
 process DEEPSOMATIC {

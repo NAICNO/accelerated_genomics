@@ -6,7 +6,7 @@
  * NOTE: confirm exact flag names against `pbrun mutectcaller --help` for
  * the Parabricks version pinned in params.parabricks_container.
  * Exome support: restricted to target regions via --interval-file when
- * sequencing_type == 'wes' (params.interval_file), see EXOME_PROCESSING_SPECS_DEV.md.
+ * sequencing_type == 'wes' (params.interval_file)
  */
 
 process MUTECTCALLER {
@@ -22,9 +22,7 @@ process MUTECTCALLER {
     path ref_dict
     path pon
     path pon_index
-    path interval_file   // NO_FILE_INTERVAL placeholder when sequencing_type == 'wgs' --
-                          // distinct name from pon's NO_FILE_PON/NO_FILE_PON_TBI so staging
-                          // doesn't collide, see nextflow_optional_file_collision (project memory)
+    path interval_file   // NO_FILE_INTERVAL placeholder when sequencing_type == 'wgs'
 
     output:
     tuple val(tumor_id), val(normal_id), path("${tumor_id}_vs_${normal_id}.mutect2.vcf.gz"), path("${tumor_id}_vs_${normal_id}.mutect2.vcf.gz.tbi"), path("${tumor_id}_vs_${normal_id}.mutect2.vcf.gz.stats"), emit: vcf

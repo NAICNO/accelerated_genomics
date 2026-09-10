@@ -14,7 +14,7 @@
  * htvc actually writes that .idx file for this Parabricks version.
  *
  * Exome support: restricted to target regions via --interval-file when
- * sequencing_type == 'wes' (params.interval_file), see EXOME_PROCESSING_SPECS_DEV.md.
+ * sequencing_type == 'wes' (params.interval_file)
  */
 
 process HAPLOTYPECALLER {
