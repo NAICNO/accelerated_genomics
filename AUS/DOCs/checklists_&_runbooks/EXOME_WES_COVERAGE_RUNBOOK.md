@@ -131,9 +131,7 @@ bedtools intersect -v -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplo
 
 ### 1g. Logs
 
-- [ ] Work-dir logs captured (`.command.sh`/`.command.log`/`.exitcode`) for at least the tasks
-      checked in 1c, per the `rsync --include='.command*'` pattern used in
-      `Pipeline_Testing_Checklist.md`
+- [ ] Work-dir logs captured (`.command.sh`/`.command.log`/`.exitcode`)
 
 ---
 
@@ -207,14 +205,6 @@ bedtools intersect -v -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplo
 ```
 
 ### 2g. `NO_FILE_INTERVAL` / `NO_FILE_PON` collision (blocked — see open items doc)
-
-- [ ] **Not runnable yet.** Exercising the real double-`NO_FILE` case (both `pon` and
-      `interval_file` unset on the same `MUTECTCALLER` task) requires the pon workflow input
-      to be wired alongside `interval_file` in a real run — today's params files always set
-      `interval_file` when testing WES, so `pon` is the only `NO_FILE` present. Leave unchecked
-      until the `MUTECTCALLER_STUB` extension (section 11 item 5) lands and the corresponding
-      local test is added; note here if a real-cluster run happens to exercise the double-unset
-      case incidentally.
 
 ### 2h. Logs
 

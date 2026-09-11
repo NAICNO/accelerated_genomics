@@ -19,14 +19,13 @@ deepvariant_mode: shortread   # shortread | ont | pacbio (pbrun v4.3.1) -- confi
 emit_gvcf: false              # set true to have haplotypecaller emit a GVCF instead of a regular VCF
 
 # exome (WES) support -- uncomment both to restrict analysis to target regions;
-# interval_file must be BED. See EXOME_PROCESSING_SPECS_DEV.md.
+# interval_file must be BED.
 sequencing_type: wes
 interval_file: GRCh38_chr21_intervals.bed
 
 outdir: results_germline_wes
 
 # ---- containers (Apptainer/Singularity .sif paths or image URIs) ----
-# Fixed per-cluster infrastructure -- see the earlier decision in
 # singularity_profile_design notes: these stay explicit params, not baked
 # into configs/singularity.conf, so they can be overridden without a repo edit.
 parabricks_container: file:///projects/ec232/ngs/ngs_singularity/clara-parabricks_4.7.1-1.sif

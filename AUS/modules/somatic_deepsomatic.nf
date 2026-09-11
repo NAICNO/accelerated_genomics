@@ -7,8 +7,7 @@
  * version pinned in params.parabricks_container -- DeepSomatic support
  * was added relatively recently and flags may differ across versions.
  *
- * Exome support: --model-type (resolved in somatic_main.nf from
- * deepsomatic_model_type/sequencing_type) + --interval-file when
+ * deepsomatic_model_type/sequencing_type + --interval-file when
  * sequencing_type == 'wes'
  */
 
