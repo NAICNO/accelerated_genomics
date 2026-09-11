@@ -38,6 +38,7 @@ process DEEPSOMATIC {
         --ref ${ref} \\
         --in-tumor-bam ${tumor_bam} \\
         --in-normal-bam ${normal_bam} \\
+        --mode ${params.deepsomatic_mode} \\
         --out-variants ${tumor_id}_vs_${normal_id}.deepsomatic.vcf \\
         ${interval_arg} \\
         ${wes_model_arg} \\
