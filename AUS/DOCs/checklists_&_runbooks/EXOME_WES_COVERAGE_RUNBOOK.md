@@ -242,7 +242,7 @@ bedtools intersect -v -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplo
 - [ ] Both pipelines run with the same `interval_file` / sample(s) on **both** Fox and TSD
 - [ ] Runtime and CPU-hours recorded for both, compared
 - [ ] No cluster-specific config gotchas re-triggered (stray characters, bare `def`,
-      `--mem`/`--mem-per-cpu` conflict — see project memory for the closed incidents)
+      `--mem`/`--mem-per-cpu` conflict)
 
 | Pipeline | Cluster | Duration | CPU hours | Exit status |
 |---|---|---|---|---|

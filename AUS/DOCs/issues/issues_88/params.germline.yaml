@@ -1,0 +1,27 @@
+# Example -params-file for germline_workflow.nf.
+#
+# ---- input: single sample FASTQ pair (all required) ----
+sample_id: SAMPLE01
+fastq_1: /projects/ec232/ngs/analysis/AUS/test_sample/fastq//sample_normal_1.fastq.gz
+fastq_2: /projects/ec232/ngs/analysis/AUS/test_sample/fastq//sample_normal_2.fastq.gz
+
+# ---- reference & resources ----
+ref: /projects/ec232/ngs/reference/parabricks_ref/Homo_sapiens_assembly38.fasta   # reference FASTA; expects <ref>.fai and a matching .dict alongside
+
+# known-sites VCFs for BQSR (dbSNP, Mills, etc.), each needs a .tbi alongside.
+# A YAML list works here (unlike the CLI, which only accepts a comma-separated
+# string for --known_sites).
+known_sites:
+  - /projects/ec232/ngs/reference/parabricks_ref/Homo_sapiens_assembly38.known_indels.vcf.gz
+
+# ---- optional ----
+deepvariant_mode: shortread   # shortread | ont | pacbio (pbrun v4.3.1) -- confirm against `pbrun deepvariant --help`
+emit_gvcf: false              # set true to have haplotypecaller emit a GVCF instead of a regular VCF
+outdir: results_germline
+
+# ---- containers (Apptainer/Singularity .sif paths or image URIs) ----
+# Fixed per-cluster infrastructure -- see the earlier decision in
+# singularity_profile_design notes: these stay explicit params, not baked
+# into configs/singularity.conf, so they can be overridden without a repo edit.
+parabricks_container: file:///projects/ec232/ngs/ngs_singularity/clara-parabricks_4.7.1-1.sif
+bcftools_container:   file:///projects/ec232/ngs/ngs_singularity/bcftools-1.23--h3a4d415_0.sif

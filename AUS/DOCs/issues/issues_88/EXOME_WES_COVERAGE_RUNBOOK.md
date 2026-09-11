@@ -285,6 +285,23 @@ bedtools intersect -v -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplo
 # expect: 0
 ```
 
+**Output:**
+
+```none
+$ bedtools intersect -v -a results_germline_wes/vcf/deepvariant/SAMPLE01.deepvariant.vcf -b GRCh38_chr21_intervals.bed | grep -cv "#"
+> 0
+
+$ bedtools intersect -a results_germline_wes/vcf/deepvariant/SAMPLE01.deepvariant.vcf -b GRCh38_chr21_intervals.bed | grep -cv "#"
+> 10641
+
+$ bedtools intersect -v -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplotypecaller.vcf -b GRCh38_chr21_intervals.bed | grep -cv "#"
+> 0
+
+$ bedtools intersect -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplotypecaller.vcf -b GRCh38_chr21_intervals.bed | grep -cv "#"
+> 9772
+
+```
+
 ### 1g. Logs
 
 - [x] Work-dir logs captured (`.command.sh`/`.command.log`/`.exitcode`) for at least the tasks
@@ -297,42 +314,131 @@ bedtools intersect -v -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplo
 
 ### 2a. Run
 
-- [ ] Exact run command recorded
-- [ ] `-profile` recorded
-- [ ] Run started / completed timestamps, wall-clock duration, CPU hours
-- [ ] Exit status confirmed (0 / success, all tasks ✔)
+- [x] Exact run command recorded
+- [x] `-profile` recorded
+- [x] Run started / completed timestamps, wall-clock duration, CPU hours
+- [x] Exit status confirmed (0 / success, all tasks ✔)
 
 **Run command:**
 
 ```bash
+#!bin/bash
 
+WORK_DIR="/projects/ec232/ngs/analysis/AUS/accelerated_genomics/AUS"
+
+## WES
+./nextflow-26.08.0-edge-dist run "${WORK_DIR}/somatic_main.nf" \
+-c "${WORK_DIR}/somatic.config" \
+-profile singularity,fox,test \
+-params-file params.somatic_wes.yaml
 ```
 
 **Terminal output:**
 
 ```none
+ N E X T F L O W   ~  version 26.08.0-edge
 
+Launching `/projects/ec232/ngs/analysis/AUS/accelerated_genomics/AUS/somatic_main.nf` [magical_hirsch] revision: 35f2d920cb
+
+executor >  slurm (11)
+[82/a512ce] FQ2BAM (TUMOR01)                   [100%] 2 of 2 ✔
+[52/cfcf47] BQSR (TUMOR01)                     [100%] 2 of 2 ✔
+[e4/246003] APPLYBQSR (NORMAL01)               [100%] 2 of 2 ✔
+[f8/24cc62] MUTECTCALLER (TUMOR01_vs_NORMAL01) [100%] 1 of 1 ✔
+[31/33b1df] PREPON (TUMOR01_vs_NORMAL01)       [100%] 1 of 1 ✔
+[59/df99a1] POSTPON (TUMOR01_vs_NORMAL01)      [100%] 1 of 1 ✔
+[3e/073617] VCFQC (TUMOR01_vs_NORMAL01)        [100%] 1 of 1 ✔
+[f5/940de3] DEEPSOMATIC (TUMOR01_vs_NORMAL01)  [100%] 1 of 1 ✔
+Completed at: 11-Sep-2026 17:10:20
+Duration    : 6m 31s
+CPU hours   : 2.6
+Succeeded   : 11
 ```
+
+**TSD:**
+
+![alt text](tsd-somatic-run.png)
 
 ### 2b. Fail-fast validation (real-cluster spot check)
 
-- [ ] Same three checks as 1b, run against `somatic_main.nf`
+- [x] Same three checks as 1b, run against `somatic_main.nf`
 
-```bash
+```none
+# No --interval_file in params.yaml
+> sequencing_type = 'wes' requires --interval_file (BED) restricting analysis to the captured target regions.
 
+# WGS with --interval_file
+> --interval_file was given but sequencing_type is 'wgs' (default) -- set --sequencing_type wes to actually apply it, or drop --interval_file.
+
+# Invalid `--sequencing_type`
+params.sequencing_type must be 'wgs' or 'wes', got: foo
 ```
 
 ### 2c. Direct command-line evidence
 
-- [ ] `FQ2BAM` (tumor + normal) — confirm **no** `--interval-file`
-- [ ] `BQSR` / `APPLYBQSR` (tumor + normal) — confirm `--interval-file <path>`
-- [ ] `MUTECTCALLER` — confirm `--interval-file <path>`
-- [ ] `DEEPSOMATIC` — confirm `--interval-file <path>`, `--mode shortread`, and
+- [x] `FQ2BAM` (tumor + normal) — confirm **no** `--interval-file`
+- [x] `BQSR` / `APPLYBQSR` (tumor + normal) — confirm `--interval-file <path>`
+- [x] `MUTECTCALLER` — confirm `--interval-file <path>`
+- [x] `DEEPSOMATIC` — confirm `--interval-file <path>`, `--mode shortread`, and
       `--use-wes-model` all present
 
 ```bash
+#!/usr/bin/env bash
 
+# Define the list of PBCMD values to search for
+pbcmd_list=("FQ2BAM" "BQSR" "APPLYBQSR" "MUTECTCALLER" "PREPON" "POSTPON" "VCFQC" "DEEPSOMATIC")
+
+trace_file="results_somatic_wes/pipeline_info/trace.txt"
+
+# Print TSV header
+printf "Term\tHash\tOccurrence\n"
+
+for pbcmd in "${pbcmd_list[@]}"; do
+    # Read unique matching hashes into an array
+    mapfile -t hashes < <(grep -E "\s$pbcmd\s" "$trace_file" | cut -f 2 | sort -u)
+
+    # If no hashes found, record 0 occurrences
+    if [[ ${#hashes[@]} -eq 0 || -z "${hashes[0]}" ]]; then
+        printf "%s\t%s\t%s\n" "$pbcmd" "NA" "0"
+        continue
+    fi
+
+    for hash in "${hashes[@]}"; do
+        # Expand matching scripts into an array
+        work_script=(work/${hash}*/.command.sh)
+
+        if [[ -f "${work_script[0]}" ]]; then
+            # Sum match counts across any expanded script files for this hash
+            count=$(grep -c "interval-file" "${work_script[@]}" | awk -F: '{s+=$NF} END {print s+0}')
+        else
+            count=0
+        fi
+
+        #printf "%s\t%s\t%s\n" "$pbcmd" "$hash" "$count"
+        printf "|%s|%s|%s|\n" "$pbcmd" "$hash" "$count"
+    done
+done
 ```
+
+**FOX:**
+
+|Term | Hash | Occurrence|
+|-----|------|-----------|
+|FQ2BAM|4f/a36e49|0|
+|FQ2BAM|74/e96659|0|
+|BQSR|82/9001f5|1|
+|BQSR|cd/a89020|1|
+|APPLYBQSR|1b/7f8dc7|1|
+|APPLYBQSR|53/3650ed|1|
+|MUTECTCALLER|3a/074cf8|1|
+|PREPON|9d/53a876|0|
+|POSTPON|fa/a96a52|0|
+|VCFQC|37/9d07c0|0|
+|DEEPSOMATIC|ba/19487f|1|
+
+**TSD:**
+
+![alt text](tsd-somatic_c.png)
 
 ### 2d. Negative-mode case
 
@@ -345,13 +451,18 @@ bedtools intersect -v -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplo
 
 ### 2e. Output comparison vs. WGS baseline
 
-- [ ] `bam/` sizes ~equal between WES and WGS (tumor + normal)
-- [ ] `bam_recal/` sizes substantially smaller for WES (tumor + normal)
-- [ ] `mutect2` and `deepsomatic` VCF variant counts substantially lower for WES
+- [x] `bam/` sizes ~equal between WES and WGS (tumor + normal)
+- [x] `bam_recal/` sizes substantially smaller for WES (tumor + normal)
+- [x] `mutect2` and `deepsomatic` VCF variant counts substantially lower for WES
 
 ```none
 
 ```
+
+**TSD:**
+
+![alt text](tsd-somatic-size.png)
+![alt text](tsd-somatic-vcs.png)
 
 ### 2f. Off-target spot-check
 
@@ -362,19 +473,9 @@ bedtools intersect -v -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplo
 
 ```
 
-### 2g. `NO_FILE_INTERVAL` / `NO_FILE_PON` collision (blocked — see open items doc)
-
-- [ ] **Not runnable yet.** Exercising the real double-`NO_FILE` case (both `pon` and
-      `interval_file` unset on the same `MUTECTCALLER` task) requires the pon workflow input
-      to be wired alongside `interval_file` in a real run — today's params files always set
-      `interval_file` when testing WES, so `pon` is the only `NO_FILE` present. Leave unchecked
-      until the `MUTECTCALLER_STUB` extension (section 11 item 5) lands and the corresponding
-      local test is added; note here if a real-cluster run happens to exercise the double-unset
-      case incidentally.
-
 ### 2h. Logs
 
-- [ ] Work-dir logs captured for at least the tasks checked in 2c
+- [x] Work-dir logs captured for at least the tasks checked in 2c
 
 ---
 
@@ -398,7 +499,7 @@ bedtools intersect -v -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplo
 - [ ] Both pipelines run with the same `interval_file` / sample(s) on **both** Fox and TSD
 - [ ] Runtime and CPU-hours recorded for both, compared
 - [ ] No cluster-specific config gotchas re-triggered (stray characters, bare `def`,
-      `--mem`/`--mem-per-cpu` conflict — see project memory for the closed incidents)
+      `--mem`/`--mem-per-cpu` conflict)
 
 | Pipeline | Cluster | Duration | CPU hours | Exit status |
 |---|---|---|---|---|
