@@ -36,6 +36,7 @@ params.sequencing_type  = 'wgs'
 params.interval_file    = null
 params.deepvariant_mode = 'shortread'
 params.deepsomatic_mode = 'shortread'
+params.pon              = null
 
 
 process FQ2BAM_STUB {
@@ -114,15 +115,22 @@ process DEEPVARIANT_STUB {
 
 process MUTECTCALLER_STUB {
     input:
+    path pon
+    path pon_index
     path interval_file
 
     output:
     stdout
 
     script:
+    // Mirrors modules/somatic_mutectcaller.nf exactly: two independent optional
+    // file inputs, each with its own NO_FILE_* placeholder name (pon's pair vs.
+    // interval_file's), landing in the same task. Reusing one literal "NO_FILE" 
+    // name for both would collide during staging; distinct names must not.
+    def pon_arg      = pon.name.startsWith('NO_FILE') ? '' : "--pon ${pon}"
     def interval_arg = interval_file.name.startsWith('NO_FILE') ? '' : "--interval-file ${interval_file}"
     """
-    echo "MUTECTCALLER_STUB pbrun mutectcaller --ref REF --in-tumor-bam TBAM --in-normal-bam NBAM ${interval_arg} --out-vcf OUT.vcf.gz"
+    echo "MUTECTCALLER_STUB pbrun mutectcaller --ref REF --in-tumor-bam TBAM --in-normal-bam NBAM ${pon_arg} ${interval_arg} --out-vcf OUT.vcf.gz"
     """
 }
 
@@ -156,9 +164,14 @@ workflow {
     }
 
     interval_file  = params.interval_file ? file(params.interval_file) : file('NO_FILE_INTERVAL')
+    // Mirrors somatic_main.nf's pon/pon_index construction exactly (distinct
+    // placeholder names from interval_file's, see MUTECTCALLER_STUB comment above).
+    pon             = params.pon ? file(params.pon) : file('NO_FILE_PON')
+    pon_index       = params.pon ? file("${params.pon}.tbi") : file('NO_FILE_PON_TBI')
     // deepvariant's --use-wes-model additionally requires shortread mode (deepvariant_mode)
     use_wes_model             = (params.sequencing_type == 'wes' && params.deepvariant_mode == 'shortread')
-    // pbrun deepsomatic also has --mode -- gated the same way as deepvariant
+    // pbrun deepsomatic also has --mode -- gated the
+    // same way as deepvariant now (was previously ungated, see correction note above)
     deepsomatic_use_wes_model = (params.sequencing_type == 'wes' && params.deepsomatic_mode == 'shortread')
 
     FQ2BAM_STUB(interval_file).view { it.trim() }
@@ -166,6 +179,6 @@ workflow {
     APPLYBQSR_STUB(interval_file).view { it.trim() }
     HAPLOTYPECALLER_STUB(interval_file).view { it.trim() }
     DEEPVARIANT_STUB(interval_file, use_wes_model).view { it.trim() }
-    MUTECTCALLER_STUB(interval_file).view { it.trim() }
+    MUTECTCALLER_STUB(pon, pon_index, interval_file).view { it.trim() }
     DEEPSOMATIC_STUB(interval_file, deepsomatic_use_wes_model).view { it.trim() }
 }

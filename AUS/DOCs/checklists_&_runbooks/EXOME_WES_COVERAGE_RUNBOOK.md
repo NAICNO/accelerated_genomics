@@ -1,4 +1,4 @@
-# Runbook & Checklist: Full WES Coverage — Germline & Somatic
+# Runbook & Checklist: WES Germline & Somatic End-to-End Smoke Test
 
 ## Run metadata
 
@@ -11,24 +11,23 @@
 | Parabricks container | `clara-parabricks_4.7.1-1.sif` (confirm path) |
 | `nextflow` version | |
 | `-profile` used | `singularity,<fox\|tsd>,<production\|test>` |
+| Source data | [GitHub: issue#]() |
 | `interval_file` used | (e.g. `GRCh38_chr21_intervals.bed` — record path + how it was derived) |
-| Reference / known-sites | |
+| Parameters | |
 
 ## Goal
 
 Confirm WES support on real cluster infrastructure
 
 1. `--interval-file` reaches `bqsr`, `applybqsr`, `haplotypecaller`, `mutectcaller`,
-   `deepvariant`, `deepsomatic` — and reaches none of `fq2bam` (section 4/4a/4b).
+   `deepvariant`, `deepsomatic` — and reaches none of `fq2bam`.
 2. `--use-wes-model` is auto-derived correctly for both `deepvariant` and `deepsomatic` when
    `sequencing_type=wes` and the tool's own `*_mode` is `shortread` (default) — and correctly
-   *absent* when `*_mode` is `pacbio`/`ont` (section 5).
-3. `--mode ${params.*_mode}` is passed unconditionally and symmetrically by both callers
-   (section 5, section 11 item 3).
-4. Fail-fast validation actually fires on a real invocation, not just in the local smoke test
-   (section 7).
+   *absent* when `*_mode` is `pacbio`/`ont`.
+3. `--mode ${params.*_mode}` is passed unconditionally and symmetrically by both callers.
+4. Fail-fast validation actually fires on a real invocation, not just in the local smoke test.
 5. Restriction is real, not just smaller-looking: no variant calls land outside the target
-   BED (section 10 item 7's explicit ask).
+   BED.
 6. The params file used matches the current `params.*.yaml.example` — no stale/removed keys
    left over from a prior design (e.g. the removed `deepsomatic_model_type`).
 
