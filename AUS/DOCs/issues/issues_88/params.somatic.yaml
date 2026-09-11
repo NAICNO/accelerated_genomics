@@ -20,7 +20,7 @@ known_sites:
 germline_resource: /projects/ec232/ngs/reference/parabricks_ref/Homo_sapiens_assembly38.known_indels.vcf.gz
 
 # ---- optional ----
-deepsomatic_model_type: WGS   # WGS | WES | PACBIO | ONT -- confirm against `pbrun deepsomatic --help`
+deepsomatic_mode: shortread
 outdir: results_somatic
 
 # ---- containers (Apptainer/Singularity .sif paths or image URIs) ----

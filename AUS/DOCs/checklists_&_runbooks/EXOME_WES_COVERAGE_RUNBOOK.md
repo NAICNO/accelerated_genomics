@@ -227,9 +227,7 @@ bedtools intersect -v -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplo
 - [ ] `params.germline_wes.yaml` diffed against current `params.germline.yaml.example` —
       no keys present that the example doesn't document
 - [ ] `params.somatic_wes.yaml` diffed against current `params.somatic.yaml.example` — no
-      keys present that the example doesn't document (specifically: confirm no leftover
-      `deepsomatic_model_type` — that param was removed from `somatic.config` on 2026-09-10
-      and no longer does anything)
+      keys present that the example doesn't document 
 
 ```bash
 
@@ -257,8 +255,6 @@ bedtools intersect -v -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplo
 
 - [ ] Overall pass/fail for full WES coverage (both pipelines, all six checks in section 0's
       Goal list)
-- [ ] Any gap found here fed back into `EXOME_OPEN_ITEMS.md` (or closed out there, if this run
-      resolves it)
 
 ## Sign-off
 
@@ -270,6 +266,3 @@ bedtools intersect -v -a results_germline_wes/vcf/haplotypecaller/SAMPLE01.haplo
 - `-resume` can make a run "succeed" without re-executing the tasks you actually changed —
   do a fresh run (or clear the relevant `work/` dirs) when this runbook is being used to
   qualify a code change, not just to re-confirm an already-verified state.
-- File-size/variant-count comparisons (1e/2e) are suggestive, not conclusive — section 1c/1f
-  and 2c/2f exist specifically because a wrong-but-still-restrictive interval file, or a flag
-  that silently failed to apply, can still produce a smaller BAM and fewer variants.

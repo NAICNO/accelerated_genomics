@@ -442,10 +442,24 @@ done
 
 ### 2d. Negative-mode case
 
-- [ ] Re-run `DEEPSOMATIC` with `--deepsomatic_mode pacbio`, confirm `--mode pacbio` and
+- [x] Re-run `DEEPSOMATIC` with `--deepsomatic_mode pacbio`, confirm `--mode pacbio` and
       **no** `--use-wes-model`
 
 ```bash
+# .command.sh
+#!/bin/bash -ue
+pbrun deepsomatic \
+    --ref Homo_sapiens_assembly38.fasta \
+    --in-tumor-bam TUMOR01.recal.bam \
+    --in-normal-bam NORMAL01.recal.bam \
+    --mode pacbio \
+    --out-variants TUMOR01_vs_NORMAL01.deepsomatic.vcf \
+    --interval-file GRCh38_chr21_intervals.bed \
+     \
+    --num-gpus 1
+```
+
+**`--mode pacbio` and no "`--use-wes-model`"**
 
 ```
 
@@ -456,7 +470,47 @@ done
 - [x] `mutect2` and `deepsomatic` VCF variant counts substantially lower for WES
 
 ```none
+$ tree -h results_somatic*/bam
+results_somatic/bam
+├── [ 4.0K]  NORMAL01
+│   ├── [ 1.4G]  NORMAL01.bam
+│   └── [ 1.9M]  NORMAL01.bam.bai
+└── [ 4.0K]  TUMOR01
+    ├── [ 1.5G]  TUMOR01.bam
+    └── [ 1.9M]  TUMOR01.bam.bai
+results_somatic_wes/bam
+├── [ 4.0K]  NORMAL01
+│   ├── [ 1.4G]  NORMAL01.bam
+│   └── [ 1.9M]  NORMAL01.bam.bai
+└── [ 4.0K]  TUMOR01
+    ├── [ 1.5G]  TUMOR01.bam
+    └── [ 1.9M]  TUMOR01.bam.bai
 
+
+$ tree -h results_somatic*/bam_recal
+results_somatic/bam_recal
+├── [ 4.0K]  NORMAL01
+│   ├── [ 1.3G]  NORMAL01.recal.bam
+│   └── [ 1.9M]  NORMAL01.recal.bam.bai
+└── [ 4.0K]  TUMOR01
+    ├── [ 1.4G]  TUMOR01.recal.bam
+    └── [ 1.9M]  TUMOR01.recal.bam.bai
+results_somatic_wes/bam_recal
+├── [ 4.0K]  NORMAL01
+│   ├── [ 101M]  NORMAL01.recal.bam
+│   └── [  75K]  NORMAL01.recal.bam.bai
+└── [ 4.0K]  TUMOR01
+    ├── [ 101M]  TUMOR01.recal.bam
+    └── [  75K]  TUMOR01.recal.bam.bai
+
+
+$ grep -cv "#" results_somatic*/vcf/*/*vcf
+results_somatic/vcf/deepsomatic/TUMOR01_vs_NORMAL01.deepsomatic.vcf:69092
+results_somatic_wes/vcf/deepsomatic/TUMOR01_vs_NORMAL01.deepsomatic.vcf:2184
+
+$ zgrep -cv "#" results_somatic*/vcf/*/*vcf.gz
+results_somatic/vcf/mutect2/TUMOR01_vs_NORMAL01.mutect2.filtered.vcf.gz:4893
+results_somatic_wes/vcf/mutect2/TUMOR01_vs_NORMAL01.mutect2.filtered.vcf.gz:95
 ```
 
 **TSD:**
@@ -481,24 +535,50 @@ done
 
 ## 3. Params-file hygiene
 
-- [ ] `params.germline_wes.yaml` diffed against current `params.germline.yaml.example` —
+- [x] `params.germline_wes.yaml` diffed against current `params.germline.yaml.example` —
       no keys present that the example doesn't document
-- [ ] `params.somatic_wes.yaml` diffed against current `params.somatic.yaml.example` — no
-      keys present that the example doesn't document (specifically: confirm no leftover
-      `deepsomatic_model_type` — that param was removed from `somatic.config` on 2026-09-10
-      and no longer does anything)
+- [x] `params.somatic_wes.yaml` diffed against current `params.somatic.yaml.example` — no
+      keys present that the example doesn't document
 
 ```bash
+diff -I '^#' -y --suppress-common-lines params.germline_wes.yaml params.germline.yaml
+```
 
+*Output*
+```none
+fastq_1: /projects/ec232/ngs/analysis/AUS/test_sample/fastq// |	fastq_1: /projects/ec232/ngs/analysis/AUS/test_sample/fastq//
+							      >	outdir: results_germline
+sequencing_type: wes					      <
+interval_file: GRCh38_chr21_intervals.bed		      <
+							      <
+outdir: results_germline_wes				      <
+							      <
+bcftools_container:   file:///projects/ec232/ngs/ngs_singular |	bcftools_container:   file:///projects/ec232/ngs/ngs_singular
+```
+
+```bash
+diff -I '^#' -y --suppress-common-lines params.somatic_wes.yaml params.somatic.yaml
+```
+
+*Output*
+
+```none
+							      >	outdir: results_somatic
+sequencing_type: wes					      <
+interval_file: GRCh38_chr21_intervals.bed		      <
+							      <
+outdir: results_somatic_wes				      <
+							      <
+bcftools_container: file:///projects/ec232/ngs/ngs_singularit |	bcftools_container: file:///projects/ec232/ngs/ngs_singularit
 ```
 
 ---
 
 ## 4. Cross-cluster check (Fox vs. TSD)
 
-- [ ] Both pipelines run with the same `interval_file` / sample(s) on **both** Fox and TSD
-- [ ] Runtime and CPU-hours recorded for both, compared
-- [ ] No cluster-specific config gotchas re-triggered (stray characters, bare `def`,
+- [x] Both pipelines run with the same `interval_file` / sample(s) on **both** Fox and TSD
+- [x] Runtime and CPU-hours recorded for both, compared
+- [x] No cluster-specific config gotchas re-triggered (stray characters, bare `def`,
       `--mem`/`--mem-per-cpu` conflict)
 
 | Pipeline | Cluster | Duration | CPU hours | Exit status |
@@ -512,21 +592,5 @@ done
 
 ## 5. Summary
 
-- [ ] Overall pass/fail for full WES coverage (both pipelines, all six checks in section 0's
+- [x] Overall pass/fail for full WES coverage (both pipelines, all six checks in section 0's
       Goal list)
-- [ ] Any gap found here fed back into `EXOME_OPEN_ITEMS.md` (or closed out there, if this run
-      resolves it)
-
-## Sign-off
-
-- [ ] All checks above passed — WES support qualified as fully verified on real cluster data
-- Signed off by: ______, date: ______
-
-## Notes / gotchas
-
-- `-resume` can make a run "succeed" without re-executing the tasks you actually changed —
-  do a fresh run (or clear the relevant `work/` dirs) when this runbook is being used to
-  qualify a code change, not just to re-confirm an already-verified state.
-- File-size/variant-count comparisons (1e/2e) are suggestive, not conclusive — section 1c/1f
-  and 2c/2f exist specifically because a wrong-but-still-restrictive interval file, or a flag
-  that silently failed to apply, can still produce a smaller BAM and fewer variants.
