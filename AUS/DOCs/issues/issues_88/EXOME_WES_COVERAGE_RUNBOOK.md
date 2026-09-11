@@ -87,7 +87,7 @@ Succeeded   : 7
 
 ***TSD:***
 
-![alt text](tsd-germline-wf)
+![alt text](tsd-germline-wf.png)
 
 ### 1b. Fail-fast validation (real-cluster spot check)
 
@@ -132,11 +132,11 @@ Pull the actual resolved `pbrun` command line for each task from `.command.sh` i
 work directory (path is in the Nextflow log, e.g. `[a5/3e9489]` → `work/a5/3e9489*/.command.sh`),
 or from `results/pipeline_info/trace.txt` if it captures the full command.
 
-- [ ] `FQ2BAM` — confirm **no** `--interval-file` present
-- [ ] `BQSR` — confirm `--interval-file <path>` present
-- [ ] `APPLYBQSR` — confirm `--interval-file <path>` present
-- [ ] `HAPLOTYPECALLER` — confirm `--interval-file <path>` present
-- [ ] `DEEPVARIANT` — confirm `--interval-file <path>`, `--mode shortread`, and
+- [x] `FQ2BAM` — confirm **no** `--interval-file` present
+- [x] `BQSR` — confirm `--interval-file <path>` present
+- [x] `APPLYBQSR` — confirm `--interval-file <path>` present
+- [x] `HAPLOTYPECALLER` — confirm `--interval-file <path>` present
+- [x] `DEEPVARIANT` — confirm `--interval-file <path>`, `--mode shortread`, and
       `--use-wes-model` all present
 
 ```bash
@@ -523,7 +523,15 @@ results_somatic_wes/vcf/mutect2/TUMOR01_vs_NORMAL01.mutect2.filtered.vcf.gz:95
 - [ ] `bedtools intersect -v` of `mutect2` filtered VCF against `interval_file` → zero records
 - [ ] `bedtools intersect -v` of `deepsomatic` VCF against `interval_file` → zero records
 
-```bash
+```none
+$ bedtools intersect -v -a results_somatic_wes/vcf/mutect2/TUMOR01_vs_NORMAL01.mutect2.filtered.vcf.gz -b GRCh38_chr21_intervals.bed | grep -cv "#"
+0
+$ bedtools intersect -a results_somatic_wes/vcf/mutect2/TUMOR01_vs_NORMAL01.mutect2.filtered.vcf.gz -b GRCh38_chr21_intervals.bed | grep -cv "#"
+169
+$ bedtools intersect -v -a results_somatic_wes/vcf/deepsomatic/TUMOR01_vs_NORMAL01.deepsomatic.vcf -b GRCh38_chr21_intervals.bed | grep -cv "#"
+0
+$ bedtools intersect -a results_somatic_wes/vcf/deepsomatic/TUMOR01_vs_NORMAL01.deepsomatic.vcf -b GRCh38_chr21_intervals.bed | grep -cv "#"
+5265
 
 ```
 
@@ -583,10 +591,10 @@ bcftools_container: file:///projects/ec232/ngs/ngs_singularit |	bcftools_contain
 
 | Pipeline | Cluster | Duration | CPU hours | Exit status |
 |---|---|---|---|---|
-| Germline | Fox | | | |
-| Germline | TSD | | | |
-| Somatic | Fox | | | |
-| Somatic | TSD | | | |
+| Germline | Fox | 3m 26s |0.6 | - |
+| Germline | TSD | 4m 31s |0.4| - |
+| Somatic | Fox | 6m 31s | 2.6 | - |
+| Somatic | TSD | 3m 37m| 0.7| - |
 
 ---
 
