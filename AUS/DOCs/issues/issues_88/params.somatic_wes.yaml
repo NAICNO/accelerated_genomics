@@ -1,0 +1,39 @@
+# Example -params-file for somatic_main.nf.
+#
+# ---- input: single tumor/normal FASTQ pair (all required) ----
+tumor_id:       TUMOR01
+tumor_fastq_1:  /projects/ec232/ngs/analysis/AUS/test_sample/fastq/sample_tumor_1.fastq.gz
+tumor_fastq_2:  /projects/ec232/ngs/analysis/AUS/test_sample/fastq/sample_tumor_2.fastq.gz
+normal_id:      NORMAL01
+normal_fastq_1: /projects/ec232/ngs/analysis/AUS/test_sample/fastq/sample_normal_1.fastq.gz
+normal_fastq_2: /projects/ec232/ngs/analysis/AUS/test_sample/fastq/sample_normal_2.fastq.gz
+
+# ---- reference & resources ----
+ref: /projects/ec232/ngs/reference/parabricks_ref/Homo_sapiens_assembly38.fasta   # reference FASTA; expects <ref>.fai and a matching .dict alongside
+
+# known-sites VCFs for BQSR (dbSNP, Mills, etc.), each needs a .tbi alongside.
+# A YAML list works here (unlike the CLI, which only accepts a comma-separated
+# string for --known_sites).
+known_sites:
+  - /projects/ec232/ngs/reference/parabricks_ref/Homo_sapiens_assembly38.known_indels.vcf.gz
+
+germline_resource: /projects/ec232/ngs/reference/parabricks_ref/Homo_sapiens_assembly38.known_indels.vcf.gz
+
+# ---- optional ----
+deepsomatic_mode: shortread
+
+# exome (WES) support -- uncomment both to restrict analysis to target regions;
+# interval_file must be BED.
+sequencing_type: wes
+interval_file: GRCh38_chr21_intervals.bed
+
+outdir: results_somatic_wes
+
+# ---- containers (Apptainer/Singularity .sif paths or image URIs) ----
+# Fixed per-cluster infrastructure -- see the earlier decision in
+# singularity_profile_design notes: these stay explicit params, not baked
+# into configs/singularity.conf, so they can be overridden without a repo edit.
+parabricks_container: file:///projects/ec232/ngs/ngs_singularity/clara-parabricks_4.7.1-1.sif
+gatk_container: file:///projects/ec232/ngs/ngs_singularity/broadinstitute_gatk_4.3.0.0.sif
+bcftools_container: file:///projects/ec232/ngs/ngs_singularity/bcftools-1.23--h3a4d415_0.sif
+
