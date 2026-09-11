@@ -35,11 +35,16 @@ germline_resource: /path/gnomad.vcf.gz     # gnomAD-style resource for contamina
 pon: /path/panel_of_normals.vcf.gz         # optional Mutect2 panel-of-normals (bgzipped + .tbi); delete this line to skip
 
 # ---- optional ----
-deepsomatic_model_type: WGS   # WGS | WES | PACBIO | ONT -- confirm against `pbrun deepsomatic --help`
+deepsomatic_model_type: WGS   # WGS | WES | PACBIO | ONT
+
+# exome (WES) support -- uncomment both to restrict analysis to target regions;
+# interval_file must be BED.
+# sequencing_type: wes
+# interval_file: /path/targets.bed
+
 outdir: results
 
 # ---- containers (Apptainer/Singularity .sif paths or image URIs) ----
-# Fixed per-cluster infrastructure -- see the earlier decision in
 # singularity_profile_design notes: these stay explicit params, not baked
 # into configs/singularity.conf, so they can be overridden without a repo edit.
 parabricks_container: file:///cluster/p/pXX/cluster/NGS/images/clara-parabricks_<version>.sif

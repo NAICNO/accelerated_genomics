@@ -29,12 +29,17 @@ known_sites:
   - /path/mills.vcf.gz
 
 # ---- optional ----
-deepvariant_mode: shortread   # shortread | ont | pacbio (pbrun v4.3.1) -- confirm against `pbrun deepvariant --help`
+deepvariant_mode: shortread   # shortread | pacbio | ont (pbrun v4.7.1)
 emit_gvcf: false              # set true to have haplotypecaller emit a GVCF instead of a regular VCF
+
+# exome (WES) support -- uncomment both to restrict analysis to target regions;
+# interval_file must be BED. 
+# sequencing_type: wes
+# interval_file: /path/targets.bed
+
 outdir: results
 
 # ---- containers (Apptainer/Singularity .sif paths or image URIs) ----
-# Fixed per-cluster infrastructure -- see the earlier decision in
 # singularity_profile_design notes: these stay explicit params, not baked
 # into configs/singularity.conf, so they can be overridden without a repo edit.
 parabricks_container: file:///cluster/p/pXX/cluster/NGS/images/clara-parabricks_<version>.sif

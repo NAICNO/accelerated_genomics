@@ -60,6 +60,22 @@ workflow {
               "-profile singularity,tsd,test"
     }
 
+    // ---- exome / target-region support ----
+    if (params.sequencing_type !in ['wgs', 'wes']) {
+        error "params.sequencing_type must be 'wgs' or 'wes', got: ${params.sequencing_type}"
+    }
+    if (params.sequencing_type == 'wes' && !params.interval_file) {
+        error "sequencing_type = 'wes' requires --interval_file (BED) restricting " +
+              "analysis to the captured target regions."
+    }
+    if (params.sequencing_type == 'wgs' && params.interval_file) {
+        error "--interval_file was given but sequencing_type is 'wgs' (default) -- " +
+              "set --sequencing_type wes to actually apply it, or drop --interval_file."
+    }
+    interval_file = params.interval_file ? file(params.interval_file) : file('NO_FILE_INTERVAL')
+    // deepvariant's --use-wes-model is only meaningful in shortread mode (pbrun v4.7.1 docs)
+    use_wes_model = (params.sequencing_type == 'wes' && params.deepvariant_mode == 'shortread')
+
     // ---- reference bundle: FASTA + .fai + .dict expected alongside params.ref ----
     ref       = file(params.ref)
     ref_index = file("${params.ref}.fai")
@@ -84,15 +100,15 @@ workflow {
     )
 
     FQ2BAM(ch_reads, ref, ref_index, ref_dict)
-    BQSR(FQ2BAM.out.bam, ref, ref_index, ref_dict, known_sites_vcfs, known_sites_tbis)
-    APPLYBQSR(BQSR.out.recal, ref, ref_index, ref_dict)
+    BQSR(FQ2BAM.out.bam, ref, ref_index, ref_dict, known_sites_vcfs, known_sites_tbis, interval_file)
+    APPLYBQSR(BQSR.out.recal, ref, ref_index, ref_dict, interval_file)
 
     ch_bam = APPLYBQSR.out.bam.map { sample_id, sample_type, bam, bai -> tuple(sample_id, bam, bai) }
 
     // ---- two callers in parallel off the same recalibrated BAM ----
-    DEEPVARIANT(ch_bam, ref, ref_index, ref_dict)
-    HAPLOTYPECALLER(ch_bam, ref, ref_index, ref_dict)
-
+    DEEPVARIANT(ch_bam, ref, ref_index, ref_dict, interval_file, use_wes_model)
+    HAPLOTYPECALLER(ch_bam, ref, ref_index, ref_dict, interval_file)
+    
     // ---- one VCFQC process definition, run once per caller output ----
     VCFQC(DEEPVARIANT.out.vcf.mix(HAPLOTYPECALLER.out.vcf))
 }
