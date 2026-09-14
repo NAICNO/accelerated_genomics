@@ -146,8 +146,7 @@ nextflow run germline_workflow.nf -c germline.config -profile tsd \
 nextflow run germline_workflow.nf -c germline.config -profile singularity,tsd -params-file params.yaml
 ```
 
-
-- Optional params: `--deepvariant_mode` (`wgs` | `wes` | `ont`, default `wgs`), `--emit_gvcf` (default `false`, set `true` to have `haplotypecaller` emit a GVCF).
+Optional params: `--deepvariant_mode` (`shortread` | `pacbio` | `ont`, default `shortread`),`--emit_gvcf` (default `false`, set `true` to have `haplotypecaller` emit a GVCF).
 - Required params: `sample_id`, `fastq_1`, `fastq_2`, `ref`, `known_sites`, `parabricks_container`, `bcftools_container`.
 
 **Outputs land under `results/`** (override with `--outdir`):
