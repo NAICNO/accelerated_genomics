@@ -54,9 +54,9 @@ workflow {
     // missing, so this asserts the `_resource_profile` marker each of
     // those files sets
     if (!params._resource_profile) {
-        error "No resource-sizing profile selected. Add `production` or `test` " +
-              "to -profile alongside `singularity` and `tsd`/`fox`, e.g. " +
-              "-profile singularity,tsd,test"
+        error "No resource-sizing profile selected. Add `production`, `test`, " +
+              "or `exome` to -profile alongside `singularity` and `tsd`/`fox`, " +
+              "e.g. -profile singularity,tsd,production or -profile singularity,tsd,exome"
     }
 
     // ---- exome / target-region support ----

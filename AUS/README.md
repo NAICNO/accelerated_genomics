@@ -146,8 +146,7 @@ nextflow run germline_workflow.nf -c germline.config -profile tsd \
 nextflow run germline_workflow.nf -c germline.config -profile singularity,tsd -params-file params.yaml
 ```
 
-
-- Optional params: `--deepvariant_mode` (`wgs` | `wes` | `ont`, default `wgs`), `--emit_gvcf` (default `false`, set `true` to have `haplotypecaller` emit a GVCF).
+Optional params: `--deepvariant_mode` (`shortread` | `pacbio` | `ont`, default `shortread`),`--emit_gvcf` (default `false`, set `true` to have `haplotypecaller` emit a GVCF).
 - Required params: `sample_id`, `fastq_1`, `fastq_2`, `ref`, `known_sites`, `parabricks_container`, `bcftools_container`.
 
 **Outputs land under `results/`** (override with `--outdir`):
@@ -167,8 +166,16 @@ results/
 
 | File | Role |
 |---|---|
-| `somatic.config` / `germline.config` | workflow-specific params + `tsd` profile |
-| `configs/PARABRICKS_<>.conf` | shared Slurm executor, Apptainer/GPU settings, per-process resource tuning (`withName`), included via `-profile < tsd \| fox>` |
+| `somatic.config` / `germline.config` | workflow-specific params + `tsd`/`fox`/`singularity`/`production`/`test` profile definitions |
+| `configs/PARABRICKS_TSD.conf` | TSD-specific Slurm executor, account, GPU request syntax, Apptainer bind mounts -- included via `-profile tsd`. No per-process cpu/time/memory here anymore. |
+| `configs/PARABRICKS_FOX.conf` | Fox-specific Slurm executor, account, GPU request syntax, Singularity bind mounts -- included via `-profile fox`. No per-process cpu/time/memory here anymore. |
+| `configs/resources_production.conf` | per-process cpu/time/memory (`withName`), shared by both clusters -- included via `-profile production` |
+| `configs/resources_test.conf` | per-process cpu/time/memory sized for the small test dataset, shared by both clusters -- included via `-profile test` |
+| `configs/resources_exome.conf` | per-process cpu/time/memory sized for whole-exome sequence (WES) datasets, shared by both clusters -- included via `-profile exome` |
+
+Every run must combine `singularity` + (`tsd` or `fox`) + (`production` or `test`) -- e.g. `-profile singularity,tsd,production`. `production`/`test` are mandatory: both workflow entrypoints fail fast if neither is selected. See `docs/profile_specification.md` for the full rationale.
+
+Use the `exome` resource-sizing profile instead of `production`/`test` for WES runs, e.g. `-profile singularity,tsd,exome` -- see `configs/resources_exome.conf`. `production`, `test`, and `exome` are a three-way mutually-exclusive choice; never combine two of them on the same run.
 
 - Both workflows define a `leaf_process` and `gpu_process` labels
   - `leaf_process`: retry once, then ignore on second failure
