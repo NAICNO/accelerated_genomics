@@ -39,11 +39,29 @@ echo -e "\n=== 1. Build GBZ v1 directly from FASTA ==="
 # We build a plain graph, parse reference haplotypes, and force v1 GBZ output.
 RAW_GBZ="${OUTPUT_DIR}/${REF_BASE}.v1.gbz"
 
-singularity exec -B "$(pwd)" "${VG_CONTAINER}" bash -c "
-    vg construct -r '${REF_FASTA}' -t '${SLURM_CPUS_PER_TASK:-4}' > '${OUTPUT_DIR}/tmp/temp_graph.vg'
-    vg gbwt -v 2 -E -o '${RAW_GBZ}' --gbz-format 1 -g '${OUTPUT_DIR}/tmp/temp_graph.vg'
-    rm -f '${OUTPUT_DIR}/tmp/temp_graph.vg'
-"
+singularity exec -B "$(pwd)" "${VG_CONTAINER}" \
+    vg construct -r "${REF_FASTA}" -t 12 > "${OUTPUT_DIR}/tmp/temp_graph.vg"
+
+singularity exec -B "$(pwd)" "${VG_CONTAINER}" \
+    vg gbwt \
+    -p \
+    -E \
+    -o "${RAW_GBZ}" \
+    --gbz-version 1 \
+    -x "${OUTPUT_DIR}/tmp/temp_graph.vg"
+
+##  -E / --parse-paths: Instructs vg to extract reference or
+###     haplotype paths already embedded inside your graph file.
+## -x: Tells vg gbwt that this specific file is the reference graph
+##      containing the metadata it needs to load into the GBWT structure
+
+rm -f "${OUTPUT_DIR}/tmp/temp_graph.vg"
+
+# singularity exec -B "$(pwd)" "${VG_CONTAINER}" bash -c "
+#     vg construct -r '${REF_FASTA}' -t '${SLURM_CPUS_PER_TASK:-4}' > '${OUTPUT_DIR}/tmp/temp_graph.vg'
+#     vg gbwt -v 2 -E -o '${RAW_GBZ}' --gbz-format 1 -g '${OUTPUT_DIR}/tmp/temp_graph.vg'
+#     rm -f '${OUTPUT_DIR}/tmp/temp_graph.vg'
+# "
 
 echo -e "\n=== 2. Generate Giraffe indexes from GBZ (-G) ==="
 # Determine whether to use 'sr-giraffe' or 'giraffe' based on container version
