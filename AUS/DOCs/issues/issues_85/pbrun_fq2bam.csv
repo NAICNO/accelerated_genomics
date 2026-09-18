@@ -1,0 +1,60 @@
+Type;Name;Required?;Description
+I/O;--ref REF;Yes;Path to the reference file.
+I/O;--in-fq [IN_FQ ...];No;"Path to the pair-ended FASTQ files followed by optional read groups with quotes (Example: ""@RG\\tID:foo\\tLB:lib1\\tPL:bar\\tSM:sample\\tPU:foo""). The files must be in fastq or fastq.gz format. All sets of inputs should have a read group; otherwise, none should have a read group, and it will be automatically added by the pipeline. This option can be repeated multiple times. Example 1: --in-fq sampleX_1_1.fastq.gz sampleX_1_2.fastq.gz --in-fq sampleX_2_1.fastq.gz sampleX_2_2.fastq.gz. Example 2: --in-fq sampleX_1_1.fastq.gz sampleX_1_2.fastq.gz ""@RG\\tID:foo\\tLB:lib1\\tPL:bar\\tSM:sample\\tPU:unit1"" --in-fq sampleX_2_1.fastq.gz sampleX_2_2.fastq.gz ""@RG\\tID:foo2\\tLB:lib1\\tPL:bar\\tSM:sample\\tPU:unit2"". For the same sample, Read Groups should have the same sample name (SM) and a different ID and PU."
+I/O;--in-se-fq [IN_SE_FQ ...];No;"Path to the single-ended FASTQ file followed by optional read group with quotes (Example: ""@RG\\tID:foo\\tLB:lib1\\tPL:bar\\tSM:sample\\tPU:foo""). The file must be in fastq or fastq.gz format. Either all sets of inputs have a read group, or none should have one, and it will be automatically added by the pipeline. This option can be repeated multiple times. Example 1: --in-se-fq sampleX_1.fastq.gz --in-se-fq sampleX_2.fastq.gz . Example 2: --in-se-fq sampleX_1.fastq.gz ""@RG\\tID:foo\\tLB:lib1\\tPL:bar\\tSM:sample\\tPU:unit1"" --in-se-fq sampleX_2.fastq.gz ""@RG\\tID:foo2\\tLB:lib1\\tPL:bar\\tSM:sample\\tPU:unit2"" . For the same sample, Read Groups should have the same sample name (SM) and a different ID and PU."
+I/O;--in-fq-list IN_FQ_LIST;No;Path to a file that contains the locations of pair-ended FASTQ files. Each line must contain the location of two FASTQ files followed by a read group, each separated by a space. Each set of files (and associated read group) must be on a separate line. Files must be in fastq/fastq.gz format. Line syntax: <fastq_1> <fastq_2> <read group>
+I/O;--in-se-fq-list IN_SE_FQ_LIST;No;Path to a file that contains the locations of single-ended FASTQ files. Each line must contain the location of the FASTQ files followed by a read group, each separated by a space. Each file (and associated read group) must be on a separate line. Files must be in fastq/fastq.gz format. Line syntax: <fastq> <read group>
+I/O;--in-se-bam IN_SE_BAM;No;Path to a single-ended BAM/CRAM file that will be used to convert back to FASTQ as the input of fq2bam.
+I/O;--knownSites KNOWNSITES;No;Path to a known indels file. The file must be in vcf.gz format. This option can be used multiple times.
+I/O;--interval-file INTERVAL_FILE;No;Path to an interval file in one of these formats: Picard-style (.interval_list or .picard), GATK-style (.list or .intervals), or BED file (.bed). This option can be used multiple times.
+I/O;--out-recal-file OUT_RECAL_FILE;No;Path of a report file after Base Quality Score Recalibration.
+I/O;--out-bam OUT_BAM;Yes;Path of a BAM/CRAM file.
+I/O;--out-duplicate-metrics OUT_DUPLICATE_METRICS;No;Path of duplicate metrics file after marking duplicates.
+I/O;--out-qc-metrics-dir OUT_QC_METRICS_DIR;No;Path of the directory where QC metrics will be generated.
+Tool;--max-read-length MAX_READ_LENGTH;No;Maximum read length/size (i.e., sequence length) used for bwa and filtering FASTQ input. (default: 480)
+Tool;--min-read-length MIN_READ_LENGTH;No;Minimum read length/size (i.e., sequence length) used for bwa and filtering FASTQ input. (default: 1)
+Tool;--max-read-length-on-gpu MAX_READ_LENGTH_ON_GPU;No;"Maximum read length to process on GPU. Reads longer than this value, up to --max-read-length, will use the CPU fallback. Keep the default value (512 base pairs) unless the input has many reads longer than 512 base pairs; to process longer reads at all, also raise --max-read-length. Valid values are 512 and 1024 base pairs only."
+Tool;-L INTERVAL, --interval INTERVAL;No;"Interval within which to call bqsr from the input reads. All intervals will have a padding of 100 to get read records, and overlapping intervals will be combined. Interval files should be passed using the --interval-file option. This option can be used multiple times (e.g. ""-L chr1 -L chr2:10000 -L chr3:20000+ -L chr4:10000-20000"")."
+Tool;--bwa-options BWA_OPTIONS;No;"Pass supported bwa mem options as one string. The current original bwa mem supported options are: -M, -Y, -C, -T, -B, -U, -L, -I, and -K (e.g. --bwa-options=""-M -Y"")."
+Tool;--no-warnings;No;Suppress warning messages about system thread and memory usage.
+Tool;--filter-flag FILTER_FLAG;No;Don't generate SAM entries in the output if the entry's flag's meet this criteria. Criteria: (flag & filter != 0). (default: 0)
+Tool;--skip-multiple-hits;No;Filter SAM entries whose length of SA is not 0.
+Tool;--align-only;No;Generate output BAM after bwa-mem. The output will not be co-ordinate sorted or duplicates will not be marked.
+Tool;--no-markdups;No;Do not perform the Mark Duplicates step. Return BAM after sorting.
+Tool;--markdups-single-ended-start-end;No;Mark duplicate on single-ended reads by 5' and 3' end.
+Tool;--ignore-rg-markdups-single-ended;No;Ignore read group info in marking duplicates on single-ended reads. This option must be used with `--markdups-single-ended-start-end`.
+Tool;--fix-mate;No;Add mate cigar (MC) and mate quality (MQ) tags to the output file.
+Tool;--markdups-assume-sortorder-queryname;No;Assume the reads are sorted by queryname for marking duplicates. This will mark secondary, supplementary, and unmapped reads as duplicates as well. This flag will not impact variant calling while increasing processing times.
+Tool;--markdups-picard-version-2182;No;Assume marking duplicates to be similar to Picard version 2.18.2.
+Tool;--monitor-usage;No;Monitor approximate CPU utilization and host memory usage during execution.
+Tool;--optical-duplicate-pixel-distance OPTICAL_DUPLICATE_PIXEL_DISTANCE;No;The maximum offset between two duplicate clusters in order to consider them optical duplicates. Ignored if --out-duplicate-metrics is not passed.
+Tool;--standalone-bqsr;No;Run standalone BQSR.
+Tool;--read-group-sm READ_GROUP_SM;No;SM tag for read groups in this run.
+Tool;--read-group-lb READ_GROUP_LB;No;LB tag for read groups in this run.
+Tool;--read-group-pl READ_GROUP_PL;No;PL tag for read groups in this run.
+Tool;--read-group-id-prefix READ_GROUP_ID_PREFIX;No;Prefix for the ID and PU tags for read groups in this run. This prefix will be used for all pairs of FASTQ files in this run. The ID and PU tags will consist of this prefix and an identifier, that will be unique for a pair of FASTQ files.
+Tool;-ip INTERVAL_PADDING, --interval-padding INTERVAL_PADDING;No;Amount of padding (in base pairs) to add to each interval you are including.
+Performance;--bwa-nstreams BWA_NSTREAMS;No;"Number of streams per GPU to use; note: more streams increases device memory usage. Default is auto which will try to use an optimal amount of device memory. (default: auto)"
+Performance;--bwa-cpu-thread-pool BWA_CPU_THREAD_POOL;No;Number of threads to devote to CPU thread pool *per primary CPU thread*. (default: 16)
+Performance;--num-cpu-threads-per-stage NUM_CPU_THREADS_PER_STAGE;No;(Same as above) Number of threads to devote to CPU thread pool *per primary CPU thread*.
+Performance;--bwa-normalized-queue-capacity BWA_NORMALIZED_QUEUE_CAPACITY;No;"Normalized capacity for alignment work queues, use a lower value if CPU memory is low; final value will be <number of GPUs> * <normalized capacity>. (default: 10)"
+Performance;--bwa-primary-cpus BWA_PRIMARY_CPUS;No;Total number of primary CPU threads for the process, each driving its own thread pool. Threads are not tied to GPUs. When set to 'auto', the number of GPUs is used as a heuristic to determine the primary-cpu thread count (one per GPU). (default: auto)
+Performance;--cigar-on-gpu;No;Run CIGAR generation on GPU. Helpful in CPU bound conditions. (default is on CPU).
+Performance;--run-partition;No;Divide --num-gpus into partitions and run multiple child processes in parallel, each pinned to its share of GPUs via CUDA_VISIBLE_DEVICES. The number of partitions is --num-gpus / --bwa-gpu-num-per-partition.
+Performance;--bwa-gpu-num-per-partition BWA_GPU_NUM_PER_PARTITION;No;Number of GPUs each partition (worker process) drives when --run-partition is set. Default 2. Must divide --num-gpus evenly.
+Performance;--gpuwrite;No;Use one GPU to accelerate writing final BAM/CRAM.
+Performance;--gpuwrite-deflate-algo GPUWRITE_DEFLATE_ALGO;No;Choose the nvCOMP DEFLATE algorithm to use with --gpuwrite. Note these options do not correspond to CPU DEFLATE options. Valid options are 1, 2, and 4. Option 1 is fastest, while options 2 and 4 have progressively lower throughput but higher compression ratios. The default value is 1 when the user does not provide an input (i.e., None).
+Performance;--gpusort;No;Use GPUs to accelerate sorting and marking.
+Performance;--use-gds;No;Use GPUDirect Storage (GDS) to enable a direct data path for direct memory access (DMA) transfers between GPU memory and storage. Must be used concurrently with `--gpuwrite`. Please refer to Parabricks Documentation > Best Performance for information on how to set up and use GPUDirect Storage.
+Performance;--memory-limit MEMORY_LIMIT;No;System memory limit in GBs during sorting and postsorting. By default, the limit is half of the total system memory. (default: 62)
+Performance;--low-memory;No;"Use low memory mode; will lower the number of streams per GPU."
+Runtime;--verbose;No;Enable verbose output.
+Runtime;0;No;Show full command line arguments.
+Runtime;--logfile LOGFILE;No;Path to the log file. If not specified, messages will only be written to the standard error output.
+Runtime;--tmp-dir TMP_DIR;No;Full path to the directory where temporary files will be stored. (default: .)
+Runtime;--with-petagene-dir WITH_PETAGENE_DIR;No;"Full path to the PetaGene installation directory. By default, this should have been installed at /opt/petagene. Use of this option also requires that the PetaLink library has been preloaded by setting the LD_PRELOAD environment variable. Optionally set the PETASUITE_REFPATH and PGCLOUD_CREDPATH environment variables that are used for data and credentials. Optionally set the PetaLinkMode environment variable that is used to further configure PetaLink, notably setting it to ""+write"" to enable outputting compressed BAM and .fastq files."
+Runtime;--keep-tmp;No;Do not delete the directory storing temporary files after completion.
+Runtime;--no-seccomp-override;No;Do not override seccomp options for docker.
+Runtime;--version;No;View compatible software versions.
+Runtime;--preserve-file-symlinks;No;Override default behavior to keep file symlinks intact and *not* resolve the symlink.
+Runtime;--num-gpus NUM_GPUS;No;Number of GPUs to use for a run. (default: 1)
