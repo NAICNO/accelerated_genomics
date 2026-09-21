@@ -1,0 +1,53 @@
+Type;Name;Required?;Description
+I/O;--ref REF;Yes;Path to the reference file.
+I/O;--out-vcf OUT_VCF;Yes;Path of the VCF file after Variant Calling. (Allowed: .vcf, .vcf.gz)
+I/O;--in-tumor-bam IN_TUMOR_BAM;Yes;Path of the BAM/CRAM file for tumor reads.
+I/O;--in-normal-bam IN_NORMAL_BAM;No;Path of the BAM/CRAM file for normal reads.
+I/O;--in-tumor-recal-file IN_TUMOR_RECAL_FILE;No;Path of the report file after Base Quality Score Recalibration for tumor sample.
+I/O;--in-normal-recal-file IN_NORMAL_RECAL_FILE;No;Path of the report file after Base Quality Score Recalibration for normal sample.
+I/O;--interval-file INTERVAL_FILE;No;Path to an interval file in one of these formats: Picard-style (.interval_list or .picard), GATK-style (.list or .intervals), or BED file (.bed). This option can be used multiple times.
+I/O;--mutect-bam-output MUTECT_BAM_OUTPUT;No;File to which assembled haplotypes should be written. If passing with --run-partition, multiple BAM files will be written.
+I/O;--pon PON;No;Path of the vcf.gz PON file. Make sure you run prepon first and there is a '.pon' file already.
+I/O;--mutect-germline-resource MUTECT_GERMLINE_RESOURCE;No;Path of the vcf.gz germline resource file. Population VCF of germline sequencing containing allele fractions.
+I/O;--mutect-f1r2-tar-gz MUTECT_F1R2_TAR_GZ;No;Path of the tar.gz of collecting F1R2 counts.
+I/O;--mutect-alleles MUTECT_ALLELES;No;Path of the vcf.gz force-call file. The set of alleles to force-call regardless of evidence.
+Tool;--max-mnp-distance MAX_MNP_DISTANCE;No;Two or more phased substitutions separated by this distance or less are merged into MNPs. (default: 1)
+Tool;--mutectcaller-options MUTECTCALLER_OPTIONS;No;"Pass supported mutectcaller options as one string. The following are currently supported original mutectcaller options: -pcr-indel-model <NONE, HOSTILE, AGGRESSIVE, CONSERVATIVE>, -max-reads-per-alignment-start <int>, -A <AssemblyComplexity>, -min-dangling-branch-length <int> (e.g. --mutectcaller-options=""-pcr-indel-model HOSTILE -max-reads-per-alignment-start 30"")."
+Tool;--initial-tumor-lod INITIAL_TUMOR_LOD;No;Log 10 odds threshold to consider pileup active.
+Tool;--tumor-lod-to-emit TUMOR_LOD_TO_EMIT;No;Log 10 odds threshold to emit variant to VCF.
+Tool;--pruning-lod-threshold PRUNING_LOD_THRESHOLD;No;Ln likelihood ratio threshold for adaptive pruning algorithm.
+Tool;--active-probability-threshold ACTIVE_PROBABILITY_THRESHOLD;No;Minimum probability for a locus to be considered active.
+Tool;--no-alt-contigs;No;Ignore commonly known alternate contigs.
+Tool;--genotype-germline-sites;No;Call all apparent germline site even though they will ultimately be filtered.
+Tool;--genotype-pon-sites;No;Call sites in the PoN even though they will ultimately be filtered.
+Tool;--force-call-filtered-alleles;No;Force-call filtered alleles included in the resource specified by --alleles.
+Tool;--filter-reads-too-long;No;Ignore all input BAM reads with size > 500bp.
+Tool;--minimum-mapping-quality MINIMUM_MAPPING_QUALITY;No;Minimum mapping quality to keep (inclusive).
+Tool;--min-base-quality-score MIN_BASE_QUALITY_SCORE;No;Minimum base quality required to consider a base for calling.
+Tool;--f1r2-median-mq F1R2_MEDIAN_MQ;No;skip sites with median mapping quality below this value.
+Tool;--base-quality-score-threshold BASE_QUALITY_SCORE_THRESHOLD;No;Base qualities below this threshold will be reduced to the minimum (6).
+Tool;--normal-lod NORMAL_LOD;No;Log 10 odds threshold for calling normal variant non-germline.
+Tool;--allow-non-unique-kmers-in-ref;No;Allow graphs that have non-unique kmers in the reference.
+Tool;--enable-dynamic-read-disqualification-for-genotyping;No;Will enable less strict read disqualification low base quality reads.
+Tool;--recover-all-dangling-branches;No;Recover all dangling branches.
+Tool;--pileup-detection;No;If enabled, the variant caller will create pileup-based haplotypes in addition to the assembly-based haplotype generation.
+Tool;--mitochondria-mode;No;Mitochondria mode sets emission and initial LODs to 0.
+Tool;--tumor-name TUMOR_NAME;Yes;Name of the sample for tumor reads. This MUST match the SM tag in the tumor BAM file.
+Tool;--normal-name NORMAL_NAME;No;Name of the sample for normal reads. If specified, this MUST match the SM tag in the normal BAM file.
+Tool;-L INTERVAL, --interval INTERVAL;No;"Interval within which to call the variants from the BAM/CRAM file. All intervals will have a padding of 100 to get read records, and overlapping intervals will be combined. Interval files should be passed using the --interval-file option. This option can be used multiple times (e.g. ""-L chr1 -L chr2:10000 -L chr3:20000+ -L chr4:10000-20000"")."
+Tool;-ip INTERVAL_PADDING, --interval-padding INTERVAL_PADDING;No;Amount of padding (in base pairs) to add to each interval you are including.
+Performance;--mutect-low-memory;No;Use low memory mode in mutect caller.
+Performance;--run-partition;No;"Turn on partition mode; divides genome into multiple partitions and runs 1 process per partition."
+Performance;--gpu-num-per-partition GPU_NUM_PER_PARTITION;No;Number of GPUs to use per partition.
+Performance;--num-htvc-threads NUM_HTVC_THREADS;No;Number of CPU threads per GPU to use. (default: 5)
+Performance;--num-streams-per-gpu NUM_STREAMS_PER_GPU;No;Number of streams to use per GPU. (default: 1)
+Runtime;--verbose;No;Enable verbose output.
+Runtime;0;No;Show full command line arguments.
+Runtime;--logfile LOGFILE;No;Path to the log file. If not specified, messages will only be written to the standard error output.
+Runtime;--tmp-dir TMP_DIR;No;Full path to the directory where temporary files will be stored. (default: .)
+Runtime;--with-petagene-dir WITH_PETAGENE_DIR;No;"Full path to the PetaGene installation directory. By default, this should have been installed at /opt/petagene. Use of this option also requires that the PetaLink library has been preloaded by setting the LD_PRELOAD environment variable. Optionally set the PETASUITE_REFPATH and PGCLOUD_CREDPATH environment variables that are used for data and credentials. Optionally set the PetaLinkMode environment variable that is used to further configure PetaLink, notably setting it to ""+write"" to enable outputting compressed BAM and .fastq files."
+Runtime;--keep-tmp;No;Do not delete the directory storing temporary files after completion.
+Runtime;--no-seccomp-override;No;Do not override seccomp options for docker.
+Runtime;--version;No;View compatible software versions.
+Runtime;--preserve-file-symlinks;No;Override default behavior to keep file symlinks intact and *not* resolve the symlink.
+Runtime;--num-gpus NUM_GPUS;No;Number of GPUs to use for a run. (default: 1)
