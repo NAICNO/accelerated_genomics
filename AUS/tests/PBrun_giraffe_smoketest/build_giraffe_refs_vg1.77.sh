@@ -1,12 +1,19 @@
 #!/bin/bash
+# Build Giraffe reference data using VG v1.77 with GBZ v1 serialization format
+# `pbrun giraffe` Expected GBZ.v1 but got v2. To fix, 
+# this script constructs the initial GBZ using v1 serialization format
+# via vg gbwt with the flag --gbz-format 1, and then feeds that v1 GBZ
+# to vg autoindex -G as specified in NVIDIA's manual
+#
+#-------------------------------------------------------------------
 #SBATCH -J giraffe_refdata
 #SBATCH -o %x-%j.out
 #SBATCH -e %x-%j.err
 #SBATCH --account=ec232
 #SBATCH --partition=normal
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=8G
-#SBATCH -t 00:30:00
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=256G
+#SBATCH -t 04:30:00
 
 set -o errexit
 set -o nounset
