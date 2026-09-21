@@ -1,7 +1,7 @@
 # CPU → Parabricks Parameter Mapping: fq2bam v4.7.1
 
 - Covers the CPU-based somatic-pipeline steps `bwa mem` → `gatk MarkDuplicates` → `gatk BaseRecalibrator`
-- Parameter mapping table use parameters in file - [`pbrun fq2bam` v4.7.1](pbrun_fq2bam.csv) as source of truth for CPU- to PB-run command mappings
+- Parameter mapping table ($1) use parameters in file - [`pbrun fq2bam` v4.7.1](pbrun_fq2bam.csv) as source of truth for CPU- to PB-run command mappings
 
 ---
 
