@@ -5,6 +5,11 @@
 # via vg gbwt with the flag --gbz-format 1, and then feeds that v1 GBZ
 # to vg autoindex -G as specified in NVIDIA's manual
 #
+# Note: This script uses VG v1.70 instead of v1.77 to ensure 
+#     compatibility with GBZ v1 serialization format
+#     Bug-fixes detailed in - 
+#            https://github.com/NAICNO/accelerated_genomics/issues/107 and
+#            https://github.com/NAICNO/accelerated_genomics/issues/108
 #-------------------------------------------------------------------
 #SBATCH -J giraffe_refdata
 #SBATCH -o %x-%j.out
@@ -20,7 +25,7 @@ set -o nounset
 set -o pipefail
 
 # ---- Configuration ----
-VG_CONTAINER="vg_v1.77.0.sif"
+VG_CONTAINER="vg_v1.70.0.sif"
 SAMTOOLS_MODULE="SAMtools/1.17-GCC-12.2.0"
 REF_DIR="tiny_ref"
 REF_BASE="Homo_sapiens_assembly38"
