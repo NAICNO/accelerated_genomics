@@ -25,6 +25,7 @@
 # directory, adjust VG_CONTAINER/ACCOUNT below, then:
 #   sbatch build_giraffe_refdata_fox.sbatch
 #
+# Raised errors: read: https://github.com/NAICNO/accelerated_genomics/issues/103#issuecomment-5704137737
 #-------------------------------------------------------------------
 #SBATCH -J giraffe_refdata
 #SBATCH -o %x-%j.out

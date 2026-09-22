@@ -5,12 +5,13 @@
 # via vg gbwt with the flag --gbz-format 1, and then feeds that v1 GBZ
 # to vg autoindex -G as specified in NVIDIA's manual
 #
-# Note: This script uses VG v1.70 instead of v1.77 to ensure 
-#     compatibility with GBZ v1 serialization format
-#     Bug-fixes detailed in - 
+# Note: 
+#     This script uses VG v1.70 instead of v1.77 to ensure compatibility with GBZ v1 serialization format
+#     This script raised errors and they are fixed in - 
 #            https://github.com/NAICNO/accelerated_genomics/issues/107 and
 #            https://github.com/NAICNO/accelerated_genomics/issues/108
 #-------------------------------------------------------------------
+#!/bin/bash
 #SBATCH -J giraffe_refdata
 #SBATCH -o %x-%j.out
 #SBATCH -e %x-%j.err
@@ -33,7 +34,7 @@ REF_FASTA="${REF_DIR}/${REF_BASE}.fasta"
 OUTPUT_DIR="${REF_DIR}"
 
 # Set specific prefixes for output files
-AUTOINDEX_PREFIX="${OUTPUT_DIR}/${REF_BASE}.autoindex.1.77"
+AUTOINDEX_PREFIX="${OUTPUT_DIR}/${REF_BASE}.autoindex.1.70"
 GBZ_FILE="${AUTOINDEX_PREFIX}.giraffe.gbz"
 
 echo "Starting Giraffe reference dataset generation..."
