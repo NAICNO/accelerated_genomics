@@ -1,0 +1,189 @@
+Starting job 4200472 on gpu-11 on Fox at Tue Sep 22 15:48:01 CEST 2026
+
+Running on host: gpu-11.fox
+Job ID: 4200472
+Assigned GPU: 0
+Container: /projects/ec232/ngs/ngs_singularity/clara-parabricks_4.7.1-1.sif
+
+=== 0. Sanity-check inputs ===
+-- reference bundle (discovered by pattern under /fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref, not hardcoded name) --
+graph_gbz       = /fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.autoindex.1.70.giraffe.gbz
+graph_dist      = /fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.autoindex.1.70.dist
+graph_min       = /fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.autoindex.1.70.shortread.withzip.min
+graph_zipcodes  = /fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.autoindex.1.70.shortread.zipcodes
+graph_ref_paths = /fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.primary.paths
+
+-- paired-end FASTQ reads --
+fastq_1 = /fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/sample_normal_1.fastq.gz
+fastq_2 = /fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/sample_normal_2.fastq.gz
+
+=== 1. Run pbrun giraffe ===
+Flags confirmed against 'singularity exec /projects/ec232/ngs/ngs_singularity/clara-parabricks_4.7.1-1.sif pbrun giraffe -h' run 2026-09-16 -- NOT the section 11 draft's guessed --read-group-sm (that flag does not exist; --sample / --read-group do).
+Please visit https://docs.nvidia.com/clara/#parabricks for detailed documentation
+
+
+
+[Parabricks Options Mesg]: Giraffe auto-configuration: 1 streams/GPU, batch size 8000, work queue 40, minimizers on GPU
+(SE only): False, dozeu on GPU (SE only): False.
+[Parabricks Options Mesg]: To override: set --nstreams to the desired number and use the individual flags (--batch-size,
+--low-memory, --minimizers-gpu, and --work-queue-capacity) as needed. Note Dozeu on GPU is always enabled (for SE only)
+unless --low-memory is set.
+[Parabricks Options Mesg]: Read group for
+/fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/sample_normal_1.fastq.gz:
+[Parabricks Options Mesg]: @RG\tID:GIRAFFE_NORMAL01\tLB:lib1\tPL:bar\tSM:GIRAFFE_NORMAL01\tPU:GIRAFFE_NORMAL01
+[Parabricks Options Mesg]: Marking Duplicates will be run during sorting stages
+
+pbrun giraffe completed successfully.
+
+=== 2. Output BAM exists and is non-empty ===
+-rwxrwx---+ 1 ec-pubuduss ec232-member-group 1365052972 Sep 22 15:53 /fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/GIRAFFE_NORMAL01.bam
+
+=== 3. Duplicate-metrics file exists and is non-empty ===
+## METRICS CLASS	picard.sam.DuplicationMetrics
+LIBRARY	UNPAIRED_READS_EXAMINED	READ_PAIRS_EXAMINED	SECONDARY_OR_SUPPLEMENTARY_RDS	UNMAPPED_READS	UNPAIRED_READ_DUPLICATES	READ_PAIR_DUPLICATES	READ_PAIR_OPTICAL_DUPLICATES	PERCENT_DUPLICATION	ESTIMATED_LIBRARY_SIZE
+lib1	21193	8490015	0	1577161	6104	101376	0	0.012285	352674283
+
+## HISTOGRAM	java.lang.Double
+BIN	VALUE	all_sets	non_optical_sets
+1.0	1	8290909	8290909
+2.0	1.976214	94451	94451
+3.0	2.929208	3031	3031
+4.0	3.859535	237	237
+5.0	4.767733	24	24
+6.0	5.654328	5	5
+7.0	6.519836	4	4
+8.0	7.364756	1	1
+9.0	8.18958	0	0
+10.0	8.994784	0	0
+11.0	9.780836	0	0
+12.0	10.548191	0	0
+13.0	11.297294	0	0
+14.0	12.028579	0	0
+15.0	12.742469	0	0
+16.0	13.439379	0	0
+17.0	14.119713	0	0
+18.0	14.783864	0	0
+19.0	15.432218	0	0
+20.0	16.065151	0	0
+21.0	16.683028	0	0
+22.0	17.286209	0	0
+23.0	17.875043	0	0
+24.0	18.449871	0	0
+25.0	19.011026	0	0
+26.0	19.558834	0	0
+27.0	20.093611	0	0
+28.0	20.615669	0	0
+29.0	21.125308	0	0
+30.0	21.622826	0	0
+31.0	22.10851	0	0
+32.0	22.582641	0	0
+33.0	23.045495	0	0
+34.0	23.49734	0	0
+35.0	23.938437	0	0
+36.0	24.369042	0	0
+37.0	24.789405	0	0
+38.0	25.199769	0	0
+39.0	25.600373	0	0
+40.0	25.991447	0	0
+41.0	26.37322	0	0
+42.0	26.745912	0	0
+43.0	27.109739	0	0
+44.0	27.464912	0	0
+45.0	27.811638	0	0
+46.0	28.150116	0	0
+47.0	28.480543	0	0
+48.0	28.80311	0	0
+49.0	29.118005	0	0
+50.0	29.42541	0	0
+51.0	29.725503	0	0
+52.0	30.018459	0	0
+53.0	30.304446	0	0
+54.0	30.58363	0	0
+55.0	30.856174	0	0
+56.0	31.122236	0	0
+57.0	31.381968	0	0
+58.0	31.635523	0	0
+59.0	31.883047	0	0
+60.0	32.124683	0	0
+61.0	32.360572	0	0
+62.0	32.59085	0	0
+63.0	32.815651	0	0
+64.0	33.035104	0	0
+65.0	33.249338	0	0
+66.0	33.458476	0	0
+67.0	33.66264	0	0
+68.0	33.861947	0	0
+69.0	34.056513	0	0
+70.0	34.246452	0	0
+71.0	34.431873	0	0
+72.0	34.612883	0	0
+73.0	34.789588	0	0
+74.0	34.96209	0	0
+75.0	35.130489	0	0
+76.0	35.294882	0	0
+77.0	35.455365	0	0
+78.0	35.612031	0	0
+79.0	35.764971	0	0
+80.0	35.914272	0	0
+81.0	36.060023	0	0
+82.0	36.202306	0	0
+83.0	36.341206	0	0
+84.0	36.476801	0	0
+85.0	36.609171	0	0
+86.0	36.738393	0	0
+87.0	36.864541	0	0
+88.0	36.987689	0	0
+89.0	37.107907	0	0
+90.0	37.225266	0	0
+91.0	37.339833	0	0
+92.0	37.451675	0	0
+93.0	37.560857	0	0
+94.0	37.667443	0	0
+95.0	37.771492	0	0
+96.0	37.873067	0	0
+97.0	37.972226	0	0
+98.0	38.069027	0	0
+99.0	38.163524	0	0
+100.0	38.255775	0	0
+
+=== 4. .bai index check (resolves specs_dev.md section 5e / Tier 0.5 item 3) ===
+RESULT: pbrun giraffe DOES leave a .bai alongside the .bam automatically.
+-rwxrwx---+ 1 ec-pubuduss ec232-member-group 1784640 Sep 22 15:53 /fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/GIRAFFE_NORMAL01.bam.bai
+
+=== 5. BAM header -- confirm real pbrun giraffe version + resolved flags ===
+NOTE: adjust samtools module name if this load fails (see SAMTOOLS_MODULE in build_giraffe_refdata_fox.sbatch).
+
+=== Done -- summary ===
+out_bam             = /fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/GIRAFFE_NORMAL01.bam
+out_bam_bai_present = yes
+out_duplicate_metrics = /fp/projects01/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/GIRAFFE_NORMAL01.duplicate_metrics.txt
+
+Record job accounting (sacct -j 4200472 --format=JobID,Elapsed,MaxRSS,TotalCPU)
+as the Tier 1 sanity-floor timing data (specs_dev.md section 8/10).
+
+Next: tests/gpu_giraffe_smoketest/'s Tier 2 (modules/giraffe.nf wired
+into germline_workflow.nf, specs_dev.md section 10) -- not started.
+
+Job 4200472 consumed 2.6 billing hours from project ec232.
+
+Submitted 2026-09-22T15:47:59; waited 2.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 10.0 minutes
+Elapsed wallclock time:   5.7 minutes
+
+Job exited normally.
+
+Task and CPU statistics:
+ID             CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+4200472          16            0.0 %  2026-09-22T15:48:01  340.0 s  0
+4200472.batch    16      1    72.7 %  2026-09-22T15:48:01  340.0 s  0
+
+Used CPU time:   1.1 CPU hours
+Unused CPU time: 24.8 CPU minutes
+
+Memory statistics, in GiB:
+ID              Alloc   Usage
+4200472         256.0        
+4200472.batch   256.0    72.7
+
+Job 4200472 completed at Tue Sep 22 15:53:41 CEST 2026

@@ -1,5 +1,6 @@
 #!/bin/bash
 #-------------------------------------------------------------------
+#-------------------------------------------------------------------
 # run_gpu_giraffe_smoketest_fox -- runs a single real Parabricks GPU
 # tool (`pbrun giraffe`) against a real reference-graph bundle via
 # Singularity, no Nextflow involved. Standalone SLURM job, same
@@ -10,37 +11,16 @@
 # --nv` containerOptions) and from the CUDA_VISIBLE_DEVICES env
 # pass-through pattern in gpu_fq2bam_smoketest's TSD script (SINGULARITYENV_
 # + APPTAINERENV_ prefixes, since TSD's `singularity` turned out to be
-# Apptainer under the hood -- see tests/gpu_diag_smoketest). UNCONFIRMED
-# whether Fox needs the same dual-prefix treatment (no Fox-specific
-# gpu_diag run has been recorded); kept here defensively since setting
-# both is harmless if only one is actually read.
-#
-# ASSUMPTIONS NOT YET VERIFIED ON FOX -- confirm before trusting output:
-#   1. This is the FIRST real `pbrun giraffe` run on Fox -- no prior
-#      smoke test has exercised pbrun (not just vg) on this cluster's
-#      GPU nodes. gpu_diag_smoketest and gpu_fq2bam_smoketest are both
-#      TSD-only so far.
-#   2. Whether `--zipcodes-name` is actually REQUIRED (job errors without
-#      it) vs merely accepted -- `--help` shows it as a plain option with
-#      no required/optional marking either way. This script always passes
-#      it (the refdata bundle includes it), so this run does not by
-#      itself distinguish "required" from "accepted"; if you want to
-#      confirm strictly-required, a follow-up run omitting `--zipcodes-name`
-#      and checking for an error would settle it -- not done here.
-#   3. Container bind mounts: this script binds $WORK_DIR (which covers
-#      both $REFDATA_DIR and $FASTQ_DIR by default, since both now live
-#      under $WORK_DIR), $TMP_DIR, and /localscratch (per
-#      PARABRICKS_FOX.conf). If you point REFDATA_DIR or FASTQ_DIR
-#      outside $WORK_DIR, add an extra -B for that path.
+# Apptainer under the hood -- see tests/gpu_diag_smoketest).
 #
 #-------------------------------------------------------------------
-#SBATCH -J gpu_giraffe_smoketest
+#SBATCH -J stest-gpu_giraffe
 #SBATCH --account=ec232
 #SBATCH --partition=accel
 #SBATCH --gpus=1
 #SBATCH --cpus-per-task=16
-#SBATCH --mem=64G
-#SBATCH -t 00:20:00
+#SBATCH --mem=256G
+#SBATCH -t 00:10:00
 #SBATCH --output=%x-%j.out
 #SBATCH --error=%x-%j.err
 
@@ -86,8 +66,8 @@ GBZ_FILE="$(find "${REFDATA_DIR}" -maxdepth 1 -name "${PREFIX}*.gbz" | head -n1)
 DIST_FILE="$(find "${REFDATA_DIR}" -maxdepth 1 -name "${PREFIX}*.dist" | head -n1)"
 MIN_FILE="$(find "${REFDATA_DIR}" -maxdepth 1 -name "${PREFIX}*.min" | head -n1)"
 ZIP_FILE="$(find "${REFDATA_DIR}" -maxdepth 1 -name "${PREFIX}*.zipcodes" | head -n1)"
-REF_PATHS_FILE="$(find "${REFDATA_DIR}" -maxdepth 1 -name "${PREFIX}*.ref_paths.txt" | head -n1)"
-
+#REF_PATHS_FILE="$(find "${REFDATA_DIR}" -maxdepth 1 -name "${PREFIX}*.paths" | head -n1)"
+REF_PATHS_FILE=${REFDATA_DIR}"/Homo_sapiens_assembly38.primary.paths"
 for name in GBZ_FILE DIST_FILE MIN_FILE ZIP_FILE REF_PATHS_FILE; do
     if [[ -z "${!name}" ]]; then
         echo "ERROR: could not find a ${name%_FILE} file under ${REFDATA_DIR} matching ${PREFIX}*." >&2
@@ -191,3 +171,4 @@ echo "as the Tier 1 sanity-floor timing data (specs_dev.md section 8/10)."
 echo ""
 echo "Next: tests/gpu_giraffe_smoketest/'s Tier 2 (modules/giraffe.nf wired"
 echo "into germline_workflow.nf, specs_dev.md section 10) -- not started."
+
