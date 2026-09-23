@@ -61,7 +61,7 @@ process GIRAFFE_STUB {
     path graph_min
     path graph_zipcodes
     path graph_ref_paths
-    path interval_file   // passed in only to prove it is never used (spec 5c)
+    path interval_file   // passed in only to prove it is never used
 
     output:
     tuple val(sample_id), val(sample_type), path("${sample_id}.bam"), path("${sample_id}.bam.bai"), emit: bam
@@ -74,7 +74,7 @@ process GIRAFFE_STUB {
     """
 }
 
-// ---- modules/fq2bam.nf (shared with somatic: elvis fallback, spec 5h) ----
+// ---- modules/fq2bam.nf (shared with somatic) ----
 process FQ2BAM_STUB {
     tag "${sample_id}"
     publishDir { "${params.outdir}/bam/${params.germline_mapping ?: 'fq2bam'}/${sample_id}" }, mode: 'copy', pattern: "*.bam*"
@@ -93,7 +93,7 @@ process FQ2BAM_STUB {
     """
 }
 
-// ---- modules/bqsr.nf (no publishDir today -- spec 5h's listing of it is stale) ----
+// ---- modules/bqsr.nf (no publishDir) ----
 process BQSR_STUB {
     tag "${sample_id}"
 
@@ -109,7 +109,7 @@ process BQSR_STUB {
     """
 }
 
-// ---- modules/applybqsr.nf (shared with somatic: elvis fallback, spec 5h) ----
+// ---- modules/applybqsr.nf ----
 process APPLYBQSR_STUB {
     tag "${sample_id}"
     publishDir { "${params.outdir}/bam_recal/${params.germline_mapping ?: 'fq2bam'}/${sample_id}" }, mode: 'copy', pattern: "*.bam*"
