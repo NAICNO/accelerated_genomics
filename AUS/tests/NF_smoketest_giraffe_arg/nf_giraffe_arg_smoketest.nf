@@ -4,21 +4,19 @@
  * -------------------------------------------------
  * nf_giraffe_arg_smoketest.nf
  * -------------------------------------------------
- * Tier 0 of docs/Giraffe_implementation_specs_dev.md (section 10): the
- * local, no-container, no-GPU check for the planned `--germline_mapping`
- * logic. Written BEFORE modules/giraffe.nf exists (TDD, spec section 3).
+ * Smoketest for local, no-container, no-GPU check for the planned `--germline_mapping` logic.
+ * Written BEFORE modules/giraffe.nf exists.
  * The stubs below ARE the target the real code must match.
  *
- * What it reproduces (planned code, spec sections 5f/5h/7/11/12 with the
- * Tier 1 corrections in docs/Giraffe_tier2_context.md section 2):
+ * Test for
  *   - germline_workflow.nf's fail-fast block: germline_mapping enum,
  *     graph_* required under 'giraffe', rejected under 'fq2bam'.
  *   - the aligner branch: exactly one of GIRAFFE / FQ2BAM runs, and its
  *     output feeds one shared ch_aligned_bam into BQSR.
  *   - GIRAFFE's pbrun command line: the five graph flags, paired --in-fq,
  *     --sample/--read-group (NOT --read-group-sm), and no --ref or
- *     --interval-file (spec 4c/5c), even for a WES run.
- *   - publishDir nesting (spec 5h): bam/<mapping>/<sample>, with the
+ *     --interval-file, even for a WES run.
+ *   - publishDir nesting: bam/<mapping>/<sample>, with the
  *     `params.germline_mapping ?: 'fq2bam'` fallback in the shared
  *     modules (FQ2BAM, APPLYBQSR) when germline_mapping is unset, as it
  *     is under somatic_main.nf. Stubs touch empty files and really
@@ -32,9 +30,6 @@
  *   somatic            -- run WITHOUT -c, so germline_mapping stays null,
  *                         like somatic.config. Only the shared stubs run.
  *
- * Graph/FASTQ paths need not exist -- only resolved names are checked.
- * See nf-giraffe-arg-smoke-test.md for commands and the checklist, and
- * check_module_sync.sh for the stub-vs-real-module drift check.
  */
 
 nextflow.enable.dsl = 2
@@ -152,7 +147,7 @@ workflow {
         APPLYBQSR_STUB.out.cmd.view { it.trim() }
     } else {
 
-        // ---- germline_workflow.nf: required params (spec 7) ----
+        // ---- germline_workflow.nf: required params ----
         def required = ['sample_id', 'fastq_1', 'fastq_2', 'germline_mapping']
         def missing = required.findAll { params[it] == null }
         if (missing) error "Missing required params: ${missing.join(', ')}"
@@ -170,7 +165,7 @@ workflow {
         }
         interval_file = params.interval_file ? file(params.interval_file) : file('NO_FILE_INTERVAL')
 
-        // ---- germline_workflow.nf: aligner selection (spec 5f/7) ----
+        // ---- germline_workflow.nf: aligner selection ----
         if (params.germline_mapping !in ['giraffe', 'fq2bam']) {
             error "params.germline_mapping must be 'giraffe' or 'fq2bam', got: ${params.germline_mapping}"
         }
@@ -186,7 +181,7 @@ workflow {
                                  "use ${set_graph.size() > 1 ? 'them' : 'it'}, or drop ${set_graph.size() > 1 ? 'them' : 'it'}."
         }
 
-        // ---- germline_workflow.nf: branch, then one shared channel into BQSR (spec 12) ----
+        // ---- germline_workflow.nf: branch, then one shared channel into BQSR ----
         if (params.germline_mapping == 'giraffe') {
             GIRAFFE_STUB(ch_reads,
                 file(params.graph_gbz), file(params.graph_dist), file(params.graph_min),
