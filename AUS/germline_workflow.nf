@@ -29,6 +29,7 @@
 nextflow.enable.dsl = 2
 
 include { FQ2BAM          } from './modules/fq2bam.nf'
+include { GIRAFFE         } from './modules/giraffe.nf'
 include { BQSR            } from './modules/bqsr.nf'
 include { APPLYBQSR       } from './modules/applybqsr.nf'
 include { DEEPVARIANT     } from './modules/germline_deepvariant.nf'
@@ -40,7 +41,7 @@ workflow {
     // ---- required params check ----
     def required = [
         'sample_id', 'fastq_1', 'fastq_2',
-        'ref', 'known_sites',
+        'ref', 'known_sites', 'germline_mapping',
         'parabricks_container', 'bcftools_container'
     ]
     def missing = required.findAll { params[it] == null }
@@ -73,6 +74,23 @@ workflow {
               "set --sequencing_type wes to actually apply it, or drop --interval_file."
     }
     interval_file = params.interval_file ? file(params.interval_file) : file('NO_FILE_INTERVAL')
+
+    // ---- aligner selection -- see docs/Giraffe_implementation_specs_dev.md sections 5f/7 ----
+    if (params.germline_mapping !in ['giraffe', 'fq2bam']) {
+        error "params.germline_mapping must be 'giraffe' or 'fq2bam', got: ${params.germline_mapping}"
+    }
+    def graph_params = ['graph_gbz', 'graph_dist', 'graph_min', 'graph_zipcodes', 'graph_ref_paths']
+    if (params.germline_mapping == 'giraffe') {
+        def missing_graph = graph_params.findAll { params[it] == null }
+        if (missing_graph) error "germline_mapping = 'giraffe' requires: ${missing_graph.join(', ')} " +
+                                 "-- see params.germline.yaml.example for the giraffe branch."
+    } else {
+        def set_graph = graph_params.findAll { params[it] != null }
+        if (set_graph) error "${set_graph.join(', ')} ${set_graph.size() > 1 ? 'were' : 'was'} given but " +
+                             "germline_mapping is 'fq2bam' -- set --germline_mapping giraffe to actually " +
+                             "use ${set_graph.size() > 1 ? 'them' : 'it'}, or drop ${set_graph.size() > 1 ? 'them' : 'it'}."
+    }
+
     // deepvariant's --use-wes-model is only meaningful in shortread mode (pbrun v4.7.1 docs)
     use_wes_model = (params.sequencing_type == 'wes' && params.deepvariant_mode == 'shortread')
 
@@ -99,8 +117,19 @@ workflow {
         tuple(params.sample_id, 'germline', file(params.fastq_1), file(params.fastq_2))
     )
 
-    FQ2BAM(ch_reads, ref, ref_index, ref_dict)
-    BQSR(FQ2BAM.out.bam, ref, ref_index, ref_dict, known_sites_vcfs, known_sites_tbis, interval_file)
+    // ---- alignment: one aligner, one shared output channel ----
+    // graph_* files are only built under 'giraffe' (they are null otherwise).
+    if (params.germline_mapping == 'giraffe') {
+        GIRAFFE(ch_reads,
+            file(params.graph_gbz), file(params.graph_dist), file(params.graph_min),
+            file(params.graph_zipcodes), file(params.graph_ref_paths))
+        ch_aligned_bam = GIRAFFE.out.bam
+    } else {
+        FQ2BAM(ch_reads, ref, ref_index, ref_dict)
+        ch_aligned_bam = FQ2BAM.out.bam
+    }
+
+    BQSR(ch_aligned_bam, ref, ref_index, ref_dict, known_sites_vcfs, known_sites_tbis, interval_file)
     APPLYBQSR(BQSR.out.recal, ref, ref_index, ref_dict, interval_file)
 
     ch_bam = APPLYBQSR.out.bam.map { sample_id, sample_type, bam, bai -> tuple(sample_id, bam, bai) }

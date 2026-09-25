@@ -14,8 +14,12 @@ process FQ2BAM {
     label 'gpu_process'
     container params.parabricks_container
 
-    publishDir { "${params.outdir}/bam/${sample_id}" }, mode: 'copy', pattern: "*.bam*"
-
+    // Nested by aligner (docs/Giraffe_implementation_specs_dev.md section 5h) so
+    // fq2bam and giraffe runs can share one outdir. SHARED with somatic_main.nf,
+    // where germline_mapping is never set -- the `?: 'fq2bam'` fallback keeps
+    // somatic output at bam/fq2bam/<sample_id>/ instead of bam/null/.
+    publishDir { "${params.outdir}/bam/${params.germline_mapping ?: 'fq2bam'}/${sample_id}" }, mode: 'copy', pattern: "*.bam*"
+    
     input:
     tuple val(sample_id), val(sample_type), path(fastq_1), path(fastq_2)
     path ref
