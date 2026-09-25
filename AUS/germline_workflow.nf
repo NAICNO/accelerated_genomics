@@ -75,7 +75,7 @@ workflow {
     }
     interval_file = params.interval_file ? file(params.interval_file) : file('NO_FILE_INTERVAL')
 
-    // ---- aligner selection -- see docs/Giraffe_implementation_specs_dev.md sections 5f/7 ----
+    // ---- aligner selection ----
     if (params.germline_mapping !in ['giraffe', 'fq2bam']) {
         error "params.germline_mapping must be 'giraffe' or 'fq2bam', got: ${params.germline_mapping}"
     }
