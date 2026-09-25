@@ -1,0 +1,29 @@
+# Tier 2 -- germline_workflow.nf with --germline_mapping giraffe on Fox, test reference
+# (docs/Giraffe_tier2_context.md section 3). Same reads as Tier 1 and the fq2bam baseline.
+sample_id: SAMPLE01
+fastq_1: /projects/ec232/ngs/analysis/AUS/test_sample/fastq/sample_normal_1.fastq.gz
+fastq_2: /projects/ec232/ngs/analysis/AUS/test_sample/fastq/sample_normal_2.fastq.gz
+
+germline_mapping: giraffe
+# 24-contig FASTA from the SAME graph -- built by build_primary_ref_fox.sbatch
+ref:             /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.primary.gbz.fa
+graph_gbz:       /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.autoindex.1.70.giraffe.gbz
+graph_dist:      /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.autoindex.1.70.dist
+graph_min:       /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.autoindex.1.70.shortread.withzip.min
+graph_zipcodes:  /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.autoindex.1.70.shortread.zipcodes
+graph_ref_paths: /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.primary.paths
+
+# Full 3,366-contig known-indels first (context doc 3b tests whether pbrun bqsr
+# tolerates the extra contigs). If BQSR fails on contigs, switch to the filtered
+# copy made by the runbook's contingency step:
+known_sites:
+  - /projects/ec232/ngs/reference/parabricks_ref/Homo_sapiens_assembly38.known_indels.vcf.gz
+# known_sites:
+#   - /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.known_indels.primary.vcf.gz
+
+deepvariant_mode: shortread
+emit_gvcf: false
+outdir: results_tier2      # shared with the fq2bam baseline -- output is nested by aligner
+
+parabricks_container: file:///projects/ec232/ngs/ngs_singularity/clara-parabricks_4.7.1-1.sif
+bcftools_container:   file:///projects/ec232/ngs/ngs_singularity/bcftools-1.23--h3a4d415_0.sif

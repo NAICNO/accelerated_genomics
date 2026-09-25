@@ -1,0 +1,8 @@
+work/
+results_tier2/
+.nextflow*
+*.out
+*.err
+trace_*.txt
+report_*.html
+timeline_*.html
