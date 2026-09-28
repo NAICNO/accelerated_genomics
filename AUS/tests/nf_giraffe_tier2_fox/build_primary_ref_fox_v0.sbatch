@@ -12,10 +12,11 @@
 #
 # Checks printed at the end (look for "CHECK"):
 #   1. contig names/order in the .fai == primary.paths
-#   2. bases vs the FASTA the graph was built from (compare_fasta_bases.py:
-#      ignores line wrapping and case; IUPAC->N accepted as expected vg behaviour)
+#   2. sequences vs the source Homo_sapiens_assembly38.fasta (graph was built
+#      FASTA-only, so they should match; case-only differences are reported
+#      separately and are harmless for bqsr/callers)
 #
-# Usage (from this directory -- it needs compare_fasta_bases.py): sbatch build_primary_ref_fox.sbatch
+# Usage (from anywhere): sbatch build_primary_ref_fox.sbatch
 #-------------------------------------------------------------------
 #SBATCH -J giraffe_primary_ref
 #SBATCH --account=ec232
@@ -31,11 +32,7 @@ set -o nounset
 set -o pipefail
 
 WORK=/projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises
-# The FASTA the graph was actually built from (docs/issues/issues_103/build_giraffe_refs_vg1.77.sh:
-# REF_FASTA=tiny_ref/Homo_sapiens_assembly38.fasta). Until 2026-09-28 this pointed at
-# parabricks_ref/Homo_sapiens_assembly38.fasta, which may not be the same file.
-SOURCE_FASTA="${WORK}/tiny_ref/Homo_sapiens_assembly38.fasta"
-HERE="${SLURM_SUBMIT_DIR:-$(pwd)}"    # holds compare_fasta_bases.py
+SOURCE_FASTA=/projects/ec232/ngs/reference/parabricks_ref/Homo_sapiens_assembly38.fasta
 VG_SIF="${WORK}/vg_v1.70.0.sif"          # same vg that built the bundle (build_giraffe_refs_vg1.77.sh)
 SAMTOOLS_MODULE="SAMtools/1.17-GCC-12.2.0"
 
@@ -46,7 +43,7 @@ OUT="${P}.primary.gbz.fa"
 DICT="${P}.primary.gbz.dict"             # germline_workflow.nf derives <ref minus .fa>.dict
 TMP="${WORK}/tiny_ref/tmp_primary_$$"
 
-for f in "$VG_SIF" "$GBZ" "$PATHS" "$SOURCE_FASTA" "$HERE/compare_fasta_bases.py"; do
+for f in "$VG_SIF" "$GBZ" "$PATHS" "$SOURCE_FASTA"; do
     [[ -s "$f" ]] || { echo "ERROR: missing $f" >&2; exit 1; }
 done
 echo "primary.paths:"; cat "$PATHS" | tr '\n' ' '; echo
@@ -71,16 +68,15 @@ else
     echo "CHECK 1 contigs/order == primary.paths: FAIL"; cut -f1 "$OUT.fai" | diff - "$PATHS" || true
 fi
 
-# CHECK 2 compares bases, not bytes: vg writes 80 bases/line and samtools faidx keeps the
-# input's width, so a byte-level cmp against a 60-col source reported DIFFER for identical
-# sequence (fixed 2026-09-28, see tier2-fox-runbook_result_records.md "CHECK 2 diagnosis").
 samtools faidx "$SOURCE_FASTA" $(cat "$PATHS") > "${TMP}.source.fa"
-V=$(python3 "$HERE/compare_fasta_bases.py" "$OUT" "${TMP}.source.fa" "${TMP}.cmp" | tee /dev/stderr | grep '^VERDICT')
-case "$V" in
-    *"IDENTICAL"*|*"ONLY IUPAC->N"*) echo "CHECK 2 sequences == source FASTA: OK -- ${V#VERDICT }" ;;
-    *) echo "CHECK 2 sequences == source FASTA: DIFFER -- ${V#VERDICT } (sites: ${TMP}.cmp.diffs.tsv)" ;;
-esac
+if cmp -s "$OUT" "${TMP}.source.fa"; then
+    echo "CHECK 2 sequences == source FASTA: OK (byte-identical)"
+elif cmp -s <(tr 'a-z' 'A-Z' < "$OUT") <(tr 'a-z' 'A-Z' < "${TMP}.source.fa"); then
+    echo "CHECK 2 sequences == source FASTA: OK ignoring case (soft-masking differs; harmless)"
+else
+    echo "CHECK 2 sequences == source FASTA: DIFFER -- do not use for Tier 2, investigate"
+fi
 cut -f1,2 "$OUT.fai"
 
-rm -f "${TMP}.fa" "${TMP}.fa.fai" "${TMP}.source.fa" "${TMP}.source.fa.fai"
+rm -f "${TMP}.fa" "${TMP}.fa.fai" "${TMP}.source.fa"
 echo "Done: params.ref = $OUT"
