@@ -1,0 +1,72 @@
+Starting job 4237146 on c1-28 on Fox at Tue Sep 29 13:17:08 CEST 2026
+
+STEP 1 -- are the two source FASTAs the same file?
+MD5 7ff134953dcca8c8997453bbb80b6b5e  3249912778 bytes  /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.fasta
+MD5 7ff134953dcca8c8997453bbb80b6b5e  3249912778 bytes  /projects/ec232/ngs/reference/parabricks_ref/Homo_sapiens_assembly38.fasta
+primary contig names/lengths identical in both .fai
+LINE WIDTHS (bases per line, .fai column 4; chr1 row) -- a byte-level cmp fails whenever these differ:
+  80  /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.primary.gbz.fa
+  100  /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/Homo_sapiens_assembly38.fasta
+  100  /projects/ec232/ngs/reference/parabricks_ref/Homo_sapiens_assembly38.fasta
+STEP 2 -- extract the 24 primary contigs (same order and 60-col layout as the graph FASTA)
+STEP 3 -- classify differences (graph vs each source)
+--- graph vs source_build
+LINE WIDTH (graph, source) per contig: 80/100 x24   <- different wrapping: a byte-level cmp would report DIFFER even for identical sequence
+TOTALS case_only=0  N_vs_IUPAC=94  N_vs_ACGT=0  ACGT_vs_N=0  substitution=0  other=0
+SOURCE non-ACGTN bases (uppercased): B=2, K=8, M=8, R=26, S=4, W=13, Y=33
+CONTIGS with non-case differences: chr1, chr2, chr3, chr6, chr7, chr9, chr10, chr12, chr13, chr16, chr17, chr21, chr22, chrX
+VERDICT ONLY IUPAC->N (94 sites) -- expected vg behaviour, harmless for bqsr/callers
+first differing sites:
+contig	pos	graph	source	class
+chr1	248752514	N	M	N_vs_IUPAC
+chr1	248755122	N	R	N_vs_IUPAC
+chr2	20953875	N	Y	N_vs_IUPAC
+chr2	109493618	N	R	N_vs_IUPAC
+chr2	233142970	N	Y	N_vs_IUPAC
+--- graph vs source_pb
+LINE WIDTH (graph, source) per contig: 80/100 x24   <- different wrapping: a byte-level cmp would report DIFFER even for identical sequence
+TOTALS case_only=0  N_vs_IUPAC=94  N_vs_ACGT=0  ACGT_vs_N=0  substitution=0  other=0
+SOURCE non-ACGTN bases (uppercased): B=2, K=8, M=8, R=26, S=4, W=13, Y=33
+CONTIGS with non-case differences: chr1, chr2, chr3, chr6, chr7, chr9, chr10, chr12, chr13, chr16, chr17, chr21, chr22, chrX
+VERDICT ONLY IUPAC->N (94 sites) -- expected vg behaviour, harmless for bqsr/callers
+first differing sites:
+contig	pos	graph	source	class
+chr1	248752514	N	M	N_vs_IUPAC
+chr1	248755122	N	R	N_vs_IUPAC
+chr2	20953875	N	Y	N_vs_IUPAC
+chr2	109493618	N	R	N_vs_IUPAC
+chr2	233142970	N	Y	N_vs_IUPAC
+STEP 4 -- impact on Tier 2 (sites from graph_vs_build, or graph_vs_pb if build missing)
+non-case differing sites: 94
+giraffe deepvariant: 0 calls at differing sites
+giraffe haplotypecaller: 0 calls at differing sites
+fq2bam deepvariant: 0 calls at differing sites
+fq2bam haplotypecaller: 0 calls at differing sites
+giraffe BAM depth at differing sites (sites with depth>0 / total): 3 / 94
+STEP 5 -- summary (VERDICT lines above: graph vs build source, graph vs parabricks_ref source)
+Summaries: /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/check2_diag/graph_vs_*.summary.tsv   Sites: /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/check2_diag/graph_vs_*.diffs.tsv
+Clean up the two ~3 GB extracts when done: rm /projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/tiny_ref/check2_diag/source_*.primary.fa
+
+Job 4237146 consumed 0.3 billing hours from project ec232.
+
+Submitted 2026-09-29T13:17:07; waited 0.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 60.0 minutes
+Elapsed wallclock time:   4.3 minutes
+
+Job exited normally.
+
+Task and CPU statistics:
+ID             CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+4237146           1            0.0 %  2026-09-29T13:17:07  258.0 s  0
+4237146.batch     1      1    98.5 %  2026-09-29T13:17:07  258.0 s  0
+
+Used CPU time:   4.2 CPU minutes
+Unused CPU time: 3.9 CPU seconds
+
+Memory statistics, in GiB:
+ID              Alloc   Usage
+4237146          16.0        
+4237146.batch    16.0     0.2
+
+Job 4237146 completed at Tue Sep 29 13:21:25 CEST 2026
