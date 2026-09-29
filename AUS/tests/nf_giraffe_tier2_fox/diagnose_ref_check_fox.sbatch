@@ -83,7 +83,7 @@ for tag in build pb; do
     echo "first differing sites:"; head -6 "$OUT/graph_vs_${tag}.diffs.tsv"
 done
 
-echo "STEP 4 -- impact on Tier 2 (sites from graph_vs_build, or graph_vs_pb if build missing)"
+echo "STEP 4"
 D="$OUT/graph_vs_build.diffs.tsv"; [[ -s "$D" ]] || D="$OUT/graph_vs_pb.diffs.tsv"
 NSITES=$(( $(wc -l < "$D") - 1 ))
 echo "non-case differing sites: $NSITES"

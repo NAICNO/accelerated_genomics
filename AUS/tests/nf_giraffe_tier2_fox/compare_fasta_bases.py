@@ -2,14 +2,6 @@
 """
 compare_fasta_bases.py GRAPH_FA SOURCE_FA OUT_PREFIX
 
-Base-by-base comparison of two FASTAs with the same contigs in the same order
-(CHECK 1 of build_primary_ref_fox.sbatch guarantees this for the graph FASTA).
-Line wrapping is ignored: both files are re-chunked into equal-size blocks of
-bases, so a 60-column and an 80-column FASTA with the same sequence compare
-equal (a byte-level `cmp` reports those as different -- the likely cause of
-build_primary_ref_fox.sbatch's CHECK 2 "DIFFER"). Pure Python, no numpy: only
-unequal blocks are inspected base by base.
-
 Every differing base is put in one class:
   case_only        same base, different case (soft-masking)            -> harmless
   N_vs_IUPAC       graph N, source ambiguity code (M,R,Y,K,S,W,B,D,H,V) -> expected vg behaviour

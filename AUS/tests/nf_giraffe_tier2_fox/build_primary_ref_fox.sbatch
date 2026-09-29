@@ -1,14 +1,10 @@
 #!/bin/bash
 #-------------------------------------------------------------------
-# build_primary_ref_fox.sbatch -- Tier 2 prerequisite
-# (docs/Giraffe_tier2_context.md section 3a).
 #
 # Builds the 24-contig params.ref for --germline_mapping giraffe:
-# FASTA extracted from the SAME graph as the Tier 1 index bundle,
+# FASTA extracted from the SAME graph as the `tiny_ref`` index bundle,
 # restricted to Homo_sapiens_assembly38.primary.paths (chr1..22,X,Y) and
-# forced into that order, plus .fai and .dict. The step-4 .gbz.fa from
-# docs/issues/issues_103/build_giraffe_refs_vg1.77.sh is NOT usable (it keeps
-# the IMGT/HLA records, ~51 GB).
+# forced into that order, plus .fai and .dict.
 #
 # Checks printed at the end (look for "CHECK"):
 #   1. contig names/order in the .fai == primary.paths
@@ -31,12 +27,11 @@ set -o nounset
 set -o pipefail
 
 WORK=/projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises
-# The FASTA the graph was actually built from (docs/issues/issues_103/build_giraffe_refs_vg1.77.sh:
-# REF_FASTA=tiny_ref/Homo_sapiens_assembly38.fasta). Until 2026-09-28 this pointed at
-# parabricks_ref/Homo_sapiens_assembly38.fasta, which may not be the same file.
+# The FASTA the graph was actually built from (AUS/tests/PBrun_giraffe_smoketest/build_giraffe_refs_vg1.70.sh:
+# REF_FASTA=tiny_ref/Homo_sapiens_assembly38.fasta).
 SOURCE_FASTA="${WORK}/tiny_ref/Homo_sapiens_assembly38.fasta"
 HERE="${SLURM_SUBMIT_DIR:-$(pwd)}"    # holds compare_fasta_bases.py
-VG_SIF="${WORK}/vg_v1.70.0.sif"          # same vg that built the bundle (build_giraffe_refs_vg1.77.sh)
+VG_SIF="${WORK}/vg_v1.70.0.sif"          # same vg that built the bundle (build_giraffe_refs_vg1.70.sh)
 SAMTOOLS_MODULE="SAMtools/1.17-GCC-12.2.0"
 
 P="${WORK}/tiny_ref/Homo_sapiens_assembly38"
@@ -73,7 +68,6 @@ fi
 
 # CHECK 2 compares bases, not bytes: vg writes 80 bases/line and samtools faidx keeps the
 # input's width, so a byte-level cmp against a 60-col source reported DIFFER for identical
-# sequence (fixed 2026-09-28, see tier2-fox-runbook_result_records.md "CHECK 2 diagnosis").
 samtools faidx "$SOURCE_FASTA" $(cat "$PATHS") > "${TMP}.source.fa"
 V=$(python3 "$HERE/compare_fasta_bases.py" "$OUT" "${TMP}.source.fa" "${TMP}.cmp" | tee /dev/stderr | grep '^VERDICT')
 case "$V" in
