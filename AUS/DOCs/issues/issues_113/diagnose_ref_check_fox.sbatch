@@ -1,8 +1,5 @@
 #!/bin/bash
 #-------------------------------------------------------------------
-# diagnose_ref_check2_fox.sbatch -- why did build_primary_ref_fox.sbatch
-# report "CHECK 2 sequences == source FASTA: DIFFER"?
-# Plan and decision table: tier2-fox-runbook_result_records.md, "CHECK 2 diagnosis".
 #
 # HL  Line wrapping only: vg writes 80 bases/line, `samtools faidx` keeps the
 #     input's width, so the graph extract is 80-col; if the source FASTA is not
