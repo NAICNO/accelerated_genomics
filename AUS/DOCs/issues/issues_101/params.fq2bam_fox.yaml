@@ -1,0 +1,18 @@
+# Tier 2 baseline -- same sample, same outdir, default fq2bam aligner and the
+# standard full reference (as in docs/issues/issues_88/params.germline.yaml).
+sample_id: SAMPLE01
+fastq_1: /projects/ec232/ngs/analysis/AUS/test_sample/fastq/sample_normal_1.fastq.gz
+fastq_2: /projects/ec232/ngs/analysis/AUS/test_sample/fastq/sample_normal_2.fastq.gz
+
+germline_mapping: fq2bam
+ref: /projects/ec232/ngs/reference/parabricks_ref/Homo_sapiens_assembly38.fasta
+
+known_sites:
+  - /projects/ec232/ngs/reference/parabricks_ref/Homo_sapiens_assembly38.known_indels.vcf.gz
+
+deepvariant_mode: shortread
+emit_gvcf: false
+outdir: results_tier2
+
+parabricks_container: file:///projects/ec232/ngs/ngs_singularity/clara-parabricks_4.7.1-1.sif
+bcftools_container:   file:///projects/ec232/ngs/ngs_singularity/bcftools-1.23--h3a4d415_0.sif
