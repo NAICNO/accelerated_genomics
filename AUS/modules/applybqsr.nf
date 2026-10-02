@@ -14,8 +14,10 @@ process APPLYBQSR {
     label 'gpu_process'
     container params.parabricks_container
 
-    publishDir { "${params.outdir}/bam_recal/${sample_id}" }, mode: 'copy', pattern: "*.bam*"
-
+    // Nested by aligner (spec section 5h); shared with somatic_main.nf -- see the
+    // matching comment in fq2bam.nf for why the `?: 'fq2bam'` fallback is needed.
+    publishDir { "${params.outdir}/bam_recal/${params.germline_mapping ?: 'fq2bam'}/${sample_id}" }, mode: 'copy', pattern: "*.bam*"
+    
     input:
     tuple val(sample_id), val(sample_type), path(bam), path(bai), path(recal_table)
     path ref

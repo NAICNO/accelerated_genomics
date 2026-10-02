@@ -17,8 +17,9 @@ process VCFQC {
     label 'leaf_process'
     container params.bcftools_container
 
-    publishDir { "${params.outdir}/qc/vcf/${caller}" }, mode: 'copy'
-
+    // Nested by aligner (spec section 5h). Germline-only, no fallback needed.
+    publishDir { "${params.outdir}/qc/vcf/${params.germline_mapping}/${caller}" }, mode: 'copy'
+    
     input:
     tuple val(sample_id), val(caller), path(vcf)
 

@@ -20,6 +20,20 @@ fastq_2:   /path/S_R2.fastq.gz
 
 # ---- reference & resources ----
 ref: /path/reference.fa   # reference FASTA; expects <ref>.fai and a matching .dict alongside
+# ---- aligner + reference ----
+# germline_mapping picks the aligner: fq2bam (default) or giraffe.
+#
+# fq2bam branch (default; germline_mapping may be omitted):
+germline_mapping: fq2bam
+ref: /path/reference.fa   # standard linear reference (e.g. GRCh38); .fai/.dict and
+                          # BWA index files alongside
+# germline_mapping: giraffe
+# ref:             /path/refdata/Homo_sapiens_assembly38.primary.gbz.fa
+# graph_gbz:       /path/refdata/Homo_sapiens_assembly38.autoindex.1.70.giraffe.gbz
+# graph_dist:      /path/refdata/Homo_sapiens_assembly38.autoindex.1.70.dist
+# graph_min:       /path/refdata/Homo_sapiens_assembly38.autoindex.1.70.shortread.withzip.min
+# graph_zipcodes:  /path/refdata/Homo_sapiens_assembly38.autoindex.1.70.shortread.zipcodes
+# graph_ref_paths: /path/refdata/Homo_sapiens_assembly38.primary.paths   # chr1..22,X,Y in order
 
 # known-sites VCFs for BQSR (dbSNP, Mills, etc.), each needs a .tbi alongside.
 # A YAML list works here (unlike the CLI, which only accepts a comma-separated

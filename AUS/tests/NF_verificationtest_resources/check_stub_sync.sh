@@ -23,6 +23,7 @@ REPO_ROOT="../.."
 # changes -- this script only catches drift, it doesn't prevent it.
 EXPECTED=$(cat <<'EOF'
 FQ2BAM gpu_process
+GIRAFFE gpu_process
 BQSR gpu_process
 APPLYBQSR gpu_process
 MUTECTCALLER gpu_process

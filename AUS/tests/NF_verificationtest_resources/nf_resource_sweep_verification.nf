@@ -42,6 +42,15 @@ process FQ2BAM {
     """
 }
 
+process GIRAFFE {
+    label 'gpu_process'
+    output: stdout
+    script:
+    """
+    echo "${workflow.profile}\tGIRAFFE\t${task.cpus}\t${task.time}\t${task.ext.mem_gb}\tgpu_process"
+    """
+}
+
 process BQSR {
     label 'gpu_process'
     output: stdout

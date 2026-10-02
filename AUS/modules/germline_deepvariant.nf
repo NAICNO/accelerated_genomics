@@ -14,8 +14,10 @@ process DEEPVARIANT {
     label 'gpu_process'
     container params.parabricks_container
 
-    publishDir "${params.outdir}/vcf/deepvariant", mode: 'copy'
-
+    // Nested by aligner (spec section 5h). Germline-only, so germline_mapping
+    // always has a value -- no fallback needed.
+    publishDir { "${params.outdir}/vcf/${params.germline_mapping}/deepvariant" }, mode: 'copy'
+    
     input:
     tuple val(sample_id), path(bam), path(bai)
     path ref
