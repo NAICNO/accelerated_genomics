@@ -1,17 +1,16 @@
 #!/bin/bash
 #-------------------------------------------------------------------
-# verify_tier2.sh -- Tier 2 checklist (docs/Giraffe_tier2_context.md section 5)
-# as commands, run after a run_germline_tier2_fox.sbatch job finishes.
+# run after a run_germline_fox.sbatch job finishes.
 #
 # Usage (from this directory, on a Fox login node):
-#   bash verify_tier2.sh giraffe     # after the giraffe run
-#   bash verify_tier2.sh fq2bam      # after the fq2bam baseline
-#   bash verify_tier2.sh compare     # after both
+#   bash verify.sh giraffe     # after the giraffe run
+#   bash verify.sh fq2bam      # after the fq2bam baseline
+#   bash verify.sh compare     # after both
 #-------------------------------------------------------------------
 set -o nounset
 set -o pipefail
 
-MODE="${1:?usage: bash verify_tier2.sh giraffe|fq2bam|compare}"
+MODE="${1:?usage: bash verify.sh giraffe|fq2bam|compare}"
 OUT=results_tier2
 S=SAMPLE01
 TIER1_BAM=/projects/ec232/ngs/analysis/AUS/girrfe_mapper/vg_mapping_exercises/GIRAFFE_NORMAL01.bam

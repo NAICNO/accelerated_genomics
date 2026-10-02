@@ -1,6 +1,5 @@
 #!/bin/bash
 #-------------------------------------------------------------------
-# run_germline_tier2_fox.sbatch -- Nextflow head job for Tier 2.
 # Runs germline_workflow.nf with the given params file; the pipeline's own
 # GPU tasks are submitted as separate Slurm jobs by Nextflow (-profile fox).
 #
