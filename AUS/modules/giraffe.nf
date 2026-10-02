@@ -9,7 +9,6 @@
  * Deliberately no --ref (the tool has none -- downstream BQSR/callers take
  * a FASTA extracted from the SAME graph) and no --interval-file (as in fq2bam)
  *
- * Kept in lockstep with tests/nf_giraffe_arg_smoketest/ (GIRAFFE_STUB) --
  * run `bash check_module_sync.sh` there after any edit.
  */
 
