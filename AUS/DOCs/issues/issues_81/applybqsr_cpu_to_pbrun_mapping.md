@@ -2,7 +2,7 @@
 
 Covers `gatk ApplyBQSR` against `pbrun applybqsr` v4.7.1, using `AUS/DOCs/issues/issues_81/pbrun_applybqsr.csv` as the parameter source of truth.
 
-## CPU command compared
+## CPU command
 
 ### Germline production command
 
