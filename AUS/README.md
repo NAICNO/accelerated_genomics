@@ -33,9 +33,13 @@
 ```none
 [Tumor FASTQ]  --> fq2bam --> [Tumor BAM]  --+
                                                +--> bqsr --> applybqsr --+--> mutectcaller --> postpon --> [Mutect2 VCF]
-[Normal FASTQ] --> fq2bam --> [Normal BAM] --+                          |                  --> vcfqc
-                                                                         +--> deepsomatic ------------------> [DeepSomatic VCF]
+[Normal FASTQ] --> fq2bam --> [Normal BAM] --+                          |                  +--> learnorientation --^
+                                                                         |                  +--> vcfqc
+                                                                         +--> deepsomatic ---------------------------------> [DeepSomatic VCF]
 ```
+
+`pb_postpon` runs only with `--pon`;
+`learnorientation` runs unless `--mutect_orientation_filter false`;
 
 | Process | Tool | GPU | Purpose |
 |---|---|---|---|
@@ -43,8 +47,10 @@
 | `bqsr` | `pbrun bqsr` | yes | base quality score recalibration table |
 | `applybqsr` | `pbrun applybqsr` | yes | apply the recal table |
 | `prepon` | GATK `GetPileupSummaries` / `CalculateContamination` | no | contamination estimate for filtering |
-| `mutectcaller` | `pbrun mutectcaller` | yes | somatic variant calling (Mutect2) |
-| `postpon` | GATK `FilterMutectCalls` | no | final filtered Mutect2 VCF |
+| `mutectcaller` | `pbrun mutectcaller` | yes | somatic variant calling (Mutect2), with `--mutect-germline-resource`; writes F1R2 counts |
+| `pb_postpon` | `pbrun postpon` | no | adds `INFO/PON` to calls that survive `mutectcaller --pon` (only with `--pon`) |
+| `learnorientation` | GATK `LearnReadOrientationModel` | no | read-orientation (FFPE/OxoG) model for `--ob-priors` |
+| `postpon` | GATK `FilterMutectCalls` | no | final filtered Mutect2 VCF (`--stats`, contamination, `--ob-priors`) |
 | `deepsomatic` | `pbrun deepsomatic` | yes | deep-learning somatic variant calling |
 | `vcfqc` | `bcftools stats` | no | QC report on the raw Mutect2 VCF |
 

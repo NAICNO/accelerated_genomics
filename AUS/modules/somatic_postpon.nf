@@ -12,8 +12,7 @@ process POSTPON {
     publishDir "${params.outdir}/vcf/mutect2", mode: 'copy'
 
     input:
-    tuple val(tumor_id), val(normal_id), path(vcf), path(vcf_index), path(stats)
-    tuple val(tumor_id2), val(normal_id2), path(contamination_table), path(segments_table)
+    tuple val(tumor_id), val(normal_id), path(vcf), path(vcf_index), path(stats), path(contamination_table), path(segments_table), path(orientation_model)
     path ref
     path ref_index
     path ref_dict
@@ -22,12 +21,18 @@ process POSTPON {
     tuple val(tumor_id), val(normal_id), path("${tumor_id}_vs_${normal_id}.mutect2.filtered.vcf.gz"), path("${tumor_id}_vs_${normal_id}.mutect2.filtered.vcf.gz.tbi"), emit: vcf
 
     script:
+    def index_cmd = vcf_index.name.startsWith('NO_FILE') ? "gatk IndexFeatureFile -I ${vcf}" : ''
+    def ob_arg    = orientation_model.name.startsWith('NO_FILE') ? '' : "--ob-priors ${orientation_model}"
+
     """
+    ${index_cmd}
     gatk FilterMutectCalls \\
         -R ${ref} \\
         -V ${vcf} \\
+        --stats ${stats} \\
         --contamination-table ${contamination_table} \\
         --tumor-segmentation ${segments_table} \\
+        ${ob_arg} \\
         -O ${tumor_id}_vs_${normal_id}.mutect2.filtered.vcf.gz
     """
 }

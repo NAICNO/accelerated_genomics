@@ -125,6 +125,24 @@ process POSTPON {
     """
 }
 
+process PB_POSTPON {
+    label 'leaf_process'
+    output: stdout
+    script:
+    """
+    echo "${workflow.profile}\tPB_POSTPON\t${task.cpus}\t${task.time}\t${task.ext.mem_gb}\tleaf_process"
+    """
+}
+
+process LEARNORIENTATION {
+    label 'leaf_process'
+    output: stdout
+    script:
+    """
+    echo "${workflow.profile}\tLEARNORIENTATION\t${task.cpus}\t${task.time}\t${task.ext.mem_gb}\tleaf_process"
+    """
+}
+
 process VCFQC {
     label 'leaf_process'
     output: stdout
@@ -144,7 +162,7 @@ workflow {
 
     results = FQ2BAM().mix(
         BQSR(), APPLYBQSR(), MUTECTCALLER(), DEEPSOMATIC(), DEEPVARIANT(),
-        HAPLOTYPECALLER(), PREPON(), POSTPON(), VCFQC()
+        HAPLOTYPECALLER(), PREPON(), POSTPON(), PB_POSTPON(), LEARNORIENTATION(), VCFQC()
     )
 
     results

@@ -33,6 +33,8 @@ HAPLOTYPECALLER gpu_process
 PREPON leaf_process
 POSTPON leaf_process
 VCFQC leaf_process
+PB_POSTPON leaf_process
+LEARNORIENTATION leaf_process
 EOF
 )
 

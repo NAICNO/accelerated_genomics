@@ -20,12 +20,17 @@ process MUTECTCALLER {
     path ref
     path ref_index
     path ref_dict
-    path pon
-    path pon_index
-    path interval_file   // NO_FILE_INTERVAL placeholder when sequencing_type == 'wgs'
-
+    path pon                      // NO_FILE_PON when params.pon is unset
+    path pon_index                // NO_FILE_PON_TBI
+    path pon_sidecar              // NO_FILE_PON_SIDECAR -- staged for -resume only
+    path germline_resource        
+    path germline_resource_index
+    path interval_file   // NO_FILE_INTERVAL placeholder when sequencing_type == 'wgs' --
+                         // every optional placeholder needs a DISTINCT name so staging
+                         // doesn't collide
     output:
     tuple val(tumor_id), val(normal_id), path("${tumor_id}_vs_${normal_id}.mutect2.vcf.gz"), path("${tumor_id}_vs_${normal_id}.mutect2.vcf.gz.tbi"), path("${tumor_id}_vs_${normal_id}.mutect2.vcf.gz.stats"), emit: vcf
+    tuple val(tumor_id), val(normal_id), path("${tumor_id}_vs_${normal_id}.f1r2.tar.gz"), emit: f1r2
 
     script:
     def pon_arg      = pon.name.startsWith('NO_FILE') ? '' : "--pon ${pon}"
@@ -37,9 +42,12 @@ process MUTECTCALLER {
         --tumor-name ${tumor_id} \\
 	    --normal-name ${normal_id} \\
         --in-normal-bam ${normal_bam} \\
+        --mutect-germline-resource ${germline_resource} \\
         ${pon_arg} \\
         ${interval_arg} \\
+        --mutect-f1r2-tar-gz ${tumor_id}_vs_${normal_id}.f1r2.tar.gz \\
         --out-vcf ${tumor_id}_vs_${normal_id}.mutect2.vcf.gz \\
         --num-gpus ${task.accelerator?.request ?: 1}
+        --tmp-dir ./pbrun_tmp
     """
 }

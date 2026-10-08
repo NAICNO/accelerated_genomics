@@ -4,9 +4,10 @@
  * GPU-accelerated somatic variant calling with NVIDIA Clara Parabricks.
  *
  * [Tumor FASTQ]  --> fq2bam --> [Tumor BAM]  --+
- *                                               +--> bqsr --> applybqsr --+--> mutectcaller --> postpon --> [Mutect2 VCF]
- * [Normal FASTQ] --> fq2bam --> [Normal BAM] --+                         |                  --> vcfqc
- *                                                                        +--> deepsomatic ------------------> [DeepSomatic VCF]
+ *                                               +--> bqsr --> applybqsr --+--> mutectcaller --+--> [pb_postpon] --> postpon --> [Mutect2 VCF]
+ * [Normal FASTQ] --> fq2bam --> [Normal BAM] --+                         |                  +--> learnorientation --^
+ *                                                                        |                  +--> vcfqc
+ *                                                                        +--> deepsomatic ---------------------------------> [DeepSomatic VCF]
  *
  * fq2bam/bqsr/applybqsr each run once per tumor+normal pair via a single
  * tagged channel, so one process definition handles both samples. These
@@ -24,14 +25,16 @@
 
 nextflow.enable.dsl = 2
 
-include { FQ2BAM       } from './modules/fq2bam.nf'
-include { BQSR         } from './modules/bqsr.nf'
-include { APPLYBQSR    } from './modules/applybqsr.nf'
-include { PREPON       } from './modules/somatic_prepon.nf'
-include { MUTECTCALLER } from './modules/somatic_mutectcaller.nf'
-include { POSTPON      } from './modules/somatic_postpon.nf'
-include { DEEPSOMATIC  } from './modules/somatic_deepsomatic.nf'
-include { VCFQC        } from './modules/somatic_vcfqc.nf'
+include { FQ2BAM           } from './modules/fq2bam.nf'
+include { BQSR             } from './modules/bqsr.nf'
+include { APPLYBQSR        } from './modules/applybqsr.nf'
+include { PREPON           } from './modules/somatic_prepon.nf'
+include { MUTECTCALLER     } from './modules/somatic_mutectcaller.nf'
+include { PB_POSTPON       } from './modules/somatic_pb_postpon.nf'
+include { LEARNORIENTATION } from './modules/somatic_learnorientation.nf'
+include { POSTPON          } from './modules/somatic_postpon.nf'
+include { DEEPSOMATIC      } from './modules/somatic_deepsomatic.nf'
+include { VCFQC            } from './modules/somatic_vcfqc.nf'
 
 workflow {
 
@@ -97,8 +100,26 @@ workflow {
     germline_resource_index = file("${params.germline_resource}.tbi")
 
     // ---- optional Mutect2 panel of normals ----
-    pon       = params.pon ? file(params.pon) : file('NO_FILE_PON')
-    pon_index = params.pon ? file("${params.pon}.tbi") : file('NO_FILE_PON_TBI')
+    // pbrun mutectcaller --pon needs a `pbrun prepon`-built <pon>.pon sidecar
+    if (params.pon) {
+        def pon_path = file(params.pon)
+        if (!pon_path.exists()) error "--pon file not found: ${params.pon}"
+        def pon_real    = pon_path.toRealPath()
+        def missing_pon = ["${pon_real}.tbi", "${pon_real}.pon"].findAll { !file(it).exists() }
+        if (missing_pon) {
+            error "Panel of normals ${pon_real} is missing: ${missing_pon.join(', ')}.\n" +
+                  "pbrun mutectcaller --pon needs the tabix index and the `pbrun prepon` sidecar " +
+                  "next to the real (symlink-resolved) PON file. Build the .pon once with:\n" +
+                  "  sbatch scripts/prepon.sbatch ${pon_real}\n"
+        }
+        pon         = file(pon_real.toString())
+        pon_index   = file("${pon_real}.tbi")
+        pon_sidecar = file("${pon_real}.pon")
+    } else {
+        pon         = file('NO_FILE_PON')
+        pon_index   = file('NO_FILE_PON_TBI')
+        pon_sidecar = file('NO_FILE_PON_SIDECAR')
+    }
 
     // ---- tumor + normal FASTQ, tagged so a single FQ2BAM process handles both ----
     ch_reads = Channel.of(
@@ -122,11 +143,37 @@ workflow {
     ch_normal_bam = ch_recal.normal.map { sample_id, sample_type, bam, bai -> tuple(sample_id, bam, bai) }
 
     // ---- Mutect2 branch: mutectcaller -> {postpon -> filtered VCF, vcfqc} ----
-    MUTECTCALLER(ch_tumor_bam, ch_normal_bam, ref, ref_index, ref_dict, pon, pon_index, interval_file)
+    MUTECTCALLER(ch_tumor_bam, ch_normal_bam, ref, ref_index, ref_dict,
+                 pon, pon_index, pon_sidecar, germline_resource, germline_resource_index, interval_file)
     PREPON(ch_tumor_bam, ch_normal_bam, ref, ref_index, ref_dict, germline_resource, germline_resource_index)
-    POSTPON(MUTECTCALLER.out.vcf, PREPON.out.contamination, ref, ref_index, ref_dict)
-    VCFQC(MUTECTCALLER.out.vcf)
+    
+    ch_mutect_stats = MUTECTCALLER.out.vcf.map { t, n, vcf, idx, stats -> tuple(t, n, stats) }
+    if (params.pon) {
+        PB_POSTPON(MUTECTCALLER.out.vcf.map { t, n, vcf, idx, stats -> tuple(t, n, vcf, idx) }, pon, pon_index)
+        ch_mutect_vcf = PB_POSTPON.out.vcf
+            .map  { t, n, vcf -> tuple(t, n, vcf, file('NO_FILE_MUTECT_IDX')) }
+            .join(ch_mutect_stats, by: [0, 1])
+    } else {
+        ch_mutect_vcf = MUTECTCALLER.out.vcf
+    }
 
+    // C3: read-orientation model -> FilterMutectCalls --ob-priors (f1r2 is always written).
+    if (params.mutect_orientation_filter) {
+        LEARNORIENTATION(MUTECTCALLER.out.f1r2)
+        ch_obpriors = LEARNORIENTATION.out.model
+    } else {
+        ch_obpriors = MUTECTCALLER.out.f1r2.map { t, n, f1r2 -> tuple(t, n, file('NO_FILE_OBPRIORS')) }
+    }
+
+    // One joined tuple per pair:
+    // (tumor_id, normal_id, vcf, vcf_index, stats, contamination_table, segments_table, orientation_model)
+    ch_filter_in = ch_mutect_vcf
+        .join(PREPON.out.contamination, by: [0, 1])
+        .join(ch_obpriors, by: [0, 1])
+    POSTPON(ch_filter_in, ref, ref_index, ref_dict)
+
+    VCFQC(MUTECTCALLER.out.vcf)   // QC stays on the raw caller output
+    
     // ---- DeepSomatic branch (standalone) ----
     DEEPSOMATIC(ch_tumor_bam, ch_normal_bam, ref, ref_index, ref_dict, interval_file, deepsomatic_use_wes_model)
 }

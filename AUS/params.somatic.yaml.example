@@ -34,6 +34,11 @@ known_sites:
 germline_resource: /path/gnomad.vcf.gz     # gnomAD-style resource for contamination estimation; needs a .tbi alongside
 pon: /path/panel_of_normals.vcf.gz         # optional Mutect2 panel-of-normals (bgzipped + .tbi); delete this line to skip
 
+# NOTE: pon needs <pon>.tbi AND the `pbrun prepon` sidecar <pon>.pon next to the
+# real (symlink-resolved) file -- build it once per PON with scripts/prepon.sbatch.
+
+mutect_orientation_filter: true   # read-orientation (FFPE/OxoG) filter: LearnReadOrientationModel -> FilterMutectCalls --ob-priors
+
 # ---- optional ----
 deepsomatic_model_type: WGS   # WGS | WES | PACBIO | ONT
 
