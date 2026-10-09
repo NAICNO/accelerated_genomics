@@ -40,8 +40,8 @@ process MUTECTCALLER {
         --ref ${ref} \\
         --in-tumor-bam ${tumor_bam} \\
         --tumor-name ${tumor_id} \\
-	    --normal-name ${normal_id} \\
         --in-normal-bam ${normal_bam} \\
+        --normal-name ${normal_id} \\
         --mutect-germline-resource ${germline_resource} \\
         ${pon_arg} \\
         ${interval_arg} \\
