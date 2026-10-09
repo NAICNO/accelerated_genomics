@@ -48,6 +48,5 @@ process MUTECTCALLER {
         --mutect-f1r2-tar-gz ${tumor_id}_vs_${normal_id}.f1r2.tar.gz \\
         --out-vcf ${tumor_id}_vs_${normal_id}.mutect2.vcf.gz \\
         --num-gpus ${task.accelerator?.request ?: 1}
-        --tmp-dir ./pbrun_tmp
     """
 }

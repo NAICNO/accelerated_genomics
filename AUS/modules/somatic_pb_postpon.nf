@@ -6,7 +6,7 @@
 
 process PB_POSTPON {
     tag "${tumor_id}_vs_${normal_id}"
-    label 'leaf_process'
+    label 'gpu_process'
     container params.parabricks_container
 
     input:
@@ -26,6 +26,7 @@ process PB_POSTPON {
         --in-vcf ${prefix}.mutect2.raw.vcf \\
         --in-pon-file ${pon} \\
         --out-vcf ${prefix}.mutect2.pon.vcf \\
+        --num-gpus ${task.accelerator?.request ?: 1} \\
         --tmp-dir ./pbrun_tmp
 
     rm -f ${prefix}.mutect2.raw.vcf
