@@ -46,9 +46,6 @@ EXP_PON_FLAGGED="${EXP_PON_FLAGGED:-2940}" # PB_POSTPON INFO/PON=1            (g
 EXP_PON_FILTERED="${EXP_PON_FILTERED:-2940}" # FILTER contains panel_of_normals (expected ~= flagged)
 
 TRACE="${OUTDIR}/pipeline_info/trace.txt"
-
-## Update bcftools container path (if needed)
-##    else: run `BCFTOOLS_SIF= <PATH>/bcftools-1.23--h3a4d415_0.sif bash ...  `
 BCFTOOLS_SIF="${BCFTOOLS_SIF:-/projects/ec232/ngs/ngs_singularity/bcftools-1.23--h3a4d415_0.sif}"
 
 n_fail=0; n_warn=0; n_skip=0
@@ -61,13 +58,32 @@ h()    { echo; echo "=== $* ==="; }
 
 [[ -s "$TRACE" ]] || { echo "ERROR: no trace file at $TRACE -- is '$OUTDIR' the pipeline's --outdir?"; exit 2; }
 
-# ---- task work dir for a process, from the trace (last COMPLETED/CACHED row) ----
-workdir_of() {
+WORK_DIR="${WORK_DIR:-${NXF_WORK:-$PWD/work}}"
+
+# ---- last COMPLETED/CACHED trace row for a process: prints "<workdir>\t<hash>" ----
+trace_row() {
     awk -F'\t' -v p="$1" '
         NR==1 { for (i=1;i<=NF;i++) col[$i]=i; next }
         { proc=$col["process"]; sub(/.*:/, "", proc) }
-        proc==p && ($col["status"]=="COMPLETED" || $col["status"]=="CACHED") { wd=$col["workdir"] }
-        END { print wd }' "$TRACE"
+        proc==p && ($col["status"]=="COMPLETED" || $col["status"]=="CACHED") {
+            wd = ("workdir" in col) ? $col["workdir"] : ""
+            h  = ("hash"    in col) ? $col["hash"]    : ""
+        }
+        END { print wd "\t" h }' "$TRACE"
+}
+# ---- task work dir: trace workdir if it exists, else hash -> $WORK_DIR/<xx>/<prefix>* ----
+workdir_of() {
+    local row wd h matches
+    row=$(trace_row "$1"); wd=${row%%$'\t'*}; h=${row#*$'\t'}
+    if [[ -n "$wd" && -d "$wd" ]]; then echo "${wd%/}"; return; fi
+    [[ -z "$h" ]] && return                      # process not in this run
+    local had_nullglob=0; shopt -q nullglob && had_nullglob=1
+    shopt -s nullglob; matches=( "$WORK_DIR/${h}"* ); (( had_nullglob )) || shopt -u nullglob
+    if [[ ${#matches[@]} -eq 1 && -d "${matches[0]}" ]]; then
+        echo "${matches[0]%/}"
+    else
+        echo "WARN: $1 hash $h -> ${#matches[@]} match(es) under $WORK_DIR (pass it explicitly or set WORK_DIR)" >&2
+    fi
 }
 status_of() {
     awk -F'\t' -v p="$1" '
@@ -77,10 +93,11 @@ status_of() {
         END { print (s ? s : "absent") }' "$TRACE"
 }
 
-MC=$(workdir_of MUTECTCALLER)
-PBP=$(workdir_of PB_POSTPON)
-LO=$(workdir_of LEARNORIENTATION)
-PP=$(workdir_of POSTPON)
+# explicit MC/PBP/LO/PP (env) win over the trace; trailing slashes stripped
+MC="${MC:-$(workdir_of MUTECTCALLER)}";     MC="${MC%/}"
+PBP="${PBP:-$(workdir_of PB_POSTPON)}";     PBP="${PBP%/}"
+LO="${LO:-$(workdir_of LEARNORIENTATION)}"; LO="${LO%/}"
+PP="${PP:-$(workdir_of POSTPON)}";          PP="${PP%/}"
 
 # ---- bcftools: PATH, else container ----
 if command -v bcftools >/dev/null 2>&1; then
@@ -111,6 +128,10 @@ has_flag() { [[ -n "$1" && -f "$1/.command.sh" ]] && grep -q -- "$2" "$1/.comman
 echo "mutectcaller_verification_test  outdir=$OUTDIR  $(date '+%F %T')"
 echo "git: $(git -C "$SCRIPT_DIR" rev-parse --short HEAD 2>/dev/null || echo n/a)$(git -C "$SCRIPT_DIR" diff --quiet 2>/dev/null || echo ' (dirty)')"
 echo "bcftools: ${BCF[*]}"
+echo "task dirs: MC=${MC:-none}"
+echo "           PBP=${PBP:-none}"
+echo "           LO=${LO:-none}"
+echo "           PP=${PP:-none}"
 
 h "0. Tasks in the latest run (trace.txt)"
 for p in MUTECTCALLER PREPON PB_POSTPON LEARNORIENTATION POSTPON VCFQC; do
@@ -124,6 +145,11 @@ PREFIX="$(basename "$RAW" .mutect2.vcf.gz)"
 FINAL="${OUTDIR}/vcf/mutect2/${PREFIX}.mutect2.filtered.vcf.gz"
 PON_RUN=0; has_flag "$MC" '--pon ' && PON_RUN=1
 ORIENT_RUN=0; [[ -n "$LO" ]] && ORIENT_RUN=1
+if ! has_flag "$MC" '--mutect-germline-resource' && ! has_flag "$MC" '--mutect-f1r2-tar-gz'; then
+    echo "  HINT  MUTECTCALLER's .command.sh has none of the C1-C3 flags: this run used PRE-C1-C3 module"
+    echo "        code. Check the branch/checkout the pipeline was launched from (C1-C3 are on"
+    echo "        19-pb-cpu-parity-c0-c3 until merged to main). The FAILs below follow from that."
+fi
 info "pair: $PREFIX   PON run: $([[ $PON_RUN == 1 ]] && echo yes || echo no)   orientation filter: $([[ $ORIENT_RUN == 1 ]] && echo yes || echo no)"
 
 h "1. Outputs"
@@ -139,11 +165,18 @@ GR_HAS_AF=NA
 if [[ -n "$GR_NAME" && -e "$MC/$GR_NAME" ]]; then
     if "${BCF[@]}" view -h "$MC/$GR_NAME" 2>/dev/null | grep -q '^##INFO=<ID=AF,'; then GR_HAS_AF=1; else GR_HAS_AF=0; fi
 fi
-n_popaf=$("${BCF[@]}" query -f '%INFO/POPAF\n' "$RAW" 2>/dev/null | sort -u | wc -l)
+# POPAF is Number=A: multi-allelic records print "6,6", "6,6,6", ... -- split on commas and
+# count distinct NUMBERS. (Counting distinct strings made a constant POPAF of 6 look like
+# "6 distinct values" on Fox, 2026-10-09.)
+popaf_vals=$("${BCF[@]}" query -f '%INFO/POPAF\n' "$RAW" 2>/dev/null | tr ',' '\n' | grep -v '^\.$' | sort -g | uniq -c | sort -rn)
+n_popaf=$(printf '%s\n' "$popaf_vals" | grep -c '[0-9]' || true)
+popaf_top=$(printf '%s\n' "$popaf_vals" | head -3 | awk '{printf "%s%s x%s", (NR>1?", ":""), $2, $1}')
 if [[ "$GR_HAS_AF" == 0 ]]; then
-    skip "germline resource $GR_NAME has no INFO/AF (wiring-only stand-in) -- POPAF check skipped ($n_popaf distinct value(s)); C1 is wired, not verified"
-elif [[ "$n_popaf" -gt 1 ]]; then pass "POPAF varies: $n_popaf distinct values (resource has INFO/AF)"
-else fail "POPAF has $n_popaf distinct value(s) although the germline resource has INFO/AF -- not applied?"; fi
+    skip "germline resource $GR_NAME has no INFO/AF (wiring-only stand-in) -- POPAF check skipped ($n_popaf distinct value(s): $popaf_top); C1 is wired, not verified"
+elif [[ -z "$GR_NAME" ]]; then
+    fail "no germline resource passed to MUTECTCALLER -- POPAF not checkable ($n_popaf distinct value(s): $popaf_top)"
+elif [[ "$n_popaf" -gt 1 ]]; then pass "POPAF varies: $n_popaf distinct values ($popaf_top) (resource has INFO/AF)"
+else fail "POPAF has $n_popaf distinct value(s) ($popaf_top) although the germline resource has INFO/AF -- not applied?"; fi
 
 h "C2. Panel of normals"
 raw_n=$("${BCF[@]}" view -H "$RAW" | wc -l)
